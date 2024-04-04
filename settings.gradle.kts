@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Skeleton"
 include(":app")
- 
+
+// This line is needed to prevent "Unable to make progress running work" build error
+gradle.startParameter.excludedTaskNames.addAll(listOf(":buildSrc:testClasses"))

@@ -78,8 +78,8 @@ android {
         makeKeys()
         extractLocalProperty(
             project = project.rootProject,
-            propertyName = "nasaApiKey",
-            configName = "NASA_API_KEY"
+            name = "NASA_API_KEY",
+            defaultValue = "DEMO_KEY"
         )
     }
 }

@@ -19,13 +19,18 @@ fun ApplicationVariant.makeKeys() {
 
 fun ApplicationVariant.extractLocalProperty(
     project: Project,
-    propertyName: String,
-    configName: String,
+    name: String,
+    defaultValue: String = "[$name is missing from local.properties]",
     type: String = "String",
     formatValue: (String) -> String = { "\"$it\"" }
 ) {
     val properties = Properties()
     properties.load(project.file("local.properties").inputStream())
-    val propertyValue = properties.getProperty(propertyName)
-    buildConfigField(type, configName, formatValue(propertyValue))
+    val propertyValue = properties.getProperty(name) ?: defaultValue
+
+    println("**************************************************")
+    println("  Yerrrrrr: variant=${this.name}, propertyValue=$propertyValue")
+    println("**************************************************")
+
+    buildConfigField(type, name, formatValue(propertyValue))
 }

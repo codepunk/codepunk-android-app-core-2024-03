@@ -26,6 +26,8 @@ serializationConverter = "1.0.0"
 okhttp = "4.12.0"
 javapoet = "1.13.0"
 arrow = "1.2.4"
+room = "2.6.1"
+ksp = "1.8.10-1.0.9"
 
 [libraries]
 ##### Added by Android Studio
@@ -57,6 +59,8 @@ javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet"
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-core-retrofit = { group = "io.arrow-kt", name = "arrow-core-retrofit", version.ref = "arrow" }
 arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 ##### Added by Android Studio
@@ -65,6 +69,7 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 
 ##### Added by Codepunk
 kapt = { id = "kapt" }
+ksp = { id = "com.google.devtools.ksp" } # TODO SAS Convert kapt to ksp
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 serialization = { id = "plugin.serialization", version.ref = "serializationPlugin" }
 

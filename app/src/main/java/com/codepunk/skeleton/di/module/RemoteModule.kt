@@ -1,10 +1,12 @@
-package com.codepunk.skeleton.nasa.di.module
+package com.codepunk.skeleton.di.module
 
 import android.content.Context
 import arrow.retrofit.adapter.either.EitherCallAdapterFactory
 import com.codepunk.skeleton.BuildConfig
-import com.codepunk.skeleton.nasa.data.remote.interceptor.NasaInterceptor
-import com.codepunk.skeleton.nasa.di.qualifier.Nasa
+import com.codepunk.skeleton.data.remote.interceptor.DiscogsAuthorizationInterceptor
+import com.codepunk.skeleton.data.remote.interceptor.DiscogsUserAgentInterceptor
+import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
+import com.codepunk.skeleton.di.qualifier.Discogs
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -30,20 +32,26 @@ class RemoteModule {
 
     @Singleton
     @Provides
-    @Nasa
-    fun provideNasaOkHttpClient(
+    @Discogs
+    fun provideDiscogsOkHttpClient(
         cache: Cache,
-        nasaInterceptor: NasaInterceptor
+        discogsAuthorizationInterceptor: DiscogsAuthorizationInterceptor,
+        discogsUserAgentInterceptor: DiscogsUserAgentInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
         .cache(cache)
-        .addInterceptor(nasaInterceptor)
-        // TODO .addInterceptor(urlOverrideInterceptor) ?
-        // TODO .addInterceptor(authorizationInterceptor) ?
+        .addInterceptor(discogsAuthorizationInterceptor)
+        .addInterceptor(discogsUserAgentInterceptor)
         .build()
 
     @Singleton
     @Provides
-    fun provideJson(): Json = Json { ignoreUnknownKeys = true }
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        encodeDefaults = true
+        prettyPrint = true
+        coerceInputValues = true
+    }
 
     @Singleton
     @Provides
@@ -57,14 +65,20 @@ class RemoteModule {
     @Singleton
     @Provides
     fun provideRetrofit(
-        client: OkHttpClient,
+        @Discogs client: OkHttpClient,
         eitherCallAdapterFactory: EitherCallAdapterFactory,
         converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .client(client)
-        .baseUrl(BuildConfig.NASA_BASE_URL)
+        .baseUrl(BuildConfig.DISCOGS_BASE_URL)
         .addCallAdapterFactory(eitherCallAdapterFactory)
         .addConverterFactory(converterFactory)
         .build()
+
+    @Singleton
+    @Provides
+    fun provideDiscogsWebService(
+        retrofit: Retrofit
+    ): DiscogsWebService = retrofit.create(DiscogsWebService::class.java)
 
 }

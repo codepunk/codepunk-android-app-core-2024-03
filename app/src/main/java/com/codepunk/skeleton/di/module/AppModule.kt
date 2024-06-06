@@ -1,4 +1,4 @@
-package com.codepunk.skeleton.nasa.di.module
+package com.codepunk.skeleton.di.module
 
 import com.codepunk.skeleton.core.loginator.Handleinator
 import dagger.Module

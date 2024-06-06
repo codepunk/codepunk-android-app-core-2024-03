@@ -13,7 +13,7 @@ class NasaInterceptor @Inject constructor(): Interceptor {
             .url
             .newBuilder()
             .addQueryParameter("format", "json")
-            .addQueryParameter("api_key", BuildConfig.NASA_API_KEY)
+//             .addQueryParameter("api_key", BuildConfig.NASA_API_KEY)
             .build()
         val request = chain
             .request()

@@ -17,6 +17,8 @@ android {
     }
 
     defaultConfig {
+        val appName = "CodepunkDiscogsClient"
+        val website = "https://www.codepunk.com"
         applicationId = "com.codepunk.skeleton"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
@@ -38,6 +40,18 @@ android {
             type = "String",
             name = "NASA_BASE_URL",
             value = "\"https://api.nasa.gov/\""
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "DISCOGS_BASE_URL",
+            value = "\"https://api.discogs.com\""
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "DISCOGS_USER_AGENT",
+            value = "\"$appName/$versionName +$website\""
         )
     }
 
@@ -78,8 +92,7 @@ android {
         makeKeys()
         extractLocalProperty(
             project = project.rootProject,
-            name = "NASA_API_KEY",
-            defaultValue = "DEMO_KEY"
+            name = "DISCOGS_PERSONAL_ACCESS_TOKEN"
         )
     }
 }
@@ -103,9 +116,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.arrow.core)
-    implementation(libs.arrow.core.retrofit)
-    implementation(libs.arrow.fx.coroutines)
 
     // endregion Added by Android Studio
 
@@ -117,6 +127,11 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.converter)
     implementation(libs.okhttp)
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.core.retrofit)
+    implementation(libs.arrow.fx.coroutines)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
 
     // endregion Added by Codepunk
 

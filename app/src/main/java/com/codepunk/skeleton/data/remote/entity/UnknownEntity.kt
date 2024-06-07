@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Artist(
+data class UnknownEntity(
     override val id: Int,
     override val title: String,
     @SerialName(value = "user_data")

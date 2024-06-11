@@ -130,6 +130,7 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.arrow.core.retrofit)
     implementation(libs.arrow.fx.coroutines)
+    implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
 

@@ -7,20 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable(with = EntitySerializer::class)
 sealed class Entity {
 
-    // region Variables
-
-    abstract val id: Int
-    abstract val title: String
-    abstract val userData: UserData
-    abstract val masterId: Int?
-    abstract val masterUrl: String?
-    abstract val uri: String
-    abstract val thumb: String
-    abstract val coverImage: String
-    abstract val resourceUrl: String
-
-    // endregion Variables
-
     // region Nested & inner classes
 
     @Serializable
@@ -40,9 +26,7 @@ sealed class Entity {
 
         companion object {
             fun fromValue(value: String, default: Type = UNKNOWN): Type =
-                entries.find {
-                    it.value == value
-                } ?: default
+                entries.find { it.value == value } ?: default
         }
     }
 

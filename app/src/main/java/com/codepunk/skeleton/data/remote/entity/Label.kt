@@ -5,18 +5,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Label(
-    override val id: Int,
-    override val title: String,
+    val id: Long,
+    val title: String,
     @SerialName(value = "user_data")
-    override val userData: UserData,
+    val userData: UserData,
     @SerialName(value = "master_id")
-    override val masterId: Int?,
+    val masterId: Int?,
     @SerialName(value = "master_url")
-    override val masterUrl: String?,
-    override val uri: String,
-    override val thumb: String,
+    val masterUrl: String?,
+    val uri: String,
+    val thumb: String,
     @SerialName(value = "cover_image")
-    override val coverImage: String,
+    val coverImage: String,
     @SerialName(value = "resource_url")
-    override val resourceUrl: String
+    val resourceUrl: String
 ): Entity()

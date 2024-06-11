@@ -32,8 +32,17 @@ interface ReleaseDao {
     }
 
     @Transaction
+    suspend fun upsertReleaseFormatsWithDescriptions(
+        formatsWithDescriptions: List<ReleaseFormatWithDescriptions>
+    ) {
+        formatsWithDescriptions.forEach {
+            upsertReleaseFormatWithDescriptions(it)
+        }
+    }
+
+    @Transaction
     @Query("SELECT * FROM release_format WHERE format_id = :formatId")
-    suspend fun getReleaseFormatWithDescriptions(formatId: Int): List<ReleaseFormatWithDescriptions>
+    suspend fun getReleaseFormatWithDescriptions(formatId: Long): List<ReleaseFormatWithDescriptions>
 
     // endregion Methods
 

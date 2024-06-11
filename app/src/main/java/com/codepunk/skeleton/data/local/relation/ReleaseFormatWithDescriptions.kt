@@ -12,5 +12,5 @@ data class ReleaseFormatWithDescriptions(
         parentColumn = "format_id",
         entityColumn = "format_id"
     )
-    val descriptions: List<ReleaseFormatDescription>
+    val descriptions: List<ReleaseFormatDescription> = emptyList()
 )

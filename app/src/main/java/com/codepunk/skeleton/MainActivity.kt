@@ -120,11 +120,18 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             ),
+            ReleaseFormatWithDescriptions(
+                releaseFormat = ReleaseFormat(
+                    name = "Box Set",
+                    quantity = 1
+                )
+            )
         )
 
-        formatsWithDescriptions.forEach { formatWithDescriptions ->
-            releaseDao.upsertReleaseFormatWithDescriptions(formatWithDescriptions)
-        }
+        releaseDao.upsertReleaseFormatsWithDescriptions(formatsWithDescriptions)
+
+        val releaseFormat = releaseDao.getReleaseFormatWithDescriptions(5L)
+        val x = "$releaseFormat"
     }
 }
 

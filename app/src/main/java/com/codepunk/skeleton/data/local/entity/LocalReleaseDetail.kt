@@ -2,10 +2,19 @@ package com.codepunk.skeleton.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 
 @Entity(
     tableName = "release_detail",
-    primaryKeys = ["release_id", "detail_type", "detail_idx"]
+    primaryKeys = ["release_id", "detail_type", "detail_idx"],
+    foreignKeys = [
+        ForeignKey(
+            entity = LocalRelease::class,
+            parentColumns = ["id"],
+            childColumns = ["release_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class LocalReleaseDetail(
     @ColumnInfo(name = "release_id")

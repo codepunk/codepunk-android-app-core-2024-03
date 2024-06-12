@@ -9,7 +9,7 @@ data class LocalReleaseFormatWithDescriptions(
     @Embedded
     val releaseFormat: LocalReleaseFormat = LocalReleaseFormat(),
     @Relation(
-        parentColumn = "format_id",
+        parentColumn = "id",
         entityColumn = "format_id"
     )
     val descriptions: List<LocalReleaseFormatDescription> = emptyList()

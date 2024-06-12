@@ -9,8 +9,7 @@ import androidx.room.PrimaryKey
 )
 data class LocalRelease(
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "release_id")
-    val releaseId: Long = 0,
+    val id: Long = 0,
     val title: String = "",
     @ColumnInfo(name = "in_wantlist")
     val inWantList: Boolean = false,

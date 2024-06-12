@@ -78,7 +78,7 @@ class ReleaseDaoWrapper @Inject constructor(
                 DetailType.BARCODE -> barcode
             }.mapIndexed { index, detail ->
                 LocalReleaseDetail(
-                    releaseId = release.releaseId,
+                    releaseId = release.id,
                     detailType = detailType,
                     detailIdx = index,
                     detail = detail

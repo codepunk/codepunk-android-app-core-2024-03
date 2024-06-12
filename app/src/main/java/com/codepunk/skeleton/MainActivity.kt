@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import androidx.room.ColumnInfo
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalReleaseFormat
@@ -28,7 +26,6 @@ import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.system.measureTimeMillis
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -74,7 +71,7 @@ class MainActivity : ComponentActivity() {
     private suspend fun insertData() {
         val releaseWithDetails = LocalReleaseWithDetails(
             release = LocalRelease(
-                releaseId = 1736094,
+                id = 1736094,
                 title = "Marillion - Marillion.com",
                 masterId = 16415,
                 masterUrl = "https://api.discogs.com/masters/16415",

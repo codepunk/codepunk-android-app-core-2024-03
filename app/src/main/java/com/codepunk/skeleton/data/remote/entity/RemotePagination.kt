@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Pagination(
+data class RemotePagination(
     val page: Int,
     val pages: Int,
     @SerialName(value = "per_page")

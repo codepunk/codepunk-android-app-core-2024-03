@@ -1,7 +1,7 @@
 package com.codepunk.skeleton.data.local.converter
 
 import androidx.room.TypeConverter
-import com.codepunk.skeleton.data.local.entity.LocalReleaseDetail.DetailType
+import com.codepunk.skeleton.data.local.DetailType
 
 class LocalDetailTypeTypeConverter {
 

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Release(
+data class RemoteMaster(
     val id: Long,
     val title: String,
     @SerialName(value = "user_data")
@@ -27,30 +27,5 @@ data class Release(
     val style: List<String>,
     val barcode: List<String>,
     @SerialName(value = "catno")
-    val categoryNumber: String,
-    @SerialName(value = "format_quantity")
-    val formatQuantity: Int,
-    val formats: List<Format>
-): Entity() {
-
-    // region Companion object
-    companion object {
-
-        // region Nested & inner classes
-
-        @Serializable
-        data class Format(
-            val name: String,
-            @SerialName(value = "qty")
-            val quantity: String,
-            val text: String? = null,
-            val descriptions: List<String>? = null
-        )
-
-        // endregion Nested & inner classes
-
-    }
-
-    // endregion Companion object
-
-}
+    val categoryNumber: String
+): RemoteEntity()

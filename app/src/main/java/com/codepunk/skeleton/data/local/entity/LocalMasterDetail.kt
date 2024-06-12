@@ -6,20 +6,20 @@ import androidx.room.ForeignKey
 import com.codepunk.skeleton.data.local.DetailType
 
 @Entity(
-    tableName = "release_detail",
-    primaryKeys = ["release_id", "detail_type", "detail_idx"],
+    tableName = "master_detail",
+    primaryKeys = ["master_id", "detail_type", "detail_idx"],
     foreignKeys = [
         ForeignKey(
-            entity = LocalRelease::class,
+            entity = LocalMaster::class,
             parentColumns = ["id"],
-            childColumns = ["release_id"],
+            childColumns = ["master_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class LocalReleaseDetail(
-    @ColumnInfo(name = "release_id")
-    val releaseId: Long = 0,
+data class LocalMasterDetail(
+    @ColumnInfo(name = "master_id")
+    val masterId: Long = 0,
     @ColumnInfo(name = "detail_type")
     val detailType: DetailType = DetailType.FORMAT,
     @ColumnInfo(name = "detail_idx")

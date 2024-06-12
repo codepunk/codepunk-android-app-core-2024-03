@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable(with = EntitySerializer::class)
-sealed class Entity {
+sealed class RemoteEntity {
 
     // region Nested & inner classes
 

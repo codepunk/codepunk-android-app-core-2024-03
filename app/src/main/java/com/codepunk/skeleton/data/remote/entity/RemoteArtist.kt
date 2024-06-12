@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Artist(
+data class RemoteArtist(
     val id: Long,
     val title: String,
     @SerialName(value = "user_data")
@@ -19,4 +19,4 @@ data class Artist(
     val coverImage: String,
     @SerialName(value = "resource_url")
     val resourceUrl: String
-): Entity()
+): RemoteEntity()

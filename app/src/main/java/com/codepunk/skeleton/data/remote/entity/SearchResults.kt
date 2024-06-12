@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchResults(
-    val pagination: Pagination,
-    val results: List<Entity>
+    val pagination: RemotePagination,
+    val results: List<RemoteEntity>
 )

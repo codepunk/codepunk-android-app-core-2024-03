@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.remote.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UnknownEntity(
+data class RemoteUnknownEntity(
     val id: Long,
     val title: String
-): Entity()
+): RemoteEntity()

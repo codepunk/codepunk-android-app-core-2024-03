@@ -2,20 +2,24 @@ package com.codepunk.skeleton.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.codepunk.skeleton.data.local.dao.ArtistDao
-import com.codepunk.skeleton.data.local.dao.LabelDao
-import com.codepunk.skeleton.data.local.dao.MasterDao
+import androidx.room.TypeConverters
+import com.codepunk.skeleton.data.local.converter.LocalDetailTypeTypeConverter
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
-import com.codepunk.skeleton.data.local.entity.ReleaseFormat
-import com.codepunk.skeleton.data.local.entity.ReleaseFormatDescription
+import com.codepunk.skeleton.data.local.entity.LocalRelease
+import com.codepunk.skeleton.data.local.entity.LocalReleaseDetail
+import com.codepunk.skeleton.data.local.entity.LocalReleaseFormat
+import com.codepunk.skeleton.data.local.entity.LocalReleaseFormatDescription
 
 @Database(
     version = 1,
     entities = [
-        ReleaseFormat::class,
-        ReleaseFormatDescription::class
+        LocalRelease::class,
+        LocalReleaseDetail::class,
+        LocalReleaseFormat::class,
+        LocalReleaseFormatDescription::class
     ]
 )
+@TypeConverters(LocalDetailTypeTypeConverter::class)
 abstract class DiscogsDatabase: RoomDatabase() {
 
     // region Methods

@@ -1,48 +1,55 @@
 package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Upsert
-import com.codepunk.skeleton.data.local.entity.ReleaseFormat
-import com.codepunk.skeleton.data.local.entity.ReleaseFormatDescription
-import com.codepunk.skeleton.data.local.relation.ReleaseFormatWithDescriptions
+import com.codepunk.skeleton.data.local.entity.LocalRelease
+import com.codepunk.skeleton.data.local.entity.LocalReleaseDetail
+import com.codepunk.skeleton.data.local.entity.LocalReleaseFormat
+import com.codepunk.skeleton.data.local.entity.LocalReleaseFormatDescription
+import com.codepunk.skeleton.data.local.relation.LocalReleaseFormatWithDescriptions
+import com.codepunk.skeleton.data.local.relation.LocalReleaseWithDetails
 
 @Dao
-interface ReleaseDao {
+abstract class ReleaseDao {
 
     // region Methods
 
     @Upsert
-    suspend fun upsertReleaseFormat(format: ReleaseFormat): Long
+    abstract suspend fun upsertRelease(release: LocalRelease): Long
 
     @Upsert
-    suspend fun upsertReleaseFormatDescription(description: ReleaseFormatDescription)
+    abstract suspend fun upsertReleaseDetail(detail: LocalReleaseDetail)
 
-    @Transaction
-    suspend fun upsertReleaseFormatWithDescriptions(
-        formatWithDescriptions: ReleaseFormatWithDescriptions
+    @Upsert
+    abstract suspend fun upsertReleaseDetails(details: List<LocalReleaseDetail>)
+
+    @Upsert
+    abstract suspend fun upsertReleaseFormat(format: LocalReleaseFormat): Long
+
+    @Upsert
+    abstract suspend fun upsertReleaseFormats(formats: List<LocalReleaseFormat>)
+
+    @Upsert
+    abstract suspend fun upsertReleaseFormatDescription(
+        description: LocalReleaseFormatDescription
+    )
+
+    @Upsert
+    abstract suspend fun upsertReleaseFormatDescriptions(
+        descriptions: List<LocalReleaseFormatDescription>
+    )
+
+    open suspend fun upsertReleaseFormatWithDescriptions(
+        formatWithDescriptions: LocalReleaseFormatWithDescriptions
     ) {
-        val formatId = upsertReleaseFormat(formatWithDescriptions.releaseFormat)
-        formatWithDescriptions.descriptions.forEach {
-            upsertReleaseFormatDescription(
-                it.copy(formatId = formatId)
-            )
-        }
+        // No op
     }
 
-    @Transaction
-    suspend fun upsertReleaseFormatsWithDescriptions(
-        formatsWithDescriptions: List<ReleaseFormatWithDescriptions>
-    ) {
-        formatsWithDescriptions.forEach {
-            upsertReleaseFormatWithDescriptions(it)
-        }
+    open suspend fun upsertReleaseWithDetails(releaseWithDetails: LocalReleaseWithDetails) {
+        // No op
     }
 
-    @Transaction
-    @Query("SELECT * FROM release_format WHERE format_id = :formatId")
-    suspend fun getReleaseFormatWithDescriptions(formatId: Long): List<ReleaseFormatWithDescriptions>
+    // TODO SCOTT Query methods for LocalRelease !!
 
     // endregion Methods
 

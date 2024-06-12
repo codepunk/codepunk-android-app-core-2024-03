@@ -5,10 +5,12 @@ import androidx.room.Entity
 
 @Entity(
     tableName = "release_format_description",
-    primaryKeys = ["format_id", "description"]
+    primaryKeys = ["format_id", "description_idx"]
 )
-data class ReleaseFormatDescription(
+data class LocalReleaseFormatDescription(
     @ColumnInfo(name = "format_id")
-    val formatId: Long = 0L,
+    val formatId: Long = 0,
+    @ColumnInfo(name = "description_idx")
+    val descriptionIdx: Int = 0,
     val description: String = ""
 )

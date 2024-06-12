@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
+import com.codepunk.skeleton.data.local.dao.ReleaseDaoWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +30,7 @@ object LocalModule {
     @Provides
     @Singleton
     fun provideReleaseDao(database: DiscogsDatabase): ReleaseDao =
-        database.releaseDao()
+        ReleaseDaoWrapper(database.releaseDao())
 
     // endregion Methods
 

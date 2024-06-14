@@ -7,52 +7,15 @@ import java.util.logging.LogRecord
 /**
  * An implementation of [Formatter] that applies automatic formatting to log requests.
  */
-open class Formatinator : Formatter() {
-
-    // region Companion object
-
-    companion object {
-
-        // region Extension properties
-
-        /**
-         * Extension property to extract a package name from a [StackTraceElement].
-         */
-        protected val StackTraceElement.packageName: String?
-            get() = try {
-                Class.forName(className).`package`?.name
-            } catch (e: Exception) {
-                null
-            }
-
-        /**
-         * Extension property that gets the top-level class from a [StackTraceElement]
-         */
-        protected val StackTraceElement.topLevelClass: Class<*>?
-            get() = try {
-                var cls = Class.forName(className)
-                var enclosingClass = cls.enclosingClass
-                while (enclosingClass != null) {
-                    cls = enclosingClass
-                    enclosingClass = cls.enclosingClass
-                }
-                cls
-            } catch (e: Exception) {
-                null
-            }
-
-        // endregion Extension properties
-
-    }
-
-    // endregion Companion object
+open class Formatinator(
+    private val appPackageName: String = ""
+) : Formatter() {
 
     // region Variables
 
-    private val packageBlacklist: MutableList<String> = mutableListOf(
-        "java.util.logging",
-        "com.codepunk.skeleton.core.loginator"
-    )
+    private val packageBlacklist: MutableList<String> = listOfNotNull(
+        this::class.java.`package`?.name,
+    ).toMutableList()
 
     private val classBlacklist: MutableList<String> = mutableListOf()
 
@@ -96,6 +59,7 @@ open class Formatinator : Formatter() {
     @SuppressWarnings("WeakerAccess")
     protected fun findSource(record: LogRecord): StackTraceElement? =
         (record.thrown ?: Throwable()).stackTrace.find { element ->
+            element.packageName.orEmpty().startsWith(appPackageName) &&
             element.packageName !in packageBlacklist &&
                     element.className !in classBlacklist
         }
@@ -129,5 +93,43 @@ open class Formatinator : Formatter() {
     }
 
     // endregion Methods
+
+    // region Companion object
+
+    companion object {
+
+        // region Extension properties
+
+        /**
+         * Extension property to extract a package name from a [StackTraceElement].
+         */
+        protected val StackTraceElement.packageName: String?
+            get() = try {
+                Class.forName(className).`package`?.name
+            } catch (e: Exception) {
+                null
+            }
+
+        /**
+         * Extension property that gets the top-level class from a [StackTraceElement]
+         */
+        protected val StackTraceElement.topLevelClass: Class<*>?
+            get() = try {
+                var cls = Class.forName(className)
+                var enclosingClass = cls.enclosingClass
+                while (enclosingClass != null) {
+                    cls = enclosingClass
+                    enclosingClass = cls.enclosingClass
+                }
+                cls
+            } catch (e: Exception) {
+                null
+            }
+
+        // endregion Extension properties
+
+    }
+
+    // endregion Companion object
 
 }

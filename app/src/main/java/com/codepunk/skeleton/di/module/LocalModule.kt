@@ -4,11 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.ArtistDao
-import com.codepunk.skeleton.data.local.dao.LabelDao
-import com.codepunk.skeleton.data.local.dao.MasterDao
-import com.codepunk.skeleton.data.local.dao.MasterDaoWrapper
-import com.codepunk.skeleton.data.local.dao.ReleaseDao
-import com.codepunk.skeleton.data.local.dao.ReleaseDaoWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +31,7 @@ object LocalModule {
     fun provideArtistDao(database: DiscogsDatabase): ArtistDao =
         database.artistDao()
 
+    /*
     @Provides
     @Singleton
     fun provideLabelDao(database: DiscogsDatabase): LabelDao =
@@ -50,6 +46,7 @@ object LocalModule {
     @Singleton
     fun provideReleaseDao(database: DiscogsDatabase): ReleaseDao =
         ReleaseDaoWrapper(database.releaseDao())
+     */
 
     // endregion Methods
 

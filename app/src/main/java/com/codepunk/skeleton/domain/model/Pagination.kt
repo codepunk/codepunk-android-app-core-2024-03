@@ -1,13 +1,8 @@
-package com.codepunk.skeleton.data.remote.entity
+package com.codepunk.skeleton.domain.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class RemotePagination(
+data class Pagination(
     val page: Int,
     val pages: Int,
-    @SerialName("per_page")
     val perPage: Int,
     val items: Int,
     val urls: Urls
@@ -15,7 +10,6 @@ data class RemotePagination(
 
     // region Nested & inner classes
 
-    @Serializable
     data class Urls(
         val last: String,
         val next: String

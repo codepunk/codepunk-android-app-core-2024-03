@@ -15,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import com.codepunk.skeleton.data.local.dao.ReleaseDao
-import com.codepunk.skeleton.data.local.entity.LocalRelease
-import com.codepunk.skeleton.data.local.entity.LocalReleaseFormat
-import com.codepunk.skeleton.data.local.entity.LocalReleaseFormatDescription
-import com.codepunk.skeleton.data.local.relation.LocalReleaseFormatWithDescriptions
-import com.codepunk.skeleton.data.local.relation.LocalReleaseWithDetails
+import com.codepunk.skeleton.core.loginator.Loginator
+import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
+import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,7 +32,10 @@ class MainActivity : ComponentActivity() {
     lateinit var discogsWebService: DiscogsWebService
 
     @Inject
-    lateinit var releaseDao: ReleaseDao
+    lateinit var artistDao: ArtistDao // TODO TEMP
+
+    @Inject
+    lateinit var discogsRepository: DiscogsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,110 +47,157 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting(
-                        name = "Android",
-                        onClick = ::onSearch
+                        name = "Scott",
+                        onFetchData = ::fetchData
                     )
                 }
             }
         }
     }
 
-    private fun onSearch() {
+    /*
+    private fun insertData() {
         lifecycleScope.launch {
-            /*
-            val responseMillis = measureTimeMillis {
-                val response = discogsWebService.search("marillion")
-                val x = "$response"
-            }
-            Loginator.d { "responseMillis = $responseMillis" }
-
-             */
-            insertData()
-        }
-    }
-
-    private suspend fun insertData() {
-        val releaseWithDetails = LocalReleaseWithDetails(
-            release = LocalRelease(
-                id = 1736094,
-                title = "Marillion - Marillion.com",
-                masterId = 16415,
-                masterUrl = "https://api.discogs.com/masters/16415",
-                uri = "/release/1736094-Marillion-Marillioncom",
-                thumb = "https://i.discogs.com/kw1trpn6c7w-cK3vExBDYjhTYsdsClZT8s-H-afV4Rc/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE3MzYw/OTQtMTMwNTMxMjUx/OC5qcGVn.jpeg",
-                coverImage = "https://i.discogs.com/MTp8qicmBlFkvvlcueaDoWd8wDBR1-r4zfxq3Zi78eU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE3MzYw/OTQtMTMwNTMxMjUx/OC5qcGVn.jpeg",
-                resourceUrl = "https://api.discogs.com/releases/1736094",
-                country = "US",
-                year = "1999",
-                categoryNumber = "NR4505",
-                formatQuantity = 1
-            ),
-            format = listOf("CD", "Promo", "Album"),
-            label = listOf(
-                "Sanctuary",
-                "Marillion",
-                "Sanctuary Records",
-                "Marillion",
-                "The Racket Club",
-                "Chop 'Em Out",
-                "No Man's Land",
-                "The Forge",
-                "The Racket Club"
-            ),
-            genre = listOf("Rock"),
-            style = listOf("Prog Rock"),
-            barcode = listOf(
-                "5 0 6 3 9 414424",
-                "03701 MARILLION SP F 17007 100499",
-                "IFPI LD81",
-                "IFPI 8Y04"
-            ),
-            formats = listOf(
-                LocalReleaseFormatWithDescriptions(
-                    releaseFormat = LocalReleaseFormat(
-                        releaseId = 1736094,
-                        name = "CD",
-                        quantity = 1
+            val artist: LocalArtistWithDetails = LocalArtistWithDetails(
+                artist = LocalArtist(
+                    name = "Marillion",
+                    id = 218108,
+                    resourceUrl = "https://api.discogs.com/artists/218108",
+                    uri = "https://www.discogs.com/artist/218108-Marillion",
+                    releasesUrl = "https://api.discogs.com/artists/218108/releases",
+                    profile = "Marillion formed in Aylesbury, Buckinghamshire, England in 1979. Recording consistently since 1982, their output is generally regarded as comprising two distinct eras, that of original vocalist [a=Fish] who helmed the band at arguably their most popular (critically and commercially), and his replacement, former [a=Europeans] member [a=Steve Hogarth], who joined the band after Fish's departure in 1989. The band's differing styles between the two vocalists has often been known to divide fans.",
+                    dataQuality = "Needs Vote"
+                ),
+                images = listOf(
+                    LocalImage(
+                        type = ImageType.PRIMARY,
+                        uri = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        resourceUrl = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        uri150 = "https://i.discogs.com/u1IJF-wOYnaHyUDUZUgYZupKA5yKsLyDAk6vakzIsLE/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        width = 600,
+                        height = 450
                     ),
-                    descriptions = listOf(
-                        LocalReleaseFormatDescription(description = "Compilation")
+                    LocalImage(
+                        type = ImageType.SECONDARY,
+                        uri = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        resourceUrl = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        uri150 = "https://i.discogs.com/u1IJF-wOYnaHyUDUZUgYZupKA5yKsLyDAk6vakzIsLE/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        width = 600,
+                        height = 450
+                    ),
+                    LocalImage(
+                        type = ImageType.SECONDARY,
+                        uri = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        resourceUrl = "https://i.discogs.com/-EQloKsaJ3P5RH7llBKH2pczugJ58jVYYqfPS2BiJKs/rs:fit/g:sm/q:90/h:450/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        uri150 = "https://i.discogs.com/u1IJF-wOYnaHyUDUZUgYZupKA5yKsLyDAk6vakzIsLE/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIxODEw/OC0xNjU1MjM1OTUz/LTk1MTcuanBlZw.jpeg",
+                        width = 600,
+                        height = 450
+                    ),
+                ),
+                details = listOf(
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.URL,
+                        detailIdx = 0,
+                        detail = "https://www.marillion.com/"
+                    ),
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.URL,
+                        detailIdx = 1,
+                        detail = "https://marillionofficial.bandcamp.com/"
+                    ),
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.URL,
+                        detailIdx = 2,
+                        detail = "https://www.facebook.com/MarillionOfficial/"
+                    ),
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.URL,
+                        detailIdx = 3,
+                        detail = "https://www.instagram.com/marillionofficial/"
+                    ),
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.NAME_VARIATION,
+                        detailIdx = 0,
+                        detail = "Los Trios Marillos"
+                    ),
+                    LocalArtistDetail(
+                        artistId = 218108,
+                        detailType = ArtistDetailType.NAME_VARIATION,
+                        detailIdx = 1,
+                        detail = "マリリオン"
+                    )
+                ),
+                relationships = listOf(
+                    LocalArtistRelationship(
+                        parentId = 218108,
+                        childId = 487676,
+                        relationshipType = ArtistRelationshipType.ALIAS,
+                        relationshipIdx = 0,
+                        name = "Remixomatosis",
+                        resourceUrl = "https://api.discogs.com/artists/487676"
+                    ),
+                    LocalArtistRelationship(
+                        parentId = 218108,
+                        childId = 421414,
+                        relationshipType = ArtistRelationshipType.MEMBER,
+                        relationshipIdx = 0,
+                        name = "Pete Trewavas",
+                        resourceUrl = "https://api.discogs.com/artists/421414",
+                        active = true,
+                        thumbnailUrl = "https://i.discogs.com/-X-leKHhV3qJla8IbNMnRaG5iPSht1AM_XIH4Pj26Yc/rs:fit/g:sm/q:40/h:240/w:235/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTQyMTQx/NC0xMjkzODg3MTMx/LmpwZWc.jpeg"
+                    ),
+                    LocalArtistRelationship(
+                        parentId = 218108,
+                        childId = 421415,
+                        relationshipType = ArtistRelationshipType.MEMBER,
+                        relationshipIdx = 1,
+                        name = "Mark Kelly (4)",
+                        resourceUrl = "https://api.discogs.com/artists/421415",
+                        active = true,
+                        thumbnailUrl = "https://i.discogs.com/6vtEHHFANf-W51x3ee8O0iJT56cloK1xfsVRIU6su4E/rs:fit/g:sm/q:40/h:330/w:235/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTQyMTQx/NS0xMjI0ODUzNzgy/LmpwZWc.jpeg"
+                    ),
+                    LocalArtistRelationship(
+                        parentId = 218108,
+                        childId = 1830626,
+                        relationshipType = ArtistRelationshipType.GROUP,
+                        relationshipIdx = 0,
+                        name = "The Anti-Heroin Project",
+                        resourceUrl = "https://api.discogs.com/artists/1830626",
+                        active = true,
+                        thumbnailUrl = "https://i.discogs.com/vh1g1iFcGqeMuaD6kCrbHbbezjrAMpTxmaPo3UTvoPs/rs:fit/g:sm/q:40/h:196/w:257/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTE4MzA2/MjYtMTM4ODM4MzIx/Mi0zNDY2LmpwZWc.jpeg"
                     )
                 )
             )
-        )
 
-        releaseDao.upsertReleaseWithDetails(releaseWithDetails)
 
-        val x = "$releaseWithDetails"
+            val id = artistDao.upsertArtistWithDetails(artist)
+            val x = "$id"
+        }
+    }
+     */
 
-        /*
-        val upsertFormatMillis = measureTimeMillis {
-            formatsWithDescriptions.forEach {
-                releaseDao.upsertReleaseFormatWithDescriptions(it)
+    private fun fetchData() {
+        lifecycleScope.launch {
+            discogsRepository.fetchArtist(218108).collect { result ->
+                result.fold(
+                    fa = {
+                        Loginator.e(throwable = it) { "fetchArtist encountered an error" }
+                    },
+                    fb = {
+                        Loginator.d { "artist = $it" }
+                    },
+                    fab = { throwable: Throwable, artist: Artist? ->
+                        Loginator.e(throwable = throwable) { "fetchArtist encountered an error" }
+                        Loginator.d { "artist = $artist" }
+                    }
+                )
             }
         }
-        Loginator.d { "upsertFormatMillis = $upsertFormatMillis" }
-
-        val releaseDetails = listOf(
-            ReleaseDetail(type = FORMAT, index = 0, detail = "Vinyl"),
-            ReleaseDetail(type = FORMAT, index = 1, detail = "LP"),
-            ReleaseDetail(type = FORMAT, index = 2, detail = "Album"),
-            ReleaseDetail(type = LABEL, index = 0, detail = "Madfish"),
-            ReleaseDetail(type = LABEL, index = 1, detail = "Intact Recordings"),
-            ReleaseDetail(type = GENRE, index = 0, detail = "Rock")
-        )
-        releaseDao.upsertReleaseDetails(releaseDetails)
-
-        val releaseFormat2: List<ReleaseFormatWithDescriptions>
-        val releaseFormat4: List<ReleaseFormatWithDescriptions>
-        val queryMillis = measureTimeMillis {
-            releaseFormat2 = releaseDao.getReleaseFormatWithDescriptions(formatId = 2)
-            releaseFormat4 = releaseDao.getReleaseFormatWithDescriptions(formatId = 4)
-        }
-        val x = "$releaseFormat2 $releaseFormat4"
-        Loginator.d { "queryMillis = $queryMillis" }
-        */
-
     }
 }
 
@@ -157,7 +205,7 @@ class MainActivity : ComponentActivity() {
 fun Greeting(
     name: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onFetchData: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -168,13 +216,12 @@ fun Greeting(
                 .align(alignment = Alignment.CenterHorizontally)
         )
         Button(
-            onClick = { onClick() },
+            onClick = { onFetchData() },
             modifier = modifier
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
-            Text("Search")
+            Text("Fetch Data")
         }
-
     }
 }
 

@@ -1,47 +1,110 @@
 package com.codepunk.skeleton.data.mapper
 
-import com.codepunk.skeleton.data.domain.Artist
-import com.codepunk.skeleton.data.domain.Entity.UserData
 import com.codepunk.skeleton.data.local.entity.LocalArtist
+import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
+import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
+import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
+import com.codepunk.skeleton.data.local.type.ArtistDetailType
+import com.codepunk.skeleton.data.local.type.ArtistDetailType.*
+import com.codepunk.skeleton.data.local.type.ArtistRelationshipType
+import com.codepunk.skeleton.data.local.type.ArtistRelationshipType.*
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
+import com.codepunk.skeleton.domain.model.Artist
 
-fun RemoteArtist.toLocal(): LocalArtist = LocalArtist(
-    id = this.id,
-    title = this.title,
-    inWantList = this.userData.inWantList,
-    inCollection = this.userData.inCollection,
-    masterId = this.masterId,
-    masterUrl = this.masterUrl,
-    uri = this.uri,
-    thumb = this.thumb,
-    coverImage = this.coverImage,
-    resourceUrl = this.resourceUrl
+// region Methods
+
+fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails =
+    LocalArtistWithDetails(
+        artist = LocalArtist(
+            id = this.id,
+            name = this.name,
+            resourceUrl = this.resourceUrl,
+            uri = this.uri,
+            releasesUrl = this.releasesUrl,
+            profile = this.profile,
+            dataQuality = this.dataQuality
+        ),
+        images = this.images.map { it.toLocalImage() },
+        details = this.urls.toLocalArtistDetails(this.id, URL) +
+                this.nameVariations.toLocalArtistDetails(this.id, NAME_VARIATION),
+        relationships = this.aliases.toLocalArtistRelationships(this.id, ALIAS) +
+                this.members.toLocalArtistRelationships(this.id, MEMBER) +
+                this.groups.toLocalArtistRelationships(this.id, GROUP)
+    )
+
+fun RemoteArtist.Relationship.toLocalArtistRelationship(
+    parentId: Long,
+    relationshipType: ArtistRelationshipType,
+    relationshipIdx: Int
+): LocalArtistRelationship =
+    LocalArtistRelationship(
+        parentId = parentId,
+        relationshipType = relationshipType,
+        relationshipIdx = relationshipIdx,
+        childId = this.id,
+        name = this.name,
+        resourceUrl = this.resourceUrl,
+        active = this.active,
+        thumbnailUrl = this.thumbnailUrl
+    )
+
+private fun List<String>.toLocalArtistDetails(
+    id: Long,
+    detailType: ArtistDetailType
+): List<LocalArtistDetail> = mapIndexed { detailIdx, detail ->
+    LocalArtistDetail(
+        artistId = id,
+        detailType = detailType,
+        detailIdx = detailIdx,
+        detail = detail
+    )
+}
+
+private fun List<RemoteArtist.Relationship>.toLocalArtistRelationships(
+    id: Long,
+    relationshipType: ArtistRelationshipType
+): List<LocalArtistRelationship> = mapIndexed { relationshipIdx, relationship ->
+    relationship.toLocalArtistRelationship(
+        parentId = id,
+        relationshipType = relationshipType,
+        relationshipIdx = relationshipIdx
+    )
+}
+
+fun LocalArtistWithDetails.toDomainArtist(): Artist = Artist(
+    id = artist.id,
+    name = artist.name,
+    resourceUrl = artist.resourceUrl,
+    uri = artist.uri,
+    releasesUrl = artist.releasesUrl,
+    images = images.map { it.toDomainImage() },
+    profile = artist.profile,
+    urls = details.toDomainArtistDetails(URL),
+    nameVariations = details.toDomainArtistDetails(NAME_VARIATION),
+    aliases = relationships.toDomainArtistRelationships(ALIAS),
+    members = relationships.toDomainArtistRelationships(MEMBER),
+    groups = relationships.toDomainArtistRelationships(GROUP),
+    dataQuality = artist.dataQuality
 )
 
-fun LocalArtist.toDomain(): Artist = Artist(
-    id = this.id,
-    title = this.title,
-    userData = UserData(
-        inWantList = this.inWantList,
-        inCollection = this.inCollection,
-    ),
-    masterId = this.masterId,
-    masterUrl = this.masterUrl,
-    uri = this.uri,
-    thumb = this.thumb,
-    coverImage = this.coverImage,
-    resourceUrl = this.resourceUrl
-)
+private fun List<LocalArtistDetail>.toDomainArtistDetails(
+    detailType: ArtistDetailType
+): List<String> = filter { detail ->
+    detail.detailType == detailType
+}.map { it.detail }
 
-fun Artist.toLocal(): LocalArtist = LocalArtist(
-    id = this.id,
-    title = this.title,
-    inWantList = this.userData.inWantList,
-    inCollection = this.userData.inCollection,
-    masterId = this.masterId,
-    masterUrl = this.masterUrl,
-    uri = this.uri,
-    thumb = this.thumb,
-    coverImage = this.coverImage,
-    resourceUrl = this.resourceUrl
-)
+private fun List<LocalArtistRelationship>.toDomainArtistRelationships(
+    relationshipType: ArtistRelationshipType
+): List<Artist.Relationship> = filter { relationship ->
+    relationship.relationshipType == relationshipType
+}.map { relationship ->
+    Artist.Relationship(
+        id = relationship.childId,
+        name = relationship.name,
+        resourceUrl = relationship.resourceUrl,
+        active = relationship.active,
+        thumbnailUrl = relationship.thumbnailUrl
+    )
+}
+
+// endregion Methods

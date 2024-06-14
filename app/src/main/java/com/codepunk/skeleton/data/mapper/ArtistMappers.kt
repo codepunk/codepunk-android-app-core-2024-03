@@ -32,22 +32,6 @@ fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails =
                 this.groups.toLocalArtistRelationships(this.id, GROUP)
     )
 
-fun RemoteArtist.Relationship.toLocalArtistRelationship(
-    parentId: Long,
-    relationshipType: ArtistRelationshipType,
-    relationshipIdx: Int
-): LocalArtistRelationship =
-    LocalArtistRelationship(
-        parentId = parentId,
-        relationshipType = relationshipType,
-        relationshipIdx = relationshipIdx,
-        childId = this.id,
-        name = this.name,
-        resourceUrl = this.resourceUrl,
-        active = this.active,
-        thumbnailUrl = this.thumbnailUrl
-    )
-
 private fun List<String>.toLocalArtistDetails(
     id: Long,
     detailType: ArtistDetailType
@@ -64,10 +48,15 @@ private fun List<RemoteArtist.Relationship>.toLocalArtistRelationships(
     id: Long,
     relationshipType: ArtistRelationshipType
 ): List<LocalArtistRelationship> = mapIndexed { relationshipIdx, relationship ->
-    relationship.toLocalArtistRelationship(
+    LocalArtistRelationship(
         parentId = id,
         relationshipType = relationshipType,
-        relationshipIdx = relationshipIdx
+        relationshipIdx = relationshipIdx,
+        childId = relationship.id,
+        name = relationship.name,
+        resourceUrl = relationship.resourceUrl,
+        active = relationship.active,
+        thumbnailUrl = relationship.thumbnailUrl
     )
 }
 

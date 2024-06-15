@@ -1,9 +1,10 @@
 package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Upsert
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
 import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
@@ -15,45 +16,56 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class ArtistDao {
 
-    @Upsert
-    abstract suspend fun upsertArtist(artist: LocalArtist): Long
+    /*
+     * TODO
+     * Using OnConflictStrategy.IGNORE stops errors but will not work in the
+     * future if I include things that actually change (like "stats" in releases)
+     * In this case we can think about OnConflictStrategy.REPLACE
+     * (or even @Update or @Upsert)
+     */
 
-    @Upsert
-    abstract suspend fun upsertArtists(artists: List<LocalArtist>): List<Long>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtist(artist: LocalArtist): Long
 
-    @Upsert
-    abstract suspend fun upsertArtistImage(image: LocalImage): Long
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtists(artists: List<LocalArtist>): List<Long>
 
-    @Upsert
-    abstract suspend fun upsertArtistImages(images: List<LocalImage>): List<Long>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistImage(image: LocalImage): Long
 
-    @Upsert
-    abstract suspend fun upsertArtistImageCrossRef(crossRef: LocalArtistImageCrossRef)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistImages(images: List<LocalImage>): List<Long>
 
-    @Upsert
-    abstract suspend fun upsertArtistImageCrossRefs(crossRefs: List<LocalArtistImageCrossRef>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistImageCrossRef(crossRef: LocalArtistImageCrossRef)
 
-    @Upsert
-    abstract suspend fun upsertArtistDetail(detail: LocalArtistDetail)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistImageCrossRefs(crossRefs: List<LocalArtistImageCrossRef>)
 
-    @Upsert
-    abstract suspend fun upsertArtistDetails(details: List<LocalArtistDetail>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistDetail(detail: LocalArtistDetail)
 
-    @Upsert
-    abstract suspend fun upsertArtistRelationship(relationship: LocalArtistRelationship)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistDetails(details: List<LocalArtistDetail>)
 
-    @Upsert
-    abstract suspend fun upsertArtistRelationships(relationships: List<LocalArtistRelationship>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistRelationship(relationship: LocalArtistRelationship)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertArtistRelationships(relationships: List<LocalArtistRelationship>)
 
     @Transaction
-    @Upsert
-    suspend fun upsertArtistWithDetails(artistWithDetails: LocalArtistWithDetails): Long {
-        val artistId = upsertArtist(artistWithDetails.artist)
-        val crossRefs = upsertArtistImages(artistWithDetails.images)
-            .map { imageId -> LocalArtistImageCrossRef(artistId = artistId, imageId = imageId) }
-        upsertArtistImageCrossRefs(crossRefs)
-        upsertArtistDetails(artistWithDetails.details)
-        upsertArtistRelationships(artistWithDetails.relationships)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertArtistWithDetails(artistWithDetails: LocalArtistWithDetails): Long {
+        val artistId = insertArtist(artistWithDetails.artist)
+        if (artistId != -1L) {
+            val crossRefs = insertArtistImages(artistWithDetails.images)
+                .filter { it != -1L }
+                .map { LocalArtistImageCrossRef(artistId = artistId, imageId = it) }
+            insertArtistImageCrossRefs(crossRefs)
+            insertArtistDetails(artistWithDetails.details)
+            insertArtistRelationships(artistWithDetails.relationships)
+        }
         return artistId
     }
 

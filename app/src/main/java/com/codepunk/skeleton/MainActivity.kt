@@ -186,13 +186,17 @@ class MainActivity : ComponentActivity() {
             discogsRepository.fetchArtist(218108).collect { result ->
                 result.fold(
                     fa = {
-                        Loginator.e(throwable = it) { "fetchArtist encountered an error" }
+                        Loginator.e(throwable = Throwable(it)) {
+                            "fetchArtist encountered an error"
+                        }
                     },
                     fb = {
                         Loginator.d { "artist = $it" }
                     },
                     fab = { throwable: Throwable, artist: Artist? ->
-                        Loginator.e(throwable = throwable) { "fetchArtist encountered an error" }
+                        Loginator.e(throwable = Throwable(throwable)) {
+                            "fetchArtist encountered an error"
+                        }
                         Loginator.d { "artist = $artist" }
                     }
                 )

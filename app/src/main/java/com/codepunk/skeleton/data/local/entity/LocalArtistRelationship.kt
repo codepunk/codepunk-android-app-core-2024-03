@@ -28,7 +28,8 @@ import com.codepunk.skeleton.data.local.type.ArtistRelationshipType
             entity = LocalArtist::class,
             parentColumns = ["id"],
             childColumns = ["parent_id"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ]
 )

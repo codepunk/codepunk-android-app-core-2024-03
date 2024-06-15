@@ -28,7 +28,7 @@ class DiscogsRepositoryImpl(
             )
         },
         saveFetchResult = {
-            artistDao.upsertArtistWithDetails(it.toLocalArtistWithDetails())
+            artistDao.insertArtistWithDetails(it.toLocalArtistWithDetails())
         }
     )
 

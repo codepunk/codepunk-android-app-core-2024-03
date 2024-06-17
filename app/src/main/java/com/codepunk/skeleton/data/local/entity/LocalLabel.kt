@@ -1,0 +1,24 @@
+package com.codepunk.skeleton.data.local.entity
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "label"
+)
+data class LocalLabel(
+    @PrimaryKey(autoGenerate = false)
+    val id: Long = 0,
+    val name: String = "",
+    @ColumnInfo(name = "resource_url")
+    val resourceUrl: String = "",
+    val uri: String = "",
+    @ColumnInfo(name = "releases_url")
+    val releasesUrl: String = "",
+    @ColumnInfo(name = "contact_info")
+    val contactInfo: String = "",
+    val profile: String = "",
+    @ColumnInfo(name = "data_quality")
+    val dataQuality: String = ""
+)

@@ -8,7 +8,6 @@ import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
 import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
-import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.relation.LocalArtistImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -24,17 +23,13 @@ abstract class ArtistDao {
      * (or even @Update or @Upsert)
      */
 
+    // region Methods
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertArtist(artist: LocalArtist): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertArtists(artists: List<LocalArtist>): List<Long>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertArtistImage(image: LocalImage): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertArtistImages(images: List<LocalImage>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertArtistImageCrossRef(crossRef: LocalArtistImageCrossRef)
@@ -55,22 +50,15 @@ abstract class ArtistDao {
     abstract suspend fun insertArtistRelationships(relationships: List<LocalArtistRelationship>)
 
     @Transaction
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertArtistWithDetails(artistWithDetails: LocalArtistWithDetails): Long {
-        val artistId = insertArtist(artistWithDetails.artist)
-        if (artistId != -1L) {
-            val crossRefs = insertArtistImages(artistWithDetails.images)
-                .filter { it != -1L }
-                .map { LocalArtistImageCrossRef(artistId = artistId, imageId = it) }
-            insertArtistImageCrossRefs(crossRefs)
-            insertArtistDetails(artistWithDetails.details)
-            insertArtistRelationships(artistWithDetails.relationships)
-        }
-        return artistId
-    }
-
-    @Transaction
     @Query("SELECT * FROM artist WHERE id = :id")
     abstract fun getArtistWithDetails(id: Long): Flow<LocalArtistWithDetails?>
+
+    open suspend fun insertArtistWithDetails(
+        artistWithDetails: LocalArtistWithDetails
+    ): Long = throw IllegalStateException(
+        "This method can only be called from a descendant of this class"
+    )
+
+    // endregion Methods
 
 }

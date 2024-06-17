@@ -4,8 +4,8 @@ import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
 import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
 import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
-import com.codepunk.skeleton.data.local.type.ArtistDetailType
-import com.codepunk.skeleton.data.local.type.ArtistDetailType.*
+import com.codepunk.skeleton.data.local.type.EntityDetailType
+import com.codepunk.skeleton.data.local.type.EntityDetailType.*
 import com.codepunk.skeleton.data.local.type.ArtistRelationshipType
 import com.codepunk.skeleton.data.local.type.ArtistRelationshipType.*
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
@@ -34,7 +34,7 @@ fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails =
 
 private fun List<String>.toLocalArtistDetails(
     id: Long,
-    detailType: ArtistDetailType
+    detailType: EntityDetailType
 ): List<LocalArtistDetail> = mapIndexed { detailIdx, detail ->
     LocalArtistDetail(
         artistId = id,
@@ -77,7 +77,7 @@ fun LocalArtistWithDetails.toDomainArtist(): Artist = Artist(
 )
 
 private fun List<LocalArtistDetail>.toDomainArtistDetails(
-    detailType: ArtistDetailType
+    detailType: EntityDetailType
 ): List<String> = filter { detail ->
     detail.detailType == detailType
 }.map { it.detail }

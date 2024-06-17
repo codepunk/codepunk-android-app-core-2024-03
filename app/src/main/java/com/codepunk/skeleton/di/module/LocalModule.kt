@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.ArtistDao
+import com.codepunk.skeleton.data.local.dao.ArtistDaoWrapper
+import com.codepunk.skeleton.data.local.dao.ImageDao
+import com.codepunk.skeleton.data.local.dao.LabelDao
+import com.codepunk.skeleton.data.local.dao.LabelDaoWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,15 +32,30 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun provideArtistDao(database: DiscogsDatabase): ArtistDao =
-        database.artistDao()
+    fun provideArtistDao(
+        imageDao: ImageDao,
+        database: DiscogsDatabase
+    ): ArtistDao = ArtistDaoWrapper(
+        artistDao = database.artistDao(),
+        imageDao = imageDao
+    )
 
-    /*
     @Provides
     @Singleton
-    fun provideLabelDao(database: DiscogsDatabase): LabelDao =
-        database.labelDao()
+    fun provideImageDao(database: DiscogsDatabase): ImageDao =
+        database.imageDao()
 
+    @Provides
+    @Singleton
+    fun provideLabelDao(
+        imageDao: ImageDao,
+        database: DiscogsDatabase
+    ): LabelDao = LabelDaoWrapper(
+        labelDao = database.labelDao(),
+        imageDao = imageDao
+    )
+
+    /*
     @Provides
     @Singleton
     fun provideMasterDao(database: DiscogsDatabase): MasterDao =

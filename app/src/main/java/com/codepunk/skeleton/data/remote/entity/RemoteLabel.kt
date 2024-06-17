@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RemoteArtist(
+data class RemoteLabel(
     val id: Long = 0,
     val name: String = "",
     @SerialName("resource_url")
@@ -13,29 +13,25 @@ data class RemoteArtist(
     @SerialName("releases_url")
     val releasesUrl: String = "",
     val images: List<RemoteImage> = emptyList(),
+    @SerialName("contact_info")
+    val contactInfo: String = "",
     val profile: String = "",
+    @SerialName("data_quality")
+    val dataQuality: String = "",
     val urls: List<String> = emptyList(),
     @Suppress("SpellCheckingInspection")
-    @SerialName("namevariations")
-    val nameVariations: List<String> = emptyList(),
-    val aliases: List<Relationship> = emptyList(),
-    val members: List<Relationship> = emptyList(),
-    val groups: List<Relationship> = emptyList(),
-    @SerialName("data_quality")
-    val dataQuality: String = ""
+    @SerialName("sublabels")
+    val subLabels: List<SubLabel> = emptyList()
 ) {
 
     // region Nested & inner classes
 
     @Serializable
-    data class Relationship(
+    data class SubLabel(
         val id: Long = 0,
         val name: String = "",
         @SerialName("resource_url")
-        val resourceUrl: String = "",
-        val active: Boolean = true,
-        @SerialName("thumbnail_url")
-        val thumbnailUrl: String = ""
+        val resourceUrl: String = ""
     )
 
     // endregion Nested & inner classes

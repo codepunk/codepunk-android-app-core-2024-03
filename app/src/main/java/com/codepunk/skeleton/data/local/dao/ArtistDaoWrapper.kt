@@ -11,44 +11,44 @@ import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
 import kotlinx.coroutines.flow.Flow
 
 class ArtistDaoWrapper(
-    private val artistDao: ArtistDao,
+    private val wrapped: ArtistDao,
     private val imageDao: ImageDao
 ) : ArtistDao() {
 
     // region Implemented methods
 
     override suspend fun insertArtist(artist: LocalArtist): Long =
-        artistDao.insertArtist(artist)
+        wrapped.insertArtist(artist)
 
     override suspend fun insertArtists(artists: List<LocalArtist>): List<Long> =
-        artistDao.insertArtists(artists)
+        wrapped.insertArtists(artists)
 
     override suspend fun insertArtistImageCrossRef(crossRef: LocalArtistImageCrossRef) {
-        artistDao.insertArtistImageCrossRef(crossRef)
+        wrapped.insertArtistImageCrossRef(crossRef)
     }
 
     override suspend fun insertArtistImageCrossRefs(crossRefs: List<LocalArtistImageCrossRef>) {
-        artistDao.insertArtistImageCrossRefs(crossRefs)
+        wrapped.insertArtistImageCrossRefs(crossRefs)
     }
 
     override suspend fun insertArtistDetail(detail: LocalArtistDetail) {
-        artistDao.insertArtistDetail(detail)
+        wrapped.insertArtistDetail(detail)
     }
 
     override suspend fun insertArtistDetails(details: List<LocalArtistDetail>) {
-        artistDao.insertArtistDetails(details)
+        wrapped.insertArtistDetails(details)
     }
 
     override suspend fun insertArtistRelationship(relationship: LocalArtistRelationship) {
-        artistDao.insertArtistRelationship(relationship)
+        wrapped.insertArtistRelationship(relationship)
     }
 
     override suspend fun insertArtistRelationships(relationships: List<LocalArtistRelationship>) {
-        artistDao.insertArtistRelationships(relationships)
+        wrapped.insertArtistRelationships(relationships)
     }
 
     override fun getArtistWithDetails(id: Long): Flow<LocalArtistWithDetails?> =
-        artistDao.getArtistWithDetails(id)
+        wrapped.getArtistWithDetails(id)
 
     // endregion Implemented methods
 
@@ -59,14 +59,14 @@ class ArtistDaoWrapper(
     override suspend fun insertArtistWithDetails(
         artistWithDetails: LocalArtistWithDetails
     ): Long {
-        val artistId = artistDao.insertArtist(artistWithDetails.artist)
+        val artistId = wrapped.insertArtist(artistWithDetails.artist)
         if (artistId != -1L) {
             val crossRefs = imageDao.insertImages(artistWithDetails.images)
                 .filter { it != -1L }
                 .map { LocalArtistImageCrossRef(artistId = artistId, imageId = it) }
-            artistDao.insertArtistImageCrossRefs(crossRefs)
-            artistDao.insertArtistDetails(artistWithDetails.details)
-            artistDao.insertArtistRelationships(artistWithDetails.relationships)
+            wrapped.insertArtistImageCrossRefs(crossRefs)
+            wrapped.insertArtistDetails(artistWithDetails.details)
+            wrapped.insertArtistRelationships(artistWithDetails.relationships)
         }
         return artistId
     }

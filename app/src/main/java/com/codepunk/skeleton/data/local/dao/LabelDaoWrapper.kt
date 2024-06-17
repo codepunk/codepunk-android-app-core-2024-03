@@ -11,44 +11,44 @@ import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import kotlinx.coroutines.flow.Flow
 
 class LabelDaoWrapper(
-    private val labelDao: LabelDao,
+    private val wrapped: LabelDao,
     private val imageDao: ImageDao
 ) : LabelDao() {
 
     // region Implemented methods
 
     override suspend fun insertLabel(label: LocalLabel): Long =
-        labelDao.insertLabel(label)
+        wrapped.insertLabel(label)
 
     override suspend fun insertLabels(labels: List<LocalLabel>): List<Long> =
-        labelDao.insertLabels(labels)
+        wrapped.insertLabels(labels)
 
     override suspend fun insertLabelImageCrossRef(crossRef: LocalLabelImageCrossRef) {
-        labelDao.insertLabelImageCrossRef(crossRef)
+        wrapped.insertLabelImageCrossRef(crossRef)
     }
 
     override suspend fun insertLabelImageCrossRefs(crossRefs: List<LocalLabelImageCrossRef>) {
-        labelDao.insertLabelImageCrossRefs(crossRefs)
+        wrapped.insertLabelImageCrossRefs(crossRefs)
     }
 
     override suspend fun insertLabelDetail(detail: LocalLabelDetail) {
-        labelDao.insertLabelDetail(detail)
+        wrapped.insertLabelDetail(detail)
     }
 
     override suspend fun insertLabelDetails(details: List<LocalLabelDetail>) {
-        labelDao.insertLabelDetails(details)
+        wrapped.insertLabelDetails(details)
     }
 
     override suspend fun insertLabelSubLabel(subLabel: LocalSubLabel) {
-        labelDao.insertLabelSubLabel(subLabel)
+        wrapped.insertLabelSubLabel(subLabel)
     }
 
     override suspend fun insertLabelSubLabels(subLabels: List<LocalSubLabel>) {
-        labelDao.insertLabelSubLabels(subLabels)
+        wrapped.insertLabelSubLabels(subLabels)
     }
 
     override fun getLabelWithDetails(id: Long): Flow<LocalLabelWithDetails?> =
-        labelDao.getLabelWithDetails(id)
+        wrapped.getLabelWithDetails(id)
 
     // endregion Implemented methods
 

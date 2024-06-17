@@ -36,7 +36,7 @@ object LocalModule {
         imageDao: ImageDao,
         database: DiscogsDatabase
     ): ArtistDao = ArtistDaoWrapper(
-        artistDao = database.artistDao(),
+        wrapped = database.artistDao(),
         imageDao = imageDao
     )
 
@@ -51,7 +51,7 @@ object LocalModule {
         imageDao: ImageDao,
         database: DiscogsDatabase
     ): LabelDao = LabelDaoWrapper(
-        labelDao = database.labelDao(),
+        wrapped = database.labelDao(),
         imageDao = imageDao
     )
 

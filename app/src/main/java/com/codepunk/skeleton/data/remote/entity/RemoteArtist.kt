@@ -25,7 +25,7 @@ data class RemoteArtist(
     val dataQuality: String = ""
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     @Serializable
     data class Relationship(
@@ -38,6 +38,6 @@ data class RemoteArtist(
         val thumbnailUrl: String = ""
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

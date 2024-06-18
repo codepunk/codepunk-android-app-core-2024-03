@@ -24,7 +24,7 @@ data class RemoteLabel(
     val subLabels: List<SubLabel> = emptyList()
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     @Serializable
     data class SubLabel(
@@ -34,6 +34,6 @@ data class RemoteLabel(
         val resourceUrl: String = ""
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

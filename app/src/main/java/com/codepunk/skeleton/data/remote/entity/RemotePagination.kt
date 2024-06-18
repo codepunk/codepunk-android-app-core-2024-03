@@ -13,7 +13,7 @@ data class RemotePagination(
     val urls: Urls
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     @Serializable
     data class Urls(
@@ -21,6 +21,6 @@ data class RemotePagination(
         val next: String
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

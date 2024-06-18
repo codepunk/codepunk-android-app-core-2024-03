@@ -14,7 +14,7 @@ data class Label(
     val subLabels: List<SubLabel> = emptyList()
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     data class SubLabel(
         val id: Long = 0,
@@ -22,6 +22,6 @@ data class Label(
         val resourceUrl: String = ""
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

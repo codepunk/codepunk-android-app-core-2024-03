@@ -3,9 +3,12 @@ package com.codepunk.skeleton
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.dao.ArtistDao
@@ -58,6 +62,14 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchData() {
         lifecycleScope.launch {
+            @Suppress("SpellCheckingInspection")
+            val amarok = discogsWebService.getMaster(44352)
+            val misplacedChildhood = discogsWebService.getMaster(16191)
+            @Suppress("Unused")
+            Loginator.d { "$amarok $misplacedChildhood" }
+        }
+
+        lifecycleScope.launch {
             discogsRepository.fetchArtist(218108).collect { result ->
                 result.fold(
                     fa = {
@@ -93,6 +105,7 @@ class MainActivity : ComponentActivity() {
                         Loginator.e(throwable = Throwable(th)) {
                             "fetchLabel encountered an error"
                         }
+                        Loginator.d { "label = $label" }
                     }
                 )
             }
@@ -107,13 +120,15 @@ fun Greeting(
     onFetchData: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Hello $name!",
             modifier = modifier
                 .align(alignment = Alignment.CenterHorizontally)
         )
+        Spacer(modifier = modifier.height(8.dp))
         Button(
             onClick = { onFetchData() },
             modifier = modifier

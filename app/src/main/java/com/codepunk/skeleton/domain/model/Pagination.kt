@@ -8,13 +8,13 @@ data class Pagination(
     val urls: Urls
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     data class Urls(
         val last: String,
         val next: String
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

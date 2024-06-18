@@ -67,7 +67,7 @@ open class Formatinator(
     /**
      * Constructs a log tag from the given log record.
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     fun formatTag(record: LogRecord): String = record.loggerName.ifEmpty {
         findSource(record)?.topLevelClass?.simpleName ?: record.loggerName
     }
@@ -77,7 +77,7 @@ open class Formatinator(
      * skipped when determining the "source" stack trace element (the element at which a log
      * request was made).
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     fun addToPackageBlacklist(packageName: String) {
         packageBlacklist.add(packageName)
     }
@@ -87,7 +87,7 @@ open class Formatinator(
      * skipped when determining the "source" stack trace element (the element at which a log
      * request was made).
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     fun addToClassBlacklist(className: String) {
         classBlacklist.add(className)
     }

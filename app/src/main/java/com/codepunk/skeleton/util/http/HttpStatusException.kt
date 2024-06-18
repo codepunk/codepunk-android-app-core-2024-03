@@ -31,7 +31,7 @@ class HttpStatusException : RuntimeException {
      * Constructs a new HTTP status exception with using the specified HTTP status [code] and with
      * the specified detail [message].
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     constructor(code: Int, message: String?) : this(HttpStatus.lookup(code), message)
 
     /**
@@ -45,7 +45,7 @@ class HttpStatusException : RuntimeException {
      * Constructs a new runtime exception using the specified HTTP status [code] and with the
      * specified detail [message] and [cause].
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     constructor(code: Int, message: String?, cause: Throwable?) : this(
         HttpStatus.lookup(code),
         message,
@@ -68,7 +68,7 @@ class HttpStatusException : RuntimeException {
      * specified [cause] and a detail message of (cause==null ? null : cause.toString()) (which
      * typically contains the class and detail message of cause).
      */
-    @Suppress("UNUSED")
+    @Suppress("Unused")
     constructor(
         code: Int,
         cause: Throwable?

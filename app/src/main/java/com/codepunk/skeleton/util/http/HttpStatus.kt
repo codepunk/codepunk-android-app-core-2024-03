@@ -53,7 +53,7 @@ data class HttpStatus private constructor(
 
     // endregion Mmethods
 
-    // region Nested & inner classes
+    // region Classes
 
     /**
      * An enum class representing the category of this HTTP status code.
@@ -116,7 +116,7 @@ data class HttpStatus private constructor(
 
     }
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
     // region Companion object
 

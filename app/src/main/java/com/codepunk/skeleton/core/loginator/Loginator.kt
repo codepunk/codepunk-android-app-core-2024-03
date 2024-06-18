@@ -9,7 +9,7 @@ import java.util.logging.LogManager
  * Utility class that makes logging simpler and more uniform, and allows for automatic
  * formatting that adds metadata (method name, line number etc.) to every log statement.
  */
-@Suppress("unused")
+@Suppress("Unused")
 object Loginator {
 
     // region Variables

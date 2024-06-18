@@ -6,7 +6,7 @@ import java.util.logging.*
 /**
  * A class that handles log messages from a [Logger] by writing to the Android Logger.
  */
-@Suppress("unused")
+@Suppress("Unused")
 class Handleinator(formatter: Formatter? = Formatinator()) : Handler() {
 
     // region Companion object

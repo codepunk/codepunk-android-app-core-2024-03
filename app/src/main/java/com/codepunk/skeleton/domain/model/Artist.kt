@@ -16,7 +16,7 @@ data class Artist(
     val dataQuality: String = ""
 ) {
 
-    // region Nested & inner classes
+    // region Classes
 
     data class Relationship(
         val id: Long = 0,
@@ -26,6 +26,6 @@ data class Artist(
         val thumbnailUrl: String = ""
     )
 
-    // endregion Nested & inner classes
+    // endregion Classes
 
 }

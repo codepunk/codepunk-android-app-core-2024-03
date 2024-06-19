@@ -1,6 +1,6 @@
 package com.codepunk.skeleton.data.remote.serializer
 
-import com.codepunk.skeleton.util.fromElapsedTimeString
+import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -23,7 +23,7 @@ class ElapsedTimeSerializer : KSerializer<Duration> {
     }
 
     override fun deserialize(decoder: Decoder): Duration = try {
-        fromElapsedTimeString(decoder.decodeString())
+        parseElapsedTimeString(decoder.decodeString())
     } catch (e: Exception) {
         Duration.ZERO
     }

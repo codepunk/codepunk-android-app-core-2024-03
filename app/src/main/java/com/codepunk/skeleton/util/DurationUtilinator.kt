@@ -43,7 +43,7 @@ fun Duration.toElapsedTimeString(
     }
 }
 
-fun fromElapsedTimeString(value: String): Duration {
+fun parseElapsedTimeString(value: String): Duration {
     if (value.isEmpty()) throw IllegalArgumentException("The string is empty")
     var startIndex = 0
     val infinityString = "Infinity"

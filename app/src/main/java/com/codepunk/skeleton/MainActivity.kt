@@ -26,9 +26,17 @@ import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.Label
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
+import com.codepunk.skeleton.util.toElapsedTimeString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -61,6 +69,23 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun fetchData() {
+
+        val durations = listOf(
+            DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
+            DurationUnit.HOURS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
+            DurationUnit.MINUTES to 1.hours + 4.seconds,
+            DurationUnit.DAYS to 28.seconds,
+            DurationUnit.HOURS to 1.hours + 10.milliseconds,
+            DurationUnit.MINUTES to Duration.ZERO,
+            DurationUnit.DAYS to Duration.ZERO,
+            DurationUnit.DAYS to Duration.INFINITE,
+            DurationUnit.HOURS to -Duration.INFINITE
+        )
+        val mapped = durations.map { (durationUnit, duration) ->
+            duration.toElapsedTimeString(durationUnit)
+        }
+        val x = "$durations $mapped"
+
         lifecycleScope.launch {
             @Suppress("SpellCheckingInspection")
             val amarok = discogsWebService.getMaster(44352)

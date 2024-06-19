@@ -1,95 +1,46 @@
 package com.codepunk.skeleton.util
 
 import java.text.DecimalFormat
-import kotlin.math.sign
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-
-private val defaultFormat by lazy { DecimalFormat("0.#########") }
-private val paddedFormat by lazy { DecimalFormat("00.#########") }
-
-private fun elapsedTimeString(
-    isNegative: Boolean = false,
-    days: Long = 0,
-    hours: Long = 0,
-    minutes: Long = 0,
-    seconds: Double = 0.0
-): String = buildString {
-    listOf(days, hours, minutes, seconds)
-        .map { it.toDouble() }
-        .forEachIndexed { index, amount ->
-        if (isNotEmpty()) {
-            append(':')
-            append(paddedFormat.format(amount))
-        } else if (sign(amount) == 1.0 || index > 1) {
-            append(defaultFormat.format(amount))
-        }
-    }
-    if (isNegative) insert(0, "-")
-}
-
-private fun Int.withNanoseconds(nanoseconds: Int): Double =
-    (seconds + nanoseconds.nanoseconds).toDouble(DurationUnit.SECONDS)
-
-private fun Long.withNanoseconds(nanoseconds: Int): Double =
-    (seconds + nanoseconds.nanoseconds).toDouble(DurationUnit.SECONDS)
+import kotlin.time.DurationUnit.*
+import kotlin.time.toDuration
 
 fun Duration.toElapsedTimeString(
-    durationUnit: DurationUnit = DurationUnit.DAYS
-): String = when {
-    isInfinite() -> toString()
-    this == Duration.ZERO -> "0:00"
-    else -> {
-        when (durationUnit) {
-            DurationUnit.DAYS -> {
-                absoluteValue.toComponents { days, hours, minutes, seconds, nanoseconds ->
-                    elapsedTimeString(
-                        isNegative = isNegative(),
-                        days = days,
-                        hours = hours.toLong(),
-                        minutes = minutes.toLong(),
-                        seconds = seconds.withNanoseconds(nanoseconds)
-                    )
-                }
-            }
+    targetDurationUnit: DurationUnit
+): String = if (isInfinite()) {
+    toString()
+} else absoluteValue.toComponents { days, hours, minutes, seconds, nanoseconds ->
+    val durationUnits = listOf(DAYS, HOURS, MINUTES, SECONDS, NANOSECONDS)
+    val durations = listOf(days, hours, minutes, seconds, nanoseconds)
+    val durationsByDurationUnit = durationUnits.zip(durations) { unit, value ->
+        unit.coerceIn(SECONDS, targetDurationUnit) to value.toLong().toDuration(unit)
+    }.groupBy { (durationUnit, _) ->
+        durationUnit
+    }.mapValues { (_, pairs) ->
+        pairs.map { (_, duration) -> duration }
+            .reduce { acc, duration -> acc + duration }
+    }
 
-            DurationUnit.HOURS -> {
-                absoluteValue.toComponents { hours, minutes, seconds, nanoseconds ->
-                    elapsedTimeString(
-                        isNegative = isNegative(),
-                        hours = hours,
-                        minutes = minutes.toLong(),
-                        seconds = seconds.withNanoseconds(nanoseconds)
-                    )
-                }
-            }
-
-            DurationUnit.MINUTES -> {
-                absoluteValue.toComponents { minutes, seconds, nanoseconds ->
-                    elapsedTimeString(
-                        isNegative = isNegative(),
-                        minutes = minutes,
-                        seconds = seconds.withNanoseconds(nanoseconds)
-                    )
-                }
-            }
-
-            else -> {
-                absoluteValue.toComponents { seconds, nanoseconds ->
-                    elapsedTimeString(
-                        isNegative = isNegative(),
-                        seconds = seconds.withNanoseconds(nanoseconds)
-                    )
+    val defaultFormat = DecimalFormat("0.#########")
+    val paddedFormat = DecimalFormat("00.#########")
+    buildString {
+        durationUnits.forEach { unit ->
+            durationsByDurationUnit[unit]?.let { duration ->
+                val amount = duration.toDouble(unit)
+                if (isEmpty()) {
+                    append(defaultFormat.format(amount))
+                } else {
+                    append(':')
+                    append(paddedFormat.format(amount))
                 }
             }
         }
     }
-
 }
 
 fun fromElapsedTimeString(value: String): Duration {

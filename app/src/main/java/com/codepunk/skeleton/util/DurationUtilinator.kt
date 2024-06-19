@@ -11,14 +11,14 @@ import kotlin.time.DurationUnit.*
 import kotlin.time.toDuration
 
 fun Duration.toElapsedTimeString(
-    targetDurationUnit: DurationUnit
+    target: DurationUnit
 ): String = if (isInfinite()) {
     toString()
 } else absoluteValue.toComponents { days, hours, minutes, seconds, nanoseconds ->
-    val durationUnits = listOf(DAYS, HOURS, MINUTES, SECONDS, NANOSECONDS)
+    val units = listOf(DAYS, HOURS, MINUTES, SECONDS, NANOSECONDS)
     val durations = listOf(days, hours, minutes, seconds, nanoseconds)
-    val durationsByDurationUnit = durationUnits.zip(durations) { unit, value ->
-        unit.coerceIn(SECONDS, targetDurationUnit) to value.toLong().toDuration(unit)
+    val durationsByUnit = units.zip(durations) { unit, value ->
+        unit.coerceIn(SECONDS, target) to value.toLong().toDuration(unit)
     }.groupBy { (durationUnit, _) ->
         durationUnit
     }.mapValues { (_, pairs) ->
@@ -29,8 +29,8 @@ fun Duration.toElapsedTimeString(
     val defaultFormat = DecimalFormat("0.#########")
     val paddedFormat = DecimalFormat("00.#########")
     buildString {
-        durationUnits.forEach { unit ->
-            durationsByDurationUnit[unit]?.let { duration ->
+        units.forEach { unit ->
+            durationsByUnit[unit]?.let { duration ->
                 val amount = duration.toDouble(unit)
                 if (isEmpty()) {
                     append(defaultFormat.format(amount))

@@ -26,6 +26,7 @@ import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.Label
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
+import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
     private fun fetchData() {
 
         val durations = listOf(
-            DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
+            DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 0.seconds + 246.milliseconds,
             DurationUnit.HOURS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
             DurationUnit.MINUTES to 1.hours + 4.seconds,
             DurationUnit.DAYS to 28.seconds,
@@ -84,7 +85,10 @@ class MainActivity : ComponentActivity() {
         val mapped = durations.map { (durationUnit, duration) ->
             duration.toElapsedTimeString(durationUnit)
         }
-        val x = "$durations $mapped"
+        val remapped = mapped.map {
+            parseElapsedTimeString(it)
+        }
+        val x = "$durations $mapped $remapped"
 
         lifecycleScope.launch {
             @Suppress("SpellCheckingInspection")

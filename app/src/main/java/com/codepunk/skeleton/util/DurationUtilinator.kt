@@ -2,46 +2,37 @@ package com.codepunk.skeleton.util
 
 import java.text.DecimalFormat
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-import kotlin.time.DurationUnit.*
+import kotlin.time.DurationUnit.DAYS
+import kotlin.time.DurationUnit.HOURS
+import kotlin.time.DurationUnit.MINUTES
+import kotlin.time.DurationUnit.NANOSECONDS
+import kotlin.time.DurationUnit.SECONDS
 import kotlin.time.toDuration
 
-fun Duration.toElapsedTimeString(
-    target: DurationUnit
-): String = if (isInfinite()) {
-    toString()
-} else absoluteValue.toComponents { days, hours, minutes, seconds, nanoseconds ->
-    val units = listOf(DAYS, HOURS, MINUTES, SECONDS, NANOSECONDS)
-    val durations = listOf(days, hours, minutes, seconds, nanoseconds)
-    val durationsByUnit = units.zip(durations) { unit, value ->
-        unit.coerceIn(SECONDS, target) to value.toLong().toDuration(unit)
-    }.groupBy { (durationUnit, _) ->
-        durationUnit
-    }.mapValues { (_, pairs) ->
-        pairs.map { (_, duration) -> duration }
-            .reduce { acc, duration -> acc + duration }
-    }
-
-    val defaultFormat = DecimalFormat("0.#########")
-    val paddedFormat = DecimalFormat("00.#########")
-    buildString {
-        units.forEach { unit ->
-            durationsByUnit[unit]?.let { duration ->
-                val amount = duration.toDouble(unit)
-                if (isEmpty()) {
-                    append(defaultFormat.format(amount))
-                } else {
-                    append(':')
-                    append(paddedFormat.format(amount))
-                }
-            }
+fun Duration.toElapsedTimeString(target: DurationUnit): String =
+    if (isInfinite()) {
+        toString()
+    } else absoluteValue.toComponents { days, hours, minutes, seconds, nanoseconds ->
+        val durationsByUnit = listOf(DAYS, HOURS, MINUTES, SECONDS, NANOSECONDS).zip(
+            listOf(days, hours, minutes, seconds, nanoseconds)
+        ) { unit, value ->
+            unit.coerceIn(SECONDS, target) to value.toLong().toDuration(unit)
+        }.groupBy { (durationUnit, _) ->
+            durationUnit
+        }.mapValues { (_, pairs) ->
+            pairs.map { (_, duration) -> duration }
+                .reduce { acc, duration -> acc + duration }
         }
+
+        durationsByUnit.mapNotNull { (unit, duration) ->
+            if (unit == SECONDS) duration.toDouble(unit)
+            else duration.toLong(unit)
+        }.mapIndexed { index, num ->
+            val pattern = if (index == 0) "0" else "00"
+            DecimalFormat("$pattern.#########").format(num)
+        }.joinToString(":")
     }
-}
 
 fun parseElapsedTimeString(value: String): Duration {
     if (value.isEmpty()) throw IllegalArgumentException("The string is empty")
@@ -61,19 +52,16 @@ fun parseElapsedTimeString(value: String): Duration {
             length = maxOf(value.length - startIndex, infinityString.length),
             ignoreCase = true
         ) -> Duration.INFINITE
-        else -> {
+
+        else -> listOf(SECONDS, MINUTES, HOURS, DAYS).zip(
             value.substring(startIndex)
                 .split(':')
                 .map { it.ifEmpty { "0" } }
                 .reversed()
-                .foldIndexed(Duration.ZERO) { index, acc, component ->
-                    acc + when (index) {
-                        1 -> component.toLong().minutes
-                        2 -> component.toLong().hours
-                        3 -> component.toLong().days
-                        else -> component.toDouble().seconds
-                    }
-                }
+        ).map { (unit, component) ->
+            component.toDouble().toDuration(unit)
+        }.reduce { acc, duration ->
+            acc + duration
         }
     }.let { if (isNegative) -it else it }
 }

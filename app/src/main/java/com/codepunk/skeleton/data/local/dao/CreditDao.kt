@@ -3,20 +3,20 @@ package com.codepunk.skeleton.data.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.codepunk.skeleton.data.local.entity.LocalImage
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 
 @Dao
-interface ImageDao {
+interface CreditDao {
 
     // region Methods
 
     @Suppress("Unused")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertImage(image: LocalImage): Long
+    suspend fun insertCredit(credit: LocalCredit): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertImages(images: List<LocalImage>): List<Long>
+    suspend fun insertCredits(credits: List<LocalCredit>): List<Long>
 
-    // endreigon Methods
+    // endregion Methods
 
 }

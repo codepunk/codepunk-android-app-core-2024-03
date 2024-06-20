@@ -13,24 +13,23 @@ import com.codepunk.skeleton.domain.model.Artist
 
 // region Methods
 
-fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails =
-    LocalArtistWithDetails(
-        artist = LocalArtist(
-            id = this.id,
-            name = this.name,
-            resourceUrl = this.resourceUrl,
-            uri = this.uri,
-            releasesUrl = this.releasesUrl,
-            profile = this.profile,
-            dataQuality = this.dataQuality
-        ),
-        images = this.images.map { it.toLocalImage() },
-        details = this.urls.toLocalArtistDetails(this.id, URL) +
-                this.nameVariations.toLocalArtistDetails(this.id, NAME_VARIATION),
-        relationships = this.aliases.toLocalArtistRelationships(this.id, ALIAS) +
-                this.members.toLocalArtistRelationships(this.id, MEMBER) +
-                this.groups.toLocalArtistRelationships(this.id, GROUP)
-    )
+fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails = LocalArtistWithDetails(
+    artist = LocalArtist(
+        id = this.id,
+        name = this.name,
+        resourceUrl = this.resourceUrl,
+        uri = this.uri,
+        releasesUrl = this.releasesUrl,
+        profile = this.profile,
+        dataQuality = this.dataQuality
+    ),
+    images = this.images.map { it.toLocalImage() },
+    details = this.urls.toLocalArtistDetails(this.id, URL) +
+            this.nameVariations.toLocalArtistDetails(this.id, NAME_VARIATION),
+    relationships = this.aliases.toLocalArtistRelationships(this.id, ALIAS) +
+            this.members.toLocalArtistRelationships(this.id, MEMBER) +
+            this.groups.toLocalArtistRelationships(this.id, GROUP)
+)
 
 private fun List<String>.toLocalArtistDetails(
     id: Long,

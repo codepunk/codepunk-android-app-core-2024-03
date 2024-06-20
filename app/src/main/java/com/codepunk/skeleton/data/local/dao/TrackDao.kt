@@ -3,20 +3,20 @@ package com.codepunk.skeleton.data.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.codepunk.skeleton.data.local.entity.LocalImage
+import com.codepunk.skeleton.data.local.entity.LocalTrack
 
 @Dao
-interface ImageDao {
+interface TrackDao {
 
     // region Methods
 
     @Suppress("Unused")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertImage(image: LocalImage): Long
+    suspend fun insertTrack(track: LocalTrack): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertImages(images: List<LocalImage>): List<Long>
+    suspend fun insertTracks(tracks: List<LocalTrack>): List<Long>
 
-    // endreigon Methods
+    // endregion Methods
 
 }

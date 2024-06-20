@@ -6,28 +6,28 @@ import androidx.room.ForeignKey
 import com.codepunk.skeleton.data.local.type.EntityDetailType
 
 @Entity(
-    tableName = "label_detail",
+    tableName = "master_detail",
     primaryKeys = [
-        "label_id",
+        "master_id",
         "detail_type",
         "detail_idx"
     ],
     foreignKeys = [
         ForeignKey(
-            entity = LocalLabel::class,
+            entity = LocalMaster::class,
             parentColumns = ["id"],
-            childColumns = ["label_id"],
+            childColumns = ["master_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
-data class LocalLabelDetail(
-    @ColumnInfo(name = "label_id")
-    val labelId: Long = 0L,
+data class LocalMasterDetail(
+    @ColumnInfo(name = "master_id")
+    val artistId: Long = 0L,
     @ColumnInfo(name = "detail_type")
-    val detailType: EntityDetailType = EntityDetailType.URL,
+    val detailType: EntityDetailType = EntityDetailType.GENRE,
     @ColumnInfo(name = "detail_idx")
     val detailIdx: Int = 0,
-    val detail: String = ""
+    val detail: String = "",
 )

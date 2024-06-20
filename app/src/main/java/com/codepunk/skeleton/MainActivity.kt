@@ -24,20 +24,13 @@ import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.Label
+import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
-import com.codepunk.skeleton.util.parseElapsedTimeString
-import com.codepunk.skeleton.util.toElapsedTimeString
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -70,7 +63,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun fetchData() {
-
+        /*
         val durations = listOf(
             DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 0.seconds + 246.milliseconds,
             DurationUnit.HOURS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
@@ -89,7 +82,9 @@ class MainActivity : ComponentActivity() {
             parseElapsedTimeString(it)
         }
         val x = "$durations $mapped $remapped"
+         */
 
+        /*
         lifecycleScope.launch {
             @Suppress("SpellCheckingInspection")
             val amarok = discogsWebService.getMaster(44352)
@@ -97,6 +92,7 @@ class MainActivity : ComponentActivity() {
             @Suppress("Unused")
             Loginator.d { "$amarok $misplacedChildhood" }
         }
+        */
 
         lifecycleScope.launch {
             discogsRepository.fetchArtist(218108).collect { result ->
@@ -135,6 +131,27 @@ class MainActivity : ComponentActivity() {
                             "fetchLabel encountered an error"
                         }
                         Loginator.d { "label = $label" }
+                    }
+                )
+            }
+        }
+
+        lifecycleScope.launch {
+            discogsRepository.fetchMaster(16191).collect { result ->
+                result.fold(
+                    fa = {
+                        Loginator.e(throwable = Throwable(it)) {
+                            "fetchMaster encountered an error"
+                        }
+                    },
+                    fb = {
+                        Loginator.d { "master = $it" }
+                    },
+                    fab = { th: Throwable, master: Master? ->
+                        Loginator.e(throwable = Throwable(th)) {
+                            "fetchMaster encountered an error"
+                        }
+                        Loginator.d { "master = $master" }
                     }
                 )
             }

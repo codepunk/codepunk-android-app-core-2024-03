@@ -5,9 +5,14 @@ import androidx.room.Room
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.ArtistDaoWrapper
+import com.codepunk.skeleton.data.local.dao.CreditDao
 import com.codepunk.skeleton.data.local.dao.ImageDao
 import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.LabelDaoWrapper
+import com.codepunk.skeleton.data.local.dao.MasterDao
+import com.codepunk.skeleton.data.local.dao.MasterDaoWrapper
+import com.codepunk.skeleton.data.local.dao.TrackDao
+import com.codepunk.skeleton.data.local.dao.VideoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,30 +47,52 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun provideImageDao(database: DiscogsDatabase): ImageDao =
-        database.imageDao()
+    fun providesCreditDao(database: DiscogsDatabase): CreditDao = database.creditDao()
+
+    @Provides
+    @Singleton
+    fun provideImageDao(database: DiscogsDatabase): ImageDao = database.imageDao()
 
     @Provides
     @Singleton
     fun provideLabelDao(
-        imageDao: ImageDao,
-        database: DiscogsDatabase
+        database: DiscogsDatabase,
+        imageDao: ImageDao
     ): LabelDao = LabelDaoWrapper(
         wrapped = database.labelDao(),
         imageDao = imageDao
     )
 
-    /*
     @Provides
     @Singleton
-    fun provideMasterDao(database: DiscogsDatabase): MasterDao =
-        MasterDaoWrapper(database.masterDao())
+    fun provideMasterDao(
+        database: DiscogsDatabase,
+        imageDao: ImageDao,
+        trackDao: TrackDao,
+        creditDao: CreditDao,
+        videoDao: VideoDao
+    ): MasterDao = MasterDaoWrapper(
+        wrapped = database.masterDao(),
+        imageDao = imageDao,
+        trackDao = trackDao,
+        creditDao = creditDao,
+        videoDao = videoDao
+    )
 
+    /*
     @Provides
     @Singleton
     fun provideReleaseDao(database: DiscogsDatabase): ReleaseDao =
         ReleaseDaoWrapper(database.releaseDao())
      */
+
+    @Provides
+    @Singleton
+    fun provideTrackDao(database: DiscogsDatabase): TrackDao = database.trackDao()
+
+    @Provides
+    @Singleton
+    fun provideVideoDao(database: DiscogsDatabase): VideoDao = database.videoDao()
 
     // endregion Methods
 

@@ -4,12 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
-@Suppress("SpellCheckingInspection")
 @Entity(
-    tableName = "label_sublabel",
+    tableName = "label_relationship",
     primaryKeys = [
         "parent_id",
-        "sublabel_idx"
+        "relationship_idx"
     ],
     foreignKeys = [
         ForeignKey(
@@ -21,11 +20,11 @@ import androidx.room.ForeignKey
         )
     ]
 )
-data class LocalSubLabel(
+data class LocalLabelRelationship(
     @ColumnInfo(name = "parent_id")
     val parentId: Long = 0L,
-    @ColumnInfo(name = "sublabel_idx")
-    val subLabelIdx: Int = 0,
+    @ColumnInfo(name = "relationship_idx")
+    val relationshipIdx: Int = 0,
     @ColumnInfo(name = "child_id")
     val childId: Long = 0L,
     val name: String = "",

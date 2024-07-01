@@ -116,7 +116,7 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            discogsRepository.fetchLabel(1).collect { result ->
+            discogsRepository.fetchLabel(23937).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = Throwable(it)) {
@@ -176,7 +176,10 @@ fun Greeting(
         )
         Spacer(modifier = modifier.height(8.dp))
         Button(
-            onClick = { onFetchData() },
+            onClick = {
+                onFetchData()
+                val x = "Hello"
+            },
             modifier = modifier
                 .align(alignment = Alignment.CenterHorizontally)
         ) {

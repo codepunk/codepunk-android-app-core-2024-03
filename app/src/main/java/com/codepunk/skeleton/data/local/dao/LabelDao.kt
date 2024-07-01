@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
-import com.codepunk.skeleton.data.local.entity.LocalSubLabel
+import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.relation.LocalLabelImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -47,10 +47,10 @@ abstract class LabelDao {
 
     @Suppress("Unused")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertLabelSubLabel(subLabel: LocalSubLabel)
+    abstract suspend fun insertLabelSubLabel(subLabel: LocalLabelRelationship)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertLabelSubLabels(subLabels: List<LocalSubLabel>)
+    abstract suspend fun insertLabelSubLabels(subLabels: List<LocalLabelRelationship>)
 
     @Transaction
     @Query("SELECT * FROM label WHERE id = :id")

@@ -2,7 +2,7 @@ package com.codepunk.skeleton.data.mapper
 
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
-import com.codepunk.skeleton.data.local.entity.LocalSubLabel
+import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import com.codepunk.skeleton.data.local.type.EntityDetailType
 import com.codepunk.skeleton.data.remote.entity.RemoteLabel
@@ -23,6 +23,7 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
             dataQuality = this.dataQuality
         ),
         images = this.images.map { it.toLocalImage() },
+        parentLabel = this.parentLabel?.toLocalLabelRelationship(this.id),
         details = this.urls.toLocalLabelDetails(this.id, EntityDetailType.URL),
         subLabels = this.subLabels.toLocalSubLabels(this.id)
     )
@@ -39,16 +40,21 @@ private fun List<String>.toLocalLabelDetails(
     )
 }
 
-private fun List<RemoteLabel.SubLabel>.toLocalSubLabels(
-    id: Long
-): List<LocalSubLabel> = mapIndexed { subLabelIdx, subLabel ->
-    LocalSubLabel(
-        parentId = id,
-        subLabelIdx = subLabelIdx,
-        childId = subLabel.id,
-        name = subLabel.name,
-        resourceUrl = subLabel.resourceUrl
-    )
+private fun RemoteLabel.Relationship.toLocalLabelRelationship(
+    parentId: Long,
+    relationshipIdx: Int = 0
+): LocalLabelRelationship = LocalLabelRelationship(
+    parentId = parentId,
+    relationshipIdx = relationshipIdx,
+    childId = this.id,
+    name = this.name,
+    resourceUrl = this.resourceUrl
+)
+
+private fun List<RemoteLabel.Relationship>.toLocalSubLabels(
+    parentId: Long
+): List<LocalLabelRelationship> = mapIndexed { subLabelIdx, subLabel ->
+    subLabel.toLocalLabelRelationship(parentId, subLabelIdx)
 }
 
 fun LocalLabelWithDetails.toDomainLabel(): Label = Label(
@@ -71,9 +77,9 @@ private fun List<LocalLabelDetail>.toDomainLabelDetails(
     detail.detailType == detailType
 }.map { it.detail }
 
-private fun List<LocalSubLabel>.toDomainLabelSubLabels(): List<Label.SubLabel> =
+private fun List<LocalLabelRelationship>.toDomainLabelSubLabels(): List<Label.Relationship> =
     map { subLabel ->
-        Label.SubLabel(
+        Label.Relationship(
             id = subLabel.childId,
             name = subLabel.name,
             resourceUrl = subLabel.resourceUrl

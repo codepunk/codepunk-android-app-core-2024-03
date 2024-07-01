@@ -16,18 +16,20 @@ data class RemoteLabel(
     @SerialName("contact_info")
     val contactInfo: String = "",
     val profile: String = "",
+    @SerialName("parent_label")
+    val parentLabel: Relationship? = null,
     @SerialName("data_quality")
     val dataQuality: String = "",
     val urls: List<String> = emptyList(),
     @Suppress("SpellCheckingInspection")
     @SerialName("sublabels")
-    val subLabels: List<SubLabel> = emptyList()
+    val subLabels: List<Relationship> = emptyList()
 ) {
 
     // region Classes
 
     @Serializable
-    data class SubLabel(
+    data class Relationship(
         val id: Long = 0,
         val name: String = "",
         @SerialName("resource_url")

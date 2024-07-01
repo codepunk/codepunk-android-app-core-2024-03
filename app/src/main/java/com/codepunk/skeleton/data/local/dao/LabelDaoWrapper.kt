@@ -5,7 +5,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
-import com.codepunk.skeleton.data.local.entity.LocalSubLabel
+import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.relation.LocalLabelImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -39,11 +39,11 @@ class LabelDaoWrapper(
         wrapped.insertLabelDetails(details)
     }
 
-    override suspend fun insertLabelSubLabel(subLabel: LocalSubLabel) {
+    override suspend fun insertLabelSubLabel(subLabel: LocalLabelRelationship) {
         wrapped.insertLabelSubLabel(subLabel)
     }
 
-    override suspend fun insertLabelSubLabels(subLabels: List<LocalSubLabel>) {
+    override suspend fun insertLabelSubLabels(subLabels: List<LocalLabelRelationship>) {
         wrapped.insertLabelSubLabels(subLabels)
     }
 

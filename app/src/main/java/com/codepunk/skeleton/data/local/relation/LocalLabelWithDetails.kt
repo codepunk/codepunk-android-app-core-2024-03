@@ -6,7 +6,7 @@ import androidx.room.Relation
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
-import com.codepunk.skeleton.data.local.entity.LocalSubLabel
+import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 
 data class LocalLabelWithDetails(
     @Embedded
@@ -21,6 +21,7 @@ data class LocalLabelWithDetails(
         )
     )
     val images: List<LocalImage> = emptyList(),
+    val parentLabel: LocalLabelRelationship? = null,
     @Relation(
         parentColumn = "id",
         entityColumn = "label_id"
@@ -30,5 +31,5 @@ data class LocalLabelWithDetails(
         parentColumn = "id",
         entityColumn = "parent_id"
     )
-    val subLabels: List<LocalSubLabel> = emptyList()
+    val subLabels: List<LocalLabelRelationship> = emptyList()
 )

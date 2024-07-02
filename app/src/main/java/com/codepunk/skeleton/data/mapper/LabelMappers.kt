@@ -23,7 +23,6 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
             dataQuality = this.dataQuality
         ),
         images = this.images.map { it.toLocalImage() },
-        parentLabel = this.parentLabel?.toLocalLabelRelationship(this.id),
         details = this.urls.toLocalLabelDetails(this.id, EntityDetailType.URL),
         subLabels = this.subLabels.toLocalSubLabels(this.id)
     )

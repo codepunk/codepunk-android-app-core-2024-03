@@ -28,7 +28,6 @@ import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,6 +61,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("SpellCheckingInspection")
     private fun fetchData() {
         /*
         val durations = listOf(
@@ -86,7 +86,6 @@ class MainActivity : ComponentActivity() {
 
         /*
         lifecycleScope.launch {
-            @Suppress("SpellCheckingInspection")
             val amarok = discogsWebService.getMaster(44352)
             val misplacedChildhood = discogsWebService.getMaster(16191)
             @Suppress("Unused")
@@ -178,7 +177,6 @@ fun Greeting(
         Button(
             onClick = {
                 onFetchData()
-                val x = "Hello"
             },
             modifier = modifier
                 .align(alignment = Alignment.CenterHorizontally)

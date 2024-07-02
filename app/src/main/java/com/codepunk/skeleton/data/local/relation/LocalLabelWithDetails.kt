@@ -21,7 +21,6 @@ data class LocalLabelWithDetails(
         )
     )
     val images: List<LocalImage> = emptyList(),
-    val parentLabel: LocalLabelRelationship? = null,
     @Relation(
         parentColumn = "id",
         entityColumn = "label_id"

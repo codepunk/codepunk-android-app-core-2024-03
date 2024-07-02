@@ -6,7 +6,11 @@ import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
 import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
+import com.codepunk.skeleton.data.local.relation.LocalArtistAliasCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalArtistGroupCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistImageCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalArtistMemberCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalArtistRelationshipCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
 import kotlinx.coroutines.flow.Flow
 
@@ -39,12 +43,23 @@ class ArtistDaoWrapper(
         wrapped.insertArtistDetails(details)
     }
 
-    override suspend fun insertArtistRelationship(relationship: LocalArtistRelationship) {
+    override suspend fun insertArtistRelationship(relationship: LocalArtistRelationship): Long =
         wrapped.insertArtistRelationship(relationship)
+
+    override suspend fun insertArtistRelationships(
+        relationships: List<LocalArtistRelationship>
+    ): List<Long> = wrapped.insertArtistRelationships(relationships)
+
+    override suspend fun insertArtistAliasCrossRefs(crossRefs: List<LocalArtistAliasCrossRef>) {
+        wrapped.insertArtistAliasCrossRefs(crossRefs)
     }
 
-    override suspend fun insertArtistRelationships(relationships: List<LocalArtistRelationship>) {
-        wrapped.insertArtistRelationships(relationships)
+    override suspend fun insertArtistGroupCrossRefs(crossRefs: List<LocalArtistGroupCrossRef>) {
+        wrapped.insertArtistGroupCrossRefs(crossRefs)
+    }
+
+    override suspend fun insertArtistMemberCrossRefs(crossRefs: List<LocalArtistMemberCrossRef>) {
+        wrapped.insertArtistMemberCrossRefs(crossRefs)
     }
 
     override fun getArtistWithDetails(id: Long): Flow<LocalArtistWithDetails?> =
@@ -54,6 +69,14 @@ class ArtistDaoWrapper(
 
     // region Methods
 
+    private suspend fun <T : LocalArtistRelationshipCrossRef> insertAndMapArtistRelationships(
+        relationships: List<LocalArtistRelationship>,
+        transform: (index: Int, id: Long) -> T
+    ): List<T> = wrapped.insertArtistRelationships(relationships)
+        .filter { it != -1L }
+        .mapIndexed { index, id -> transform(index, id) }
+        .sortedBy { it.relationshipIdx }
+
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override suspend fun insertArtistWithDetails(
@@ -61,12 +84,41 @@ class ArtistDaoWrapper(
     ): Long {
         val artistId = wrapped.insertArtist(artistWithDetails.artist)
         if (artistId != -1L) {
-            val crossRefs = imageDao.insertImages(artistWithDetails.images)
+            val imageCrossRefs = imageDao.insertImages(artistWithDetails.images)
                 .filter { it != -1L }
                 .map { LocalArtistImageCrossRef(artistId = artistId, imageId = it) }
-            wrapped.insertArtistImageCrossRefs(crossRefs)
+            wrapped.insertArtistImageCrossRefs(imageCrossRefs)
             wrapped.insertArtistDetails(artistWithDetails.details)
-            wrapped.insertArtistRelationships(artistWithDetails.relationships)
+            val aliasCrossRefs = insertAndMapArtistRelationships(
+                artistWithDetails.aliases
+            ) { index, id ->
+                LocalArtistAliasCrossRef(
+                    artistId = artistId,
+                    relationshipId = id,
+                    relationshipIdx = index
+                )
+            }
+            wrapped.insertArtistAliasCrossRefs(aliasCrossRefs)
+            val memberCrossRefs = insertAndMapArtistRelationships(
+                artistWithDetails.members
+            ) { index, id ->
+                LocalArtistMemberCrossRef(
+                    artistId = artistId,
+                    relationshipId = id,
+                    relationshipIdx = index
+                )
+            }
+            wrapped.insertArtistMemberCrossRefs(memberCrossRefs)
+            val groupCrossRefs = insertAndMapArtistRelationships(
+                artistWithDetails.groups
+            ) { index, id ->
+                LocalArtistGroupCrossRef(
+                    artistId = artistId,
+                    relationshipId = id,
+                    relationshipIdx = index
+                )
+            }
+            wrapped.insertArtistGroupCrossRefs(groupCrossRefs)
         }
         return artistId
     }

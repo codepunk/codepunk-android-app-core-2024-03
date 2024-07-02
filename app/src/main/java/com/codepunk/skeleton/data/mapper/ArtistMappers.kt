@@ -6,8 +6,6 @@ import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
 import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
 import com.codepunk.skeleton.data.local.type.EntityDetailType
 import com.codepunk.skeleton.data.local.type.EntityDetailType.*
-import com.codepunk.skeleton.data.local.type.ArtistRelationshipType
-import com.codepunk.skeleton.data.local.type.ArtistRelationshipType.*
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
 import com.codepunk.skeleton.domain.model.Artist
 
@@ -26,9 +24,9 @@ fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails = LocalArtis
     images = this.images.map { it.toLocalImage() },
     details = this.urls.toLocalArtistDetails(this.id, URL) +
             this.nameVariations.toLocalArtistDetails(this.id, NAME_VARIATION),
-    relationships = this.aliases.toLocalArtistRelationships(this.id, ALIAS) +
-            this.members.toLocalArtistRelationships(this.id, MEMBER) +
-            this.groups.toLocalArtistRelationships(this.id, GROUP)
+    aliases = this.aliases.map { it.toLocalArtistRelationship() },
+    members = this.members.map { it.toLocalArtistRelationship() },
+    groups = this.groups.map { it.toLocalArtistRelationship() }
 )
 
 private fun List<String>.toLocalArtistDetails(
@@ -43,21 +41,14 @@ private fun List<String>.toLocalArtistDetails(
     )
 }
 
-private fun List<RemoteArtist.Relationship>.toLocalArtistRelationships(
-    id: Long,
-    relationshipType: ArtistRelationshipType
-): List<LocalArtistRelationship> = mapIndexed { relationshipIdx, relationship ->
+private fun RemoteArtist.Relationship.toLocalArtistRelationship(): LocalArtistRelationship =
     LocalArtistRelationship(
-        parentId = id,
-        relationshipType = relationshipType,
-        relationshipIdx = relationshipIdx,
-        childId = relationship.id,
-        name = relationship.name,
-        resourceUrl = relationship.resourceUrl,
-        active = relationship.active,
-        thumbnailUrl = relationship.thumbnailUrl
+        id = id,
+        name = name,
+        resourceUrl = resourceUrl,
+        active = active,
+        thumbnailUrl = thumbnailUrl
     )
-}
 
 fun LocalArtistWithDetails.toDomainArtist(): Artist = Artist(
     id = artist.id,
@@ -69,9 +60,9 @@ fun LocalArtistWithDetails.toDomainArtist(): Artist = Artist(
     profile = artist.profile,
     urls = details.toDomainArtistDetails(URL),
     nameVariations = details.toDomainArtistDetails(NAME_VARIATION),
-    aliases = relationships.toDomainArtistRelationships(ALIAS),
-    members = relationships.toDomainArtistRelationships(MEMBER),
-    groups = relationships.toDomainArtistRelationships(GROUP),
+    aliases = aliases.map { it.toDomainArtistRelationship() },
+    members = members.map { it.toDomainArtistRelationship() },
+    groups = groups.map { it.toDomainArtistRelationship() },
     dataQuality = artist.dataQuality
 )
 
@@ -81,18 +72,13 @@ private fun List<LocalArtistDetail>.toDomainArtistDetails(
     detail.detailType == detailType
 }.map { it.detail }
 
-private fun List<LocalArtistRelationship>.toDomainArtistRelationships(
-    relationshipType: ArtistRelationshipType
-): List<Artist.Relationship> = filter { relationship ->
-    relationship.relationshipType == relationshipType
-}.map { relationship ->
+private fun LocalArtistRelationship.toDomainArtistRelationship(): Artist.Relationship =
     Artist.Relationship(
-        id = relationship.childId,
-        name = relationship.name,
-        resourceUrl = relationship.resourceUrl,
-        active = relationship.active,
-        thumbnailUrl = relationship.thumbnailUrl
+        id = id,
+        name = name,
+        resourceUrl = resourceUrl,
+        active = active,
+        thumbnailUrl = thumbnailUrl
     )
-}
 
 // endregion Methods

@@ -22,7 +22,10 @@ import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
 import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
+import com.codepunk.skeleton.data.local.relation.LocalArtistAliasCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalArtistGroupCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistImageCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalArtistMemberCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalLabelImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterCreditCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterImageCrossRef
@@ -35,7 +38,10 @@ import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
     entities = [
         LocalArtist::class,
         LocalArtistDetail::class,
+        LocalArtistAliasCrossRef::class,
+        LocalArtistGroupCrossRef::class,
         LocalArtistImageCrossRef::class,
+        LocalArtistMemberCrossRef::class,
         LocalArtistRelationship::class,
         LocalCredit::class,
         LocalImage::class,

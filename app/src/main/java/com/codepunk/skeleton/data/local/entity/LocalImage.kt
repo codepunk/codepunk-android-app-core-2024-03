@@ -6,6 +6,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.codepunk.skeleton.domain.type.ImageType
 
+/*
+ * TODO move type from here to LocalArtistImageCrossRef / LocalLabelImageCrossRef / LocalMasterImageCrossRef
+ *  Maybe inherit each CrossRef from an interface that has entityId / imageId / imageIdx ?
+ */
+
 @Entity(
     tableName = "image",
     indices = [

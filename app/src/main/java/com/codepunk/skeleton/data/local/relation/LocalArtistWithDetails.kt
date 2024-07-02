@@ -55,5 +55,5 @@ data class LocalArtistWithDetails(
             entityColumn = "relationship_id"
         )
     )
-    val groups: List<LocalArtistRelationship> = emptyList(),
+    val groups: List<LocalArtistRelationship> = emptyList()
 )

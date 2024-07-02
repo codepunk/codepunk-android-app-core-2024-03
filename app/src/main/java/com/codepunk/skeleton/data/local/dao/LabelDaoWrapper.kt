@@ -7,6 +7,7 @@ import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
 import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.relation.LocalLabelImageCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalLabelSubLabelCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import kotlinx.coroutines.flow.Flow
 
@@ -39,12 +40,15 @@ class LabelDaoWrapper(
         wrapped.insertLabelDetails(details)
     }
 
-    override suspend fun insertLabelSubLabel(subLabel: LocalLabelRelationship) {
-        wrapped.insertLabelSubLabel(subLabel)
-    }
+    override suspend fun insertLabelRelationship(subLabel: LocalLabelRelationship): Long =
+        wrapped.insertLabelRelationship(subLabel)
 
-    override suspend fun insertLabelSubLabels(subLabels: List<LocalLabelRelationship>) {
-        wrapped.insertLabelSubLabels(subLabels)
+    override suspend fun insertLabelRelationships(
+        subLabels: List<LocalLabelRelationship>
+    ): List<Long> = wrapped.insertLabelRelationships(subLabels)
+
+    override suspend fun insertLabelSubLabelCrossRefs(crossRefs: List<LocalLabelSubLabelCrossRef>) {
+        wrapped.insertLabelSubLabelCrossRefs(crossRefs)
     }
 
     override fun getLabelWithDetails(id: Long): Flow<LocalLabelWithDetails?> =
@@ -61,12 +65,15 @@ class LabelDaoWrapper(
     ): Long {
         val labelId = insertLabel(labelWithDetails.label)
         if (labelId != -1L) {
-            val crossRefs = imageDao.insertImages(labelWithDetails.images)
+            val imageCrossRefs = imageDao.insertImages(labelWithDetails.images)
                 .filter { it != -1L }
                 .map { LocalLabelImageCrossRef(labelId = labelId, imageId = it) }
-            insertLabelImageCrossRefs(crossRefs)
+            insertLabelImageCrossRefs(imageCrossRefs)
             insertLabelDetails(labelWithDetails.details)
-            insertLabelSubLabels(labelWithDetails.subLabels)
+            val subLabelCrossRefs = wrapped.insertLabelRelationships(labelWithDetails.subLabels)
+                .filter { it != -1L }
+                .mapIndexed { index, id -> LocalLabelSubLabelCrossRef(labelId, id, index) }
+            insertLabelSubLabelCrossRefs(subLabelCrossRefs)
         }
         return labelId
     }

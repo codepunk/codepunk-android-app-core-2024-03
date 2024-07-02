@@ -27,6 +27,7 @@ import com.codepunk.skeleton.data.local.relation.LocalArtistGroupCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalArtistMemberCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalLabelImageCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalLabelSubLabelCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterCreditCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterTrackCrossRef
@@ -48,6 +49,7 @@ import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
         LocalLabel::class,
         LocalLabelDetail::class,
         LocalLabelImageCrossRef::class,
+        LocalLabelSubLabelCrossRef::class,
         LocalMaster::class,
         LocalMasterDetail::class,
         LocalMasterCreditCrossRef::class,

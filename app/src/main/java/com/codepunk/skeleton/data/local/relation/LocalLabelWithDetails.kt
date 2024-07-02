@@ -28,7 +28,12 @@ data class LocalLabelWithDetails(
     val details: List<LocalLabelDetail> = emptyList(),
     @Relation(
         parentColumn = "id",
-        entityColumn = "parent_id"
+        entityColumn = "id",
+        associateBy = Junction(
+            value = LocalLabelSubLabelCrossRef::class,
+            parentColumn = "label_id",
+            entityColumn = "relationship_id"
+        )
     )
     val subLabels: List<LocalLabelRelationship> = emptyList()
 )

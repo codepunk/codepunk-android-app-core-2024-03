@@ -13,18 +13,18 @@ import com.codepunk.skeleton.domain.model.Label
 fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
     LocalLabelWithDetails(
         label = LocalLabel(
-            id = this.id,
-            name = this.name,
-            resourceUrl = this.resourceUrl,
-            uri = this.uri,
-            releasesUrl = this.releasesUrl,
-            contactInfo = this.contactInfo,
-            profile = this.profile,
-            dataQuality = this.dataQuality
+            id = id,
+            name = name,
+            resourceUrl = resourceUrl,
+            uri = uri,
+            releasesUrl = releasesUrl,
+            contactInfo = contactInfo,
+            profile = profile,
+            dataQuality = dataQuality
         ),
-        images = this.images.map { it.toLocalImage() },
-        details = this.urls.toLocalLabelDetails(this.id, EntityDetailType.URL),
-        subLabels = this.subLabels.toLocalSubLabels(this.id)
+        images = images.map { it.toLocalImage() },
+        details = urls.toLocalLabelDetails(id, EntityDetailType.URL),
+        subLabels = subLabels.map { it.toLocalLabelRelationship() }
     )
 
 private fun List<String>.toLocalLabelDetails(
@@ -39,22 +39,12 @@ private fun List<String>.toLocalLabelDetails(
     )
 }
 
-private fun RemoteLabel.Relationship.toLocalLabelRelationship(
-    parentId: Long,
-    relationshipIdx: Int = 0
-): LocalLabelRelationship = LocalLabelRelationship(
-    parentId = parentId,
-    relationshipIdx = relationshipIdx,
-    childId = this.id,
-    name = this.name,
-    resourceUrl = this.resourceUrl
-)
-
-private fun List<RemoteLabel.Relationship>.toLocalSubLabels(
-    parentId: Long
-): List<LocalLabelRelationship> = mapIndexed { subLabelIdx, subLabel ->
-    subLabel.toLocalLabelRelationship(parentId, subLabelIdx)
-}
+private fun RemoteLabel.Relationship.toLocalLabelRelationship(): LocalLabelRelationship =
+    LocalLabelRelationship(
+        id = id,
+        name = name,
+        resourceUrl = resourceUrl
+    )
 
 fun LocalLabelWithDetails.toDomainLabel(): Label = Label(
     id = label.id,
@@ -67,7 +57,7 @@ fun LocalLabelWithDetails.toDomainLabel(): Label = Label(
     profile = label.profile,
     dataQuality = label.dataQuality,
     urls = details.toDomainLabelDetails(EntityDetailType.URL),
-    subLabels = subLabels.toDomainLabelSubLabels()
+    subLabels = subLabels.map { it.toDomainLabelRelationship() }
 )
 
 private fun List<LocalLabelDetail>.toDomainLabelDetails(
@@ -76,13 +66,11 @@ private fun List<LocalLabelDetail>.toDomainLabelDetails(
     detail.detailType == detailType
 }.map { it.detail }
 
-private fun List<LocalLabelRelationship>.toDomainLabelSubLabels(): List<Label.Relationship> =
-    map { subLabel ->
-        Label.Relationship(
-            id = subLabel.childId,
-            name = subLabel.name,
-            resourceUrl = subLabel.resourceUrl
-        )
-    }
+private fun LocalLabelRelationship.toDomainLabelRelationship(): Label.Relationship =
+    Label.Relationship(
+        id = id,
+        name = name,
+        resourceUrl = resourceUrl
+    )
 
 // endregion Methods

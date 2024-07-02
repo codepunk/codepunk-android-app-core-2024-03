@@ -13,20 +13,20 @@ import com.codepunk.skeleton.domain.model.Artist
 
 fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails = LocalArtistWithDetails(
     artist = LocalArtist(
-        id = this.id,
-        name = this.name,
-        resourceUrl = this.resourceUrl,
-        uri = this.uri,
-        releasesUrl = this.releasesUrl,
-        profile = this.profile,
-        dataQuality = this.dataQuality
+        id = id,
+        name = name,
+        resourceUrl = resourceUrl,
+        uri = uri,
+        releasesUrl = releasesUrl,
+        profile = profile,
+        dataQuality = dataQuality
     ),
-    images = this.images.map { it.toLocalImage() },
-    details = this.urls.toLocalArtistDetails(this.id, URL) +
-            this.nameVariations.toLocalArtistDetails(this.id, NAME_VARIATION),
-    aliases = this.aliases.map { it.toLocalArtistRelationship() },
-    members = this.members.map { it.toLocalArtistRelationship() },
-    groups = this.groups.map { it.toLocalArtistRelationship() }
+    images = images.map { it.toLocalImage() },
+    details = urls.toLocalArtistDetails(id, URL) +
+            nameVariations.toLocalArtistDetails(id, NAME_VARIATION),
+    aliases = aliases.map { it.toLocalArtistRelationship() },
+    members = members.map { it.toLocalArtistRelationship() },
+    groups = groups.map { it.toLocalArtistRelationship() }
 )
 
 private fun List<String>.toLocalArtistDetails(

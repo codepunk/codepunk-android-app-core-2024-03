@@ -20,6 +20,7 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
             releasesUrl = releasesUrl,
             contactInfo = contactInfo,
             profile = profile,
+            parentLabel = parentLabel?.toLocalLabelRelationship(),
             dataQuality = dataQuality
         ),
         images = images.map { it.toLocalImage() },
@@ -55,6 +56,7 @@ fun LocalLabelWithDetails.toDomainLabel(): Label = Label(
     images = images.map { it.toDomainImage() },
     contactInfo = label.contactInfo,
     profile = label.profile,
+    parentLabel = label.parentLabel?.toDomainLabelRelationship(),
     dataQuality = label.dataQuality,
     urls = details.toDomainLabelDetails(EntityDetailType.URL),
     subLabels = subLabels.map { it.toDomainLabelRelationship() }

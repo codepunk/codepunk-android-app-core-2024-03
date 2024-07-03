@@ -40,12 +40,12 @@ class LabelDaoWrapper(
         wrapped.insertLabelDetails(details)
     }
 
-    override suspend fun insertLabelRelationship(subLabel: LocalLabelRelationship): Long =
-        wrapped.insertLabelRelationship(subLabel)
+    override suspend fun insertLabelRelationship(relationship: LocalLabelRelationship): Long =
+        wrapped.insertLabelRelationship(relationship)
 
     override suspend fun insertLabelRelationships(
-        subLabels: List<LocalLabelRelationship>
-    ): List<Long> = wrapped.insertLabelRelationships(subLabels)
+        relationships: List<LocalLabelRelationship>
+    ): List<Long> = wrapped.insertLabelRelationships(relationships)
 
     override suspend fun insertLabelSubLabelCrossRefs(crossRefs: List<LocalLabelSubLabelCrossRef>) {
         wrapped.insertLabelSubLabelCrossRefs(crossRefs)
@@ -63,6 +63,7 @@ class LabelDaoWrapper(
     override suspend fun insertLabelWithDetails(
         labelWithDetails: LocalLabelWithDetails
     ): Long {
+        labelWithDetails.label.parentLabel?.also { insertLabelRelationship(it) }
         val labelId = insertLabel(labelWithDetails.label)
         if (labelId != -1L) {
             val imageCrossRefs = imageDao.insertImages(labelWithDetails.images)

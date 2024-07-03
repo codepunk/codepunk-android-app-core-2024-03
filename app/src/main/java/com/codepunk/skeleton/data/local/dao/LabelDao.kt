@@ -46,13 +46,12 @@ abstract class LabelDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertLabelDetails(details: List<LocalLabelDetail>)
 
-    @Suppress("Unused")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertLabelRelationship(subLabel: LocalLabelRelationship): Long
+    abstract suspend fun insertLabelRelationship(relationship: LocalLabelRelationship): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertLabelRelationships(
-        subLabels: List<LocalLabelRelationship>
+        relationships: List<LocalLabelRelationship>
     ): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

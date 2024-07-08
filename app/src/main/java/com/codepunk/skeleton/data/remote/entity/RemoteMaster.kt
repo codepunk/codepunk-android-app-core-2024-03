@@ -7,12 +7,12 @@ import java.math.BigDecimal
 
 @Serializable
 data class RemoteMaster(
-    val id: Long = 0,
+    val id: Long = 0L,
     val title: String = "",
     @SerialName("main_release")
-    val mainRelease: Long = 0,
+    val mainRelease: Long = 0L,
     @SerialName("most_recent_release")
-    val mostRecentRelease: Long = 0,
+    val mostRecentRelease: Long = 0L,
     @SerialName("resource_url")
     val resourceUrl: String = "",
     val uri: String = "",

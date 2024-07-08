@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalMaster
 )
 data class LocalMasterCreditCrossRef(
     @ColumnInfo(name = "master_id")
-    val masterId: Long = 0,
+    val masterId: Long = 0L,
     @ColumnInfo(name = "credit_id")
-    val creditId: Long = 0,
+    val creditId: Long = 0L,
 )

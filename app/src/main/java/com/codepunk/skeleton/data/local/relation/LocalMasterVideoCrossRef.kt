@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalVideo
 )
 data class LocalMasterVideoCrossRef(
     @ColumnInfo(name = "master_id")
-    val masterId: Long = 0,
+    val masterId: Long = 0L,
     @ColumnInfo(name = "video_id")
-    val videoId: Long = 0,
+    val videoId: Long = 0L,
 )

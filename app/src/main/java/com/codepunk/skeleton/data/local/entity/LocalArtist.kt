@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey
 )
 data class LocalArtist(
     @PrimaryKey(autoGenerate = false)
-    val id: Long = 0,
+    @ColumnInfo(name = "artist_id")
+    val artistId: Long = 0L,
     val name: String = "",
     @ColumnInfo(name = "resource_url")
     val resourceUrl: String = "",

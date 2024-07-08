@@ -1,4 +1,4 @@
-package com.codepunk.skeleton.domain.model
+package com.codepunk.skeleton.domainv2.model
 
 import com.codepunk.skeleton.domain.type.ImageType
 

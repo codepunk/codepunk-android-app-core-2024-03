@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
+    implementation(libs.kotlinx.datetime)
 
     // endregion Added by Codepunk
 

@@ -12,7 +12,7 @@ import com.codepunk.skeleton.data.local.entity.LocalImage
     foreignKeys = [
         ForeignKey(
             entity = LocalArtist::class,
-            parentColumns = ["id"],
+            parentColumns = ["artist_id"],
             childColumns = ["artist_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalImage
 )
 data class LocalArtistImageCrossRef(
     @ColumnInfo(name = "artist_id")
-    val artistId: Long = 0,
+    val artistId: Long = 0L,
     @ColumnInfo(name = "image_id")
-    val imageId: Long = 0,
+    val imageId: Long = 0L,
 )

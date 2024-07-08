@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteLabel(
-    val id: Long = 0,
+    val id: Long = 0L,
     val name: String = "",
     @SerialName("resource_url")
     val resourceUrl: String = "",
@@ -30,7 +30,7 @@ data class RemoteLabel(
 
     @Serializable
     data class Relationship(
-        val id: Long = 0,
+        val id: Long = 0L,
         val name: String = "",
         @SerialName("resource_url")
         val resourceUrl: String = ""

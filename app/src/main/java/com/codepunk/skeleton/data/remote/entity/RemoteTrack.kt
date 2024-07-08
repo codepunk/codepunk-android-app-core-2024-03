@@ -12,5 +12,7 @@ data class RemoteTrack(
     val type: String = "",
     val title: String = "",
     @Serializable(with = ElapsedTimeSerializer::class)
-    val duration: Duration = Duration.ZERO
+    val duration: Duration = Duration.ZERO,
+    @SerialName("sub_tracks")
+    val subTracks: List<RemoteTrack>? = null
 )

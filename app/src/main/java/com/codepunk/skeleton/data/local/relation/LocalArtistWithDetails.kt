@@ -12,7 +12,7 @@ data class LocalArtistWithDetails(
     @Embedded
     val artist: LocalArtist = LocalArtist(),
     @Relation(
-        parentColumn = "id",
+        parentColumn = "artist_id",
         entityColumn = "id",
         associateBy = Junction(
             value = LocalArtistImageCrossRef::class,
@@ -22,12 +22,12 @@ data class LocalArtistWithDetails(
     )
     val images: List<LocalImage> = emptyList(),
     @Relation(
-        parentColumn = "id",
+        parentColumn = "artist_id",
         entityColumn = "artist_id"
     )
     val details: List<LocalArtistDetail> = emptyList(),
     @Relation(
-        parentColumn = "id",
+        parentColumn = "artist_id",
         entityColumn = "id",
         associateBy = Junction(
             value = LocalArtistAliasCrossRef::class,
@@ -37,7 +37,7 @@ data class LocalArtistWithDetails(
     )
     val aliases: List<LocalArtistRelationship> = emptyList(),
     @Relation(
-        parentColumn = "id",
+        parentColumn = "artist_id",
         entityColumn = "id",
         associateBy = Junction(
             value = LocalArtistMemberCrossRef::class,
@@ -47,7 +47,7 @@ data class LocalArtistWithDetails(
     )
     val members: List<LocalArtistRelationship> = emptyList(),
     @Relation(
-        parentColumn = "id",
+        parentColumn = "artist_id",
         entityColumn = "id",
         associateBy = Junction(
             value = LocalArtistGroupCrossRef::class,

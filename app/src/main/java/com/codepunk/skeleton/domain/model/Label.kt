@@ -1,7 +1,9 @@
 package com.codepunk.skeleton.domain.model
 
+import com.codepunk.skeleton.domainv2.model.Image
+
 data class Label(
-    val id: Long = 0,
+    val id: Long = 0L,
     val name: String = "",
     val resourceUrl: String = "",
     val uri: String = "",
@@ -18,7 +20,7 @@ data class Label(
     // region Classes
 
     data class Relationship(
-        val id: Long = 0,
+        val id: Long = 0L,
         val name: String = "",
         val resourceUrl: String = ""
     )

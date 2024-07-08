@@ -1,7 +1,9 @@
 package com.codepunk.skeleton.domain.model
 
+import com.codepunk.skeleton.domainv2.model.Image
+
 data class Artist(
-    val id: Long = 0,
+    val id: Long = 0L,
     val name: String = "",
     val resourceUrl: String = "",
     val uri: String = "",
@@ -19,7 +21,7 @@ data class Artist(
     // region Classes
 
     data class Relationship(
-        val id: Long = 0,
+        val id: Long = 0L,
         val name: String = "",
         val resourceUrl: String = "",
         val active: Boolean? = null,

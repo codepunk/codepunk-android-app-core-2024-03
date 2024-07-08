@@ -64,8 +64,8 @@ abstract class ArtistDao {
     abstract suspend fun insertArtistMemberCrossRefs(crossRefs: List<LocalArtistMemberCrossRef>)
 
     @Transaction
-    @Query("SELECT * FROM artist WHERE id = :id")
-    abstract fun getArtistWithDetails(id: Long): Flow<LocalArtistWithDetails?>
+    @Query("SELECT * FROM artist WHERE artist_id = :artistId")
+    abstract fun getArtistWithDetails(artistId: Long): Flow<LocalArtistWithDetails?>
 
     open suspend fun insertArtistWithDetails(
         artistWithDetails: LocalArtistWithDetails

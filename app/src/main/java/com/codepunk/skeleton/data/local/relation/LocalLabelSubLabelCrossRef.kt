@@ -29,9 +29,9 @@ import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 )
 data class LocalLabelSubLabelCrossRef(
     @ColumnInfo(name = "label_id")
-    val labelId: Long = 0,
+    val labelId: Long = 0L,
     @ColumnInfo(name = "relationship_id")
-    val relationshipId: Long = 0,
+    val relationshipId: Long = 0L,
     @ColumnInfo(name = "relationship_idx")
     val relationshipIdx: Int = 0
 )

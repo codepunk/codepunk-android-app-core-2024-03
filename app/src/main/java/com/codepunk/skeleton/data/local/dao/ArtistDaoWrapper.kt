@@ -62,8 +62,8 @@ class ArtistDaoWrapper(
         wrapped.insertArtistMemberCrossRefs(crossRefs)
     }
 
-    override fun getArtistWithDetails(id: Long): Flow<LocalArtistWithDetails?> =
-        wrapped.getArtistWithDetails(id)
+    override fun getArtistWithDetails(artistId: Long): Flow<LocalArtistWithDetails?> =
+        wrapped.getArtistWithDetails(artistId)
 
     // endregion Implemented methods
 

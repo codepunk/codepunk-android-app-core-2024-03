@@ -20,16 +20,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.codepunk.skeleton.core.loginator.Loginator
-import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
-import com.codepunk.skeleton.domain.model.Artist
-import com.codepunk.skeleton.domain.model.Label
-import com.codepunk.skeleton.domain.model.Master
+import com.codepunk.skeleton.data.remote.webservice.DiscogsWebserviceV2
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
+import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
+import com.codepunk.skeleton.domainv2.model.Artist
+import com.codepunk.skeleton.domainv2.model.Label
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
+import com.codepunk.skeleton.util.parseElapsedTimeString
+import com.codepunk.skeleton.util.toElapsedTimeString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,10 +47,13 @@ class MainActivity : ComponentActivity() {
     lateinit var discogsWebService: DiscogsWebService
 
     @Inject
-    lateinit var artistDao: ArtistDao // TODO TEMP
+    lateinit var discogsWebserviceV2: DiscogsWebserviceV2
 
     @Inject
     lateinit var discogsRepository: DiscogsRepository
+
+    @Inject
+    lateinit var discogsRepositoryV2: DiscogsRepositoryV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +66,34 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Greeting(
                         name = "Scott",
-                        onFetchData = ::fetchData
+                        onFetchData = ::testStuff
                     )
                 }
             }
         }
     }
 
-    @Suppress("SpellCheckingInspection")
-    private fun fetchData() {
+    private fun testStuff() {
         /*
+        testElapsedTimeString()
+        testFetchArtist(TAYLOR_SWIFT)
+        testFetchLabel(REPUBLIC_RECORDS)
+        testFetchMaster(THE_TORTURED_POETS_DEPARTMENT)
+        testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
+         */
+
+        testFetchArtist(TAYLOR_SWIFT)
+        testFetchLabel(REPUBLIC_RECORDS)
+        testFetchLabel(ATLANTIC_RECORDS)
+
+        /*
+        testFetchMasterV2(THE_TORTURED_POETS_DEPARTMENT)
+        testFetchReleaseV2(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
+         */
+    }
+
+    @Suppress("Unused")
+    private fun testElapsedTimeString() {
         val durations = listOf(
             DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 0.seconds + 246.milliseconds,
             DurationUnit.HOURS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
@@ -77,24 +107,25 @@ class MainActivity : ComponentActivity() {
         )
         val mapped = durations.map { (durationUnit, duration) ->
             duration.toElapsedTimeString(durationUnit)
-        }
+        }.toMutableList().apply {
+            add("")
+        }.toList()
         val remapped = mapped.map {
-            parseElapsedTimeString(it)
+            try {
+                parseElapsedTimeString(it)
+            } catch (e: IllegalArgumentException) {
+                Duration.ZERO
+            }
         }
         val x = "$durations $mapped $remapped"
-         */
+        Loginator.d { x }
+    }
 
-        /*
+    /*
+    @Suppress("Unused")
+    private fun testFetchArtist(artistId: Long) {
         lifecycleScope.launch {
-            val amarok = discogsWebService.getMaster(44352)
-            val misplacedChildhood = discogsWebService.getMaster(16191)
-            @Suppress("Unused")
-            Loginator.d { "$amarok $misplacedChildhood" }
-        }
-        */
-
-        lifecycleScope.launch {
-            discogsRepository.fetchArtist(218108).collect { result ->
+            discogsRepository.fetchArtist(artistId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = Throwable(it)) {
@@ -113,9 +144,11 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
 
+    private fun testFetchLabel(labelId: Long) {
         lifecycleScope.launch {
-            discogsRepository.fetchLabel(23937).collect { result ->
+            discogsRepository.fetchLabel(labelId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = Throwable(it)) {
@@ -134,9 +167,11 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
 
+    private fun testFetchMaster(masterId: Long) {
         lifecycleScope.launch {
-            discogsRepository.fetchMaster(16191).collect { result ->
+            discogsRepository.fetchMaster(masterId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = Throwable(it)) {
@@ -155,6 +190,89 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    @Suppress("Unused")
+    private fun testFetchRelease(releaseId: Long) {
+        val x = "$releaseId"
+    }
+     */
+
+    @Suppress("SameParameterValue")
+    private fun testFetchArtist(artistId: Long) {
+        lifecycleScope.launch {
+            discogsRepositoryV2.fetchArtist(artistId).collect { result ->
+                result.fold(
+                    fa = {
+                        Loginator.e(throwable = it) { "fetchArtist encountered an error" }
+                    },
+                    fb = {
+                        Loginator.d { "artist = $it" }
+                    },
+                    fab = { th: Throwable, artist: Artist? ->
+                        Loginator.e(throwable = th) { "fetchArtist encountered an error" }
+                        Loginator.d { "artist = $artist" }
+                    }
+                )
+            }
+        }
+    }
+
+    @Suppress("Unused")
+    private fun testFetchLabel(labelId: Long) {
+        lifecycleScope.launch {
+            discogsRepositoryV2.fetchLabel(labelId).collect { result ->
+                result.fold(
+                    fa = {
+                        Loginator.e(throwable = it) { "fetchLabel encountered an error" }
+                    },
+                    fb = {
+                        Loginator.d { "label = $it" }
+                    },
+                    fab = { th: Throwable, label: Label? ->
+                        Loginator.e(throwable = th) { "fetchLabel encountered an error" }
+                        Loginator.d { "label = $label" }
+                    }
+                )
+            }
+        }
+    }
+
+    /*
+    @Suppress("Unused")
+    private fun testFetchMasterV2(masterId: Long) {
+        lifecycleScope.launch {
+            discogsWebserviceV2.getMaster(masterId)
+                .onLeft { error ->
+                    val x = "$error"
+                }
+                .onRight { remoteMaster ->
+                    val x = "$remoteMaster"
+                }
+        }
+    }
+
+    @Suppress("Unused")
+    private fun testFetchReleaseV2(releaseId: Long) {
+        lifecycleScope.launch {
+            discogsWebserviceV2.getRelease(releaseId)
+                .onLeft { error ->
+                    val x = "$error"
+                }
+                .onRight { remoteRelease ->
+                    val x = "$remoteRelease"
+                }
+        }
+    }
+     */
+
+    @Suppress("Unused")
+    companion object {
+        const val TAYLOR_SWIFT = 1124645L
+        const val REPUBLIC_RECORDS = 38017L
+        const val ATLANTIC_RECORDS = 681L
+        const val THE_TORTURED_POETS_DEPARTMENT = 3461018L
+        const val THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY = 30438707L
     }
 }
 

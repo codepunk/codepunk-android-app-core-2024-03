@@ -2,7 +2,7 @@ package com.codepunk.skeleton.data.mapper
 
 import com.codepunk.skeleton.data.local.entity.LocalVideo
 import com.codepunk.skeleton.data.remote.entity.RemoteVideo
-import com.codepunk.skeleton.domain.model.Video
+import com.codepunk.skeleton.domainv2.model.Video
 
 fun RemoteVideo.toLocalVideo(id: Long = 0): LocalVideo = LocalVideo(
     id = id,

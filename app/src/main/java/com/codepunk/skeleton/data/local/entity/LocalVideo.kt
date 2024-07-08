@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 )
 data class LocalVideo(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val id: Long = 0L,
     val title: String = "",
     val description: String = "",
     val uri: String = "",

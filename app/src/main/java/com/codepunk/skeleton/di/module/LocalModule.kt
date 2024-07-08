@@ -13,6 +13,8 @@ import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.MasterDaoWrapper
 import com.codepunk.skeleton.data.local.dao.TrackDao
 import com.codepunk.skeleton.data.local.dao.VideoDao
+import com.codepunk.skeleton.data.localv2.DiscogsDatabaseV2
+import com.codepunk.skeleton.data.localv2.dao.DiscogsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +35,15 @@ object LocalModule {
             context = context,
             klass = DiscogsDatabase::class.java,
             name = "discogs_db"
+        ).build()
+
+    @Provides
+    @Singleton
+    fun provideDatabaseV2(@ApplicationContext context: Context): DiscogsDatabaseV2 =
+        Room.databaseBuilder(
+            context = context,
+            klass = DiscogsDatabaseV2::class.java,
+            name = "discogs_db_v2"
         ).build()
 
     @Provides
@@ -93,6 +104,10 @@ object LocalModule {
     @Provides
     @Singleton
     fun provideVideoDao(database: DiscogsDatabase): VideoDao = database.videoDao()
+
+    @Provides
+    @Singleton
+    fun provideDiscogsDao(database: DiscogsDatabaseV2): DiscogsDao = database.discogsDao()
 
     // endregion Methods
 

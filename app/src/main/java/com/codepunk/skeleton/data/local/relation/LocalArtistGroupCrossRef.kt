@@ -12,7 +12,7 @@ import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
     foreignKeys = [
         ForeignKey(
             entity = LocalArtist::class,
-            parentColumns = ["id"],
+            parentColumns = ["artist_id"],
             childColumns = ["artist_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
@@ -28,9 +28,9 @@ import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
 )
 data class LocalArtistGroupCrossRef(
     @ColumnInfo(name = "artist_id")
-    override val artistId: Long = 0,
+    override val artistId: Long = 0L,
     @ColumnInfo(name = "relationship_id")
-    override val relationshipId: Long = 0,
+    override val relationshipId: Long = 0L,
     @ColumnInfo(name = "relationship_idx")
     override val relationshipIdx: Int = 0
 ) : LocalArtistRelationshipCrossRef

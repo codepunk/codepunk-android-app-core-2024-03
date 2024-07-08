@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RemoteCredit(
     @SerialName("id")
-    val artistId: Long = 0,
+    val artistId: Long = 0L,
     val name: String = "",
     val anv: String = "",
     val join: String = "",

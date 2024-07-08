@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteArtist(
-    val id: Long = 0,
+    val id: Long = 0L,
     val name: String = "",
     @SerialName("resource_url")
     val resourceUrl: String = "",
@@ -29,7 +29,7 @@ data class RemoteArtist(
 
     @Serializable
     data class Relationship(
-        val id: Long = 0,
+        val id: Long = 0L,
         val name: String = "",
         @SerialName("resource_url")
         val resourceUrl: String = "",

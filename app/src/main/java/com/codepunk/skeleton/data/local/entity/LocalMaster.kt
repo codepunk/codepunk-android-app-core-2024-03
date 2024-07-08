@@ -10,12 +10,12 @@ import java.math.BigDecimal
 )
 data class LocalMaster(
     @PrimaryKey(autoGenerate = false)
-    val id: Long = 0,
+    val id: Long = 0L,
     val title: String = "",
     @ColumnInfo(name = "main_release")
-    val mainRelease: Long = 0,
+    val mainRelease: Long = 0L,
     @ColumnInfo(name = "most_recent_release")
-    val mostRecentRelease: Long = 0,
+    val mostRecentRelease: Long = 0L,
     @ColumnInfo(name = "resource_url")
     val resourceUrl: String = "",
     val uri: String = "",

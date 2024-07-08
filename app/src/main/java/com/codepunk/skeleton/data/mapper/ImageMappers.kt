@@ -2,7 +2,7 @@ package com.codepunk.skeleton.data.mapper
 
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.remote.entity.RemoteImage
-import com.codepunk.skeleton.domain.model.Image
+import com.codepunk.skeleton.domainv2.model.Image
 
 fun RemoteImage.toLocalImage(id: Long = 0): LocalImage = LocalImage(
     id = id,

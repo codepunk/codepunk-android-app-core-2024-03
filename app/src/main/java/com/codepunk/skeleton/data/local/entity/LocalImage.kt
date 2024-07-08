@@ -19,7 +19,7 @@ import com.codepunk.skeleton.domain.type.ImageType
 )
 data class LocalImage(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val id: Long = 0L,
     @ColumnInfo(name = "image_type")
     val type: ImageType = ImageType.PRIMARY,
     val uri: String = "",

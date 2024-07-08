@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalImage
 )
 data class LocalMasterImageCrossRef(
     @ColumnInfo(name = "master_id")
-    val masterId: Long = 0,
+    val masterId: Long = 0L,
     @ColumnInfo(name = "image_id")
-    val imageId: Long = 0,
+    val imageId: Long = 0L,
 )

@@ -1,12 +1,15 @@
 package com.codepunk.skeleton.domain.model
 
+import com.codepunk.skeleton.domainv2.model.Image
+import com.codepunk.skeleton.domainv2.model.Track
+import com.codepunk.skeleton.domainv2.model.Video
 import java.math.BigDecimal
 
 data class Master(
-    val id: Long = 0,
+    val id: Long = 0L,
     val title: String = "",
-    val mainRelease: Long = 0,
-    val mostRecentRelease: Long = 0,
+    val mainRelease: Long = 0L,
+    val mostRecentRelease: Long = 0L,
     val resourceUrl: String = "",
     val uri: String = "",
     val versionsUrl: String = "",

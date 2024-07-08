@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.mapper
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
 import com.codepunk.skeleton.data.local.relation.LocalMasterWithDetails
-import com.codepunk.skeleton.data.local.type.EntityDetailType
+import com.codepunk.skeleton.data.local.type.ResourceDetailType
 import com.codepunk.skeleton.data.remote.entity.RemoteMaster
 import com.codepunk.skeleton.domain.model.Master
 
@@ -26,8 +26,8 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
         dataQuality = this.dataQuality
     ),
     images = this.images.map { it.toLocalImage() },
-    details = this.genres.toLocalMasterDetails(this.id, EntityDetailType.GENRE) +
-            this.styles.toLocalMasterDetails(this.id, EntityDetailType.STYLE),
+    details = this.genres.toLocalMasterDetails(this.id, ResourceDetailType.GENRE) +
+            this.styles.toLocalMasterDetails(this.id, ResourceDetailType.STYLE),
     trackList = this.trackList.map { it.toLocalTrack() },
     artists = this.artists.map { it.toLocalCredit() },
     videos = this.videos.map { it.toLocalVideo() }
@@ -35,7 +35,7 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
 
 private fun List<String>.toLocalMasterDetails(
     id: Long,
-    detailType: EntityDetailType
+    detailType: ResourceDetailType
 ): List<LocalMasterDetail> = mapIndexed { detailIdx, detail ->
     LocalMasterDetail(
         artistId = id,
@@ -58,8 +58,8 @@ fun LocalMasterWithDetails.toDomainMaster(): Master = Master(
     numForSale = master.numForSale,
     lowestPrice = master.lowestPrice,
     images = images.map { it.toDomainImage() },
-    genres = details.toDomainMasterDetails(EntityDetailType.GENRE),
-    styles = details.toDomainMasterDetails(EntityDetailType.STYLE),
+    genres = details.toDomainMasterDetails(ResourceDetailType.GENRE),
+    styles = details.toDomainMasterDetails(ResourceDetailType.STYLE),
     year = master.year,
     trackList = trackList.map { it.toDomainTrack() },
     artists = artists.map { it.toDomainCredit() },
@@ -68,7 +68,7 @@ fun LocalMasterWithDetails.toDomainMaster(): Master = Master(
 )
 
 private fun List<LocalMasterDetail>.toDomainMasterDetails(
-    detailType: EntityDetailType
+    detailType: ResourceDetailType
 ): List<String> = filter { detail ->
     detail.detailType == detailType
 }.map { it.detail }

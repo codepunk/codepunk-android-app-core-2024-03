@@ -4,7 +4,7 @@ import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
 import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
-import com.codepunk.skeleton.data.local.type.EntityDetailType
+import com.codepunk.skeleton.data.local.type.ResourceDetailType
 import com.codepunk.skeleton.data.remote.entity.RemoteLabel
 import com.codepunk.skeleton.domain.model.Label
 
@@ -24,13 +24,13 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
             dataQuality = dataQuality
         ),
         images = images.map { it.toLocalImage() },
-        details = urls.toLocalLabelDetails(id, EntityDetailType.URL),
+        details = urls.toLocalLabelDetails(id, ResourceDetailType.URL),
         subLabels = subLabels.map { it.toLocalLabelRelationship() }
     )
 
 private fun List<String>.toLocalLabelDetails(
     id: Long,
-    detailType: EntityDetailType
+    detailType: ResourceDetailType
 ): List<LocalLabelDetail> = mapIndexed { detailIdx, detail ->
     LocalLabelDetail(
         labelId = id,
@@ -58,12 +58,12 @@ fun LocalLabelWithDetails.toDomainLabel(): Label = Label(
     profile = label.profile,
     parentLabel = label.parentLabel?.toDomainLabelRelationship(),
     dataQuality = label.dataQuality,
-    urls = details.toDomainLabelDetails(EntityDetailType.URL),
+    urls = details.toDomainLabelDetails(ResourceDetailType.URL),
     subLabels = subLabels.map { it.toDomainLabelRelationship() }
 )
 
 private fun List<LocalLabelDetail>.toDomainLabelDetails(
-    detailType: EntityDetailType
+    detailType: ResourceDetailType
 ): List<String> = filter { detail ->
     detail.detailType == detailType
 }.map { it.detail }

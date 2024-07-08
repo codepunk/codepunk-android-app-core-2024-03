@@ -14,12 +14,16 @@ import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
 import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
 import com.codepunk.skeleton.data.local.entity.LocalCredit
+import com.codepunk.skeleton.data.local.entity.LocalFormat
+import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
 import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
+import com.codepunk.skeleton.data.local.entity.LocalRelease
+import com.codepunk.skeleton.data.local.entity.LocalReleaseDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
 import com.codepunk.skeleton.data.local.relation.LocalArtistAliasCrossRef
@@ -46,6 +50,8 @@ import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
         LocalArtistRelationship::class,
         LocalCredit::class,
         LocalImage::class,
+        LocalFormat::class,
+        LocalFormatDetail::class,
         LocalLabel::class,
         LocalLabelDetail::class,
         LocalLabelImageCrossRef::class,
@@ -57,6 +63,8 @@ import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
         LocalMasterImageCrossRef::class,
         LocalMasterVideoCrossRef::class,
         LocalLabelRelationship::class,
+        LocalRelease::class,
+        LocalReleaseDetail::class,
         LocalTrack::class,
         LocalVideo::class
     ]

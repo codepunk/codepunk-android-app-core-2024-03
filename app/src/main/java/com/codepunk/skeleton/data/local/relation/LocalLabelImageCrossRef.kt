@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalLabel
 )
 data class LocalLabelImageCrossRef(
     @ColumnInfo(name = "label_id")
-    val labelId: Long = 0,
+    val labelId: Long = 0L,
     @ColumnInfo(name = "image_id")
-    val imageId: Long = 0,
+    val imageId: Long = 0L,
 )

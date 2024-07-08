@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
 )
 data class LocalMasterTrackCrossRef(
     @ColumnInfo(name = "master_id")
-    val masterId: Long = 0,
+    val masterId: Long = 0L,
     @ColumnInfo(name = "track_id")
-    val trackId: Long = 0,
+    val trackId: Long = 0L,
 )

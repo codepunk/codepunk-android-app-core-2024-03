@@ -2,7 +2,7 @@ package com.codepunk.skeleton.data.mapper
 
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.remote.entity.RemoteTrack
-import com.codepunk.skeleton.domain.model.Track
+import com.codepunk.skeleton.domainv2.model.Track
 import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
 import kotlin.time.DurationUnit

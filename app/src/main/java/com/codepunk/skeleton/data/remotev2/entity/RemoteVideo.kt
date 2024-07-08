@@ -1,6 +1,9 @@
-package com.codepunk.skeleton.domain.model
+package com.codepunk.skeleton.data.remotev2.entity
 
-data class Video(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class RemoteVideo(
     val title: String = "",
     val description: String = "",
     val uri: String = "",

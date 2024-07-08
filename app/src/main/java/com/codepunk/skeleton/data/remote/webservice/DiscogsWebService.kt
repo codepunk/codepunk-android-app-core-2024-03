@@ -5,6 +5,7 @@ import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
 import com.codepunk.skeleton.data.remote.entity.RemoteLabel
 import com.codepunk.skeleton.data.remote.entity.RemoteMaster
+import com.codepunk.skeleton.data.remote.entity.RemoteRelease
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -34,6 +35,11 @@ interface DiscogsWebService {
     suspend fun getMaster(
         @Path("id") id: Long
     ): Either<CallError, RemoteMaster>
+
+    @GET("releases/{id}")
+    suspend fun getRelease(
+        @Path("id") id: Long
+    ): Either<CallError, RemoteRelease>
 
     // endregion Methods
 

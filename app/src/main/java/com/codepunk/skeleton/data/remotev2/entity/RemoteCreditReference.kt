@@ -12,5 +12,7 @@ data class RemoteCreditReference(
     val anv: String = "",
     val join: String = "",
     val role: String = "",
-    val tracks: String = ""
+    val tracks: String = "",
+    @SerialName("thumbnail_url")
+    val thumbnailUrl: String = "",
 ) : RemoteReference

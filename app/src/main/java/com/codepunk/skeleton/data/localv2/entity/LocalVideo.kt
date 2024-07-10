@@ -1,5 +1,6 @@
 package com.codepunk.skeleton.data.localv2.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,7 +9,8 @@ import androidx.room.PrimaryKey
 )
 data class LocalVideo(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    @ColumnInfo(name = "video_id")
+    val videoId: Long = 0L,
     val title: String = "",
     val description: String = "",
     val uri: String = "",

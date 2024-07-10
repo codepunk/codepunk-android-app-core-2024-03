@@ -5,26 +5,44 @@ import com.codepunk.skeleton.data.local.type.LabelReferenceType
 import com.codepunk.skeleton.data.local.type.ResourceDetailType
 import com.codepunk.skeleton.data.localv2.entity.LocalArtist
 import com.codepunk.skeleton.data.localv2.entity.LocalArtistReference
+import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
 import com.codepunk.skeleton.data.localv2.entity.LocalImage
 import com.codepunk.skeleton.data.localv2.entity.LocalLabel
 import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
+import com.codepunk.skeleton.data.localv2.entity.LocalMaster
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
+import com.codepunk.skeleton.data.localv2.entity.LocalTrack
+import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistWithDetails
 import com.codepunk.skeleton.data.localv2.relation.LocalLabelWithDetails
+import com.codepunk.skeleton.data.localv2.relation.LocalMasterWithDetails
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndLabel
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndMaster
+import com.codepunk.skeleton.data.localv2.relation.LocalTrackWithDetails
 import com.codepunk.skeleton.data.remotev2.entity.RemoteArtist
 import com.codepunk.skeleton.data.remotev2.entity.RemoteArtistReference
+import com.codepunk.skeleton.data.remotev2.entity.RemoteCreditReference
 import com.codepunk.skeleton.data.remotev2.entity.RemoteImage
 import com.codepunk.skeleton.data.remotev2.entity.RemoteLabel
 import com.codepunk.skeleton.data.remotev2.entity.RemoteLabelReference
+import com.codepunk.skeleton.data.remotev2.entity.RemoteMaster
 import com.codepunk.skeleton.data.remotev2.entity.RemoteResource
+import com.codepunk.skeleton.data.remotev2.entity.RemoteTrack
+import com.codepunk.skeleton.data.remotev2.entity.RemoteVideo
 import com.codepunk.skeleton.domainv2.model.Artist
 import com.codepunk.skeleton.domainv2.model.ArtistReference
+import com.codepunk.skeleton.domainv2.model.CreditReference
 import com.codepunk.skeleton.domainv2.model.Image
 import com.codepunk.skeleton.domainv2.model.Label
 import com.codepunk.skeleton.domainv2.model.LabelReference
+import com.codepunk.skeleton.domainv2.model.Master
+import com.codepunk.skeleton.domainv2.model.Track
+import com.codepunk.skeleton.domainv2.model.Video
+import com.codepunk.skeleton.util.parseElapsedTimeString
+import com.codepunk.skeleton.util.toElapsedTimeString
+import kotlin.time.DurationUnit
 
 // region Methods
 
@@ -229,5 +247,138 @@ fun List<RemoteLabelReference>.toLocalLabelReferences(
 fun RemoteLabelReference?.toLocalLabelReferences(
     referenceType: LabelReferenceType = LabelReferenceType.PARENT_LABEL
 ) = (this?.let { listOf(it) } ?: emptyList()).toLocalLabelReferences(referenceType)
+
+// ====================
+// Master
+// ====================
+
+fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
+    id = masterWithDetails.master.masterId,
+    resourceUrl = resource.resourceUrl,
+    uri = resource.uri,
+    images = masterWithDetails.images.map { it.toDomainImage() },
+    dataQuality = resource.dataQuality,
+    title = masterWithDetails.master.title,
+    genres = masterWithDetails.details.toDomainDetails(ResourceDetailType.GENRE),
+    styles = masterWithDetails.details.toDomainDetails(ResourceDetailType.STYLE),
+    year = masterWithDetails.master.year,
+    numForSale = masterWithDetails.master.numForSale,
+    lowestPrice = masterWithDetails.master.lowestPrice,
+    trackList = masterWithDetails.trackList.map { it.toDomainTrack() }, // TODO
+    artists = masterWithDetails.artists.map { it.toDomainCreditReference() },
+    videos = masterWithDetails.videos.map { it.toDomainVideo() },
+    mainRelease = masterWithDetails.master.mainRelease,
+    mostRecentRelease = masterWithDetails.master.mostRecentRelease,
+    versionsUrl = masterWithDetails.master.versionsUrl,
+    mainReleaseUrl = masterWithDetails.master.mainReleaseUrl,
+    mostRecentReleaseUrl = masterWithDetails.master.mostRecentReleaseUrl
+)
+
+fun RemoteMaster.toLocalResourceAndMaster(): LocalResourceAndMaster = LocalResourceAndMaster(
+    resource = toLocalResource(),
+    masterWithDetails = toLocalMasterWithDetails()
+)
+
+fun RemoteMaster.toLocalMaster(): LocalMaster = LocalMaster(
+    masterId = id,
+    title = title,
+    year = year,
+    numForSale = numForSale,
+    lowestPrice = lowestPrice,
+    mainRelease = mainRelease,
+    mostRecentRelease = mostRecentRelease,
+    versionsUrl = versionsUrl,
+    mainReleaseUrl = mainReleaseUrl,
+    mostRecentReleaseUrl = mostRecentReleaseUrl
+)
+
+fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMasterWithDetails(
+    master = toLocalMaster(),
+    images = images.mapIndexed { index, image -> image.toLocalImage(index) },
+    details = genres.toLocalResourceDetails(ResourceDetailType.GENRE) +
+            styles.toLocalResourceDetails(ResourceDetailType.STYLE),
+    trackList = trackList.map { it.toLocalTrackWithDetails() },
+    artists = artists.map { it.toLocalCreditReference() },
+    videos = videos.map { it.toLocalVideo() }
+)
+
+// ====================
+// Credit
+// ====================
+
+fun RemoteCreditReference.toLocalCreditReference(): LocalCreditReference = LocalCreditReference(
+    artistId = id,
+    name = name,
+    anv = anv,
+    join = join,
+    role = role,
+    tracks = tracks,
+    resourceUrl = resourceUrl,
+    thumbnailUrl = thumbnailUrl
+)
+
+fun LocalCreditReference.toDomainCreditReference(): CreditReference = CreditReference(
+    id = artistId,
+    name = name,
+    resourceUrl = resourceUrl,
+    anv = anv,
+    join = join,
+    role = role,
+    tracks = tracks,
+    thumbnailUrl = thumbnailUrl
+)
+
+// ====================
+// Track
+// ====================
+
+fun RemoteTrack.toLocalTrack(
+    parentTrackId: Long? = null
+): LocalTrack = LocalTrack(
+    parentTrackId = parentTrackId,
+    position = position,
+    type = type,
+    title = title,
+    duration = duration.toElapsedTimeString(DurationUnit.MINUTES)
+)
+
+fun RemoteTrack.toLocalTrackWithDetails(
+    parentTrackId: Long? = null
+): LocalTrackWithDetails = LocalTrackWithDetails(
+    track = toLocalTrack(parentTrackId),
+    extraArtists = extraArtists?.map { it.toLocalCreditReference() },
+    subTracks = subTracks?.map { it.toLocalTrackWithDetails() }
+)
+
+fun LocalTrackWithDetails.toDomainTrack(
+    subTracks: List<Track> = emptyList()
+): Track = Track(
+    position = track.position,
+    type = track.type,
+    title = track.title,
+    extraArtists = extraArtists?.map { it.toDomainCreditReference() },
+    duration = parseElapsedTimeString(track.duration),
+    subTracks = subTracks
+)
+
+// ====================
+// Video
+// ====================
+
+fun RemoteVideo.toLocalVideo(): LocalVideo = LocalVideo(
+    title = title,
+    description = description,
+    uri = uri,
+    duration = duration,
+    embed = embed
+)
+
+fun LocalVideo.toDomainVideo(): Video = Video(
+    title = title,
+    description = description,
+    uri = uri,
+    duration = duration,
+    embed = embed
+)
 
 // endregion Methods

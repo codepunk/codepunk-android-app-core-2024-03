@@ -7,16 +7,22 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.codepunk.skeleton.data.localv2.entity.LocalArtist
 import com.codepunk.skeleton.data.localv2.entity.LocalArtistReference
+import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
 import com.codepunk.skeleton.data.localv2.entity.LocalImage
 import com.codepunk.skeleton.data.localv2.entity.LocalLabel
 import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
+import com.codepunk.skeleton.data.localv2.entity.LocalMaster
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
+import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistArtistReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalLabelLabelReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndLabel
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndMaster
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceImageCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceVideoCrossRef
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -40,6 +46,33 @@ abstract class DiscogsDao {
 
     @Insert
     abstract suspend fun insertResourceDetails(details: List<LocalResourceDetail>): List<Long>
+
+    // ====================
+    // Credit reference
+    // ====================
+
+    @Insert
+    abstract suspend fun insertCreditReferences(creditRefs: List<LocalCreditReference>): List<Long>
+
+    @Insert
+    abstract suspend fun insertResourceCreditReferenceCrossRefs(
+        crossRefs: List<LocalResourceCreditReferenceCrossRef>
+    ): List<Long>
+
+    private suspend fun insertResourceCreditReferences(
+        resourceId: Long,
+        creditRefs: List<LocalCreditReference>
+    ): List<Long> {
+        // TODO Insert or Upsert? Clean beforehand?
+        val referenceIds = insertCreditReferences(creditRefs)
+        val crossRefs = referenceIds
+            .filter { it != -1L }
+            .mapIndexed { index, referenceId ->
+                LocalResourceCreditReferenceCrossRef(resourceId, referenceId, index)
+            }
+        insertResourceCreditReferenceCrossRefs(crossRefs)
+        return referenceIds
+    }
 
     // ====================
     // Image
@@ -199,6 +232,71 @@ abstract class DiscogsDao {
             }
         insertLabelLabelReferenceCrossRefs(crossRefs)
         return referenceIds
+    }
+
+    // ====================
+    // Master
+    // ====================
+
+    @Insert
+    abstract suspend fun insertMaster(master: LocalMaster): Long
+
+    @Upsert
+    abstract suspend fun upsertMaster(master: LocalMaster): Long
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long {
+        val resourceId = upsertResource(resourceAndMaster.resource)
+        if (resourceId != -1L) {
+            with(resourceAndMaster.masterWithDetails) {
+                val updatedMaster = master.copy(resourceId = resourceId)
+                val masterId = upsertMaster(updatedMaster)
+                if (masterId != -1L) {
+                    insertResourceImages(resourceId, images)
+                    insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+                    // TODO trackList
+                    insertResourceCreditReferences(resourceId, artists)
+                    insertResourceVideoReferences(resourceId, videos)
+                }
+            }
+        }
+        return resourceId
+    }
+    @Query("""
+        SELECT *
+          FROM resource
+          LEFT OUTER JOIN master
+            ON resource.resource_id = master.resource_id
+         WHERE master.master_id = :masterId
+    """)
+    abstract fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
+
+    // ====================
+    // Video
+    // ====================
+
+    @Insert
+    abstract suspend fun insertVideos(videos: List<LocalVideo>): List<Long>
+
+    @Insert
+    abstract suspend fun insertResourceVideoCrossRefs(
+        crossRefs: List<LocalResourceVideoCrossRef>
+    ): List<Long>
+
+    private suspend fun insertResourceVideoReferences(
+        resourceId: Long,
+        videos: List<LocalVideo>
+    ): List<Long> {
+        // TODO Insert or Upsert? Clean beforehand?
+        val videoIds = insertVideos(videos)
+        val crossRefs = videoIds
+            .filter { it != -1L }
+            .mapIndexed { index, videoId ->
+                LocalResourceVideoCrossRef(resourceId, videoId, index)
+            }
+        insertResourceVideoCrossRefs(crossRefs)
+        return videoIds
     }
 
     // endregion Methods

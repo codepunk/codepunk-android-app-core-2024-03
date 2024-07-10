@@ -4,8 +4,10 @@ import arrow.core.Ior
 import com.codepunk.skeleton.data.localv2.dao.DiscogsDao
 import com.codepunk.skeleton.data.mapperv2.toDomainArtist
 import com.codepunk.skeleton.data.mapperv2.toDomainLabel
+import com.codepunk.skeleton.data.mapperv2.toDomainMaster
 import com.codepunk.skeleton.data.mapperv2.toLocalResourceAndArtist
 import com.codepunk.skeleton.data.mapperv2.toLocalResourceAndLabel
+import com.codepunk.skeleton.data.mapperv2.toLocalResourceAndMaster
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebserviceV2
 import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
 import com.codepunk.skeleton.domainv2.model.Artist
@@ -53,9 +55,24 @@ class DiscogsRepositoryImplV2(
         }
     )
 
-    override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> = networkBoundResource(
+        query = {
+            discogsDao.getResourceAndMaster(masterId).map {
+                it?.toDomainMaster().also {
+                    val x = "$it"
+                }
+            }
+        },
+        fetch = {
+            discogsWebService.getMaster(masterId).fold(
+                ifLeft = { throw it.toThrowable() },
+                ifRight = { it }
+            )
+        },
+        saveFetchResult = {
+            discogsDao.insertResourceAndMaster(it.toLocalResourceAndMaster())
+        }
+    )
 
     override fun fetchRelease(releaseId: Long): Flow<Ior<Throwable, Release?>> {
         TODO("Not yet implemented")

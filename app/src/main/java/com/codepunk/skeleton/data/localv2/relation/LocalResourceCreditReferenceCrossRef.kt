@@ -7,8 +7,8 @@ import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 
 @Entity(
-    tableName = "resource_credit_cross_ref",
-    primaryKeys = ["resource_id", "credit_id"],
+    tableName = "resource_credit_reference_cross_ref",
+    primaryKeys = ["resource_id", "reference_id"],
     foreignKeys = [
         ForeignKey(
             entity = LocalResource::class,
@@ -19,8 +19,8 @@ import com.codepunk.skeleton.data.localv2.entity.LocalResource
         ),
         ForeignKey(
             entity = LocalCreditReference::class,
-            parentColumns = ["credit_id"],
-            childColumns = ["credit_id"],
+            parentColumns = ["reference_id"],
+            childColumns = ["reference_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
@@ -29,8 +29,8 @@ import com.codepunk.skeleton.data.localv2.entity.LocalResource
 data class LocalResourceCreditReferenceCrossRef(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long,
-    @ColumnInfo(name = "credit_id")
-    val creditId: Long,
-    @ColumnInfo(name = "credit_idx")
-    val creditIdx: Int
+    @ColumnInfo(name = "reference_id")
+    val referenceId: Long,
+    @ColumnInfo(name = "reference_idx")
+    val referenceIdx: Int
 )

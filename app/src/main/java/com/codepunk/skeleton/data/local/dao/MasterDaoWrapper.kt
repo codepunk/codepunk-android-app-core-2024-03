@@ -5,7 +5,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
-import com.codepunk.skeleton.data.local.relation.LocalMasterCreditCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalMasterCreditReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterTrackCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterVideoCrossRef
@@ -36,11 +36,11 @@ class MasterDaoWrapper(
         wrapped.insertMasterImageCrossRefs(crossRefs)
     }
 
-    override suspend fun insertMasterCreditCrossRef(crossRef: LocalMasterCreditCrossRef) {
+    override suspend fun insertMasterCreditCrossRef(crossRef: LocalMasterCreditReferenceCrossRef) {
         wrapped.insertMasterCreditCrossRef(crossRef)
     }
 
-    override suspend fun insertMasterCreditCrossRefs(crossRefs: List<LocalMasterCreditCrossRef>) {
+    override suspend fun insertMasterCreditCrossRefs(crossRefs: List<LocalMasterCreditReferenceCrossRef>) {
         wrapped.insertMasterCreditCrossRefs(crossRefs)
     }
 
@@ -93,7 +93,7 @@ class MasterDaoWrapper(
             wrapped.insertMasterTrackCrossRefs(trackCrossRefs)
             val creditCrossRefs = creditDao.insertCredits(masterWithDetails.artists)
                 .filter { it != -1L }
-                .map { LocalMasterCreditCrossRef(masterId = masterId, creditId = it) }
+                .map { LocalMasterCreditReferenceCrossRef(masterId = masterId, referenceId = it) }
             wrapped.insertMasterCreditCrossRefs(creditCrossRefs)
             val videoCrossRefs = videoDao.insertVideos(masterWithDetails.videos)
                 .filter { it != -1L }

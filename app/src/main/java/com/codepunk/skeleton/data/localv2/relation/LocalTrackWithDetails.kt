@@ -1,7 +1,6 @@
 package com.codepunk.skeleton.data.localv2.relation
 
 import androidx.room.Embedded
-import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
@@ -12,10 +11,8 @@ data class LocalTrackWithDetails(
     val track: LocalTrack,
     @Relation(
         parentColumn = "track_id",
-        entityColumn = "credit_id",
-        associateBy = Junction(LocalTrackCreditCrossRef::class)
+        entityColumn = "reference_id",
+        associateBy = Junction(LocalTrackCreditReferenceCrossRef::class)
     )
     val extraArtists: List<LocalCreditReference>? = null,
-    @Ignore
-    val subTracks: List<LocalTrackWithDetails>? = null
 )

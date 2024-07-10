@@ -24,9 +24,11 @@ data class LocalMasterWithDetails(
         entityColumn = "resource_id"
     )
     val details: List<LocalResourceDetail>,
+    @Ignore
+    val trackList: List<LocalTrackWithDetails>,
     @Relation(
         parentColumn = "resource_id",
-        entityColumn = "credit_id",
+        entityColumn = "reference_id",
         associateBy = Junction(LocalResourceCreditReferenceCrossRef::class)
     )
     val artists: List<LocalCreditReference>,
@@ -35,18 +37,11 @@ data class LocalMasterWithDetails(
         entityColumn = "video_id",
         associateBy = Junction(LocalResourceVideoCrossRef::class)
     )
-    val videos: List<LocalVideo>,
-    /*
-    @Relation(
-        entity = LocalTrack::class,
-        parentColumn = "resource_id",
-        entityColumn = "track_id",
-        associateBy = Junction(LocalResourceTrackCrossRef::class)
-    )
-     */
-    @Ignore
-    val trackList: List<LocalTrackWithDetails>
+    val videos: List<LocalVideo>
 ) {
+
+    // region Constructors
+
     constructor(
         master: LocalMaster,
         images: List<LocalImage>,
@@ -57,8 +52,11 @@ data class LocalMasterWithDetails(
         master = master,
         images = images,
         details = details,
+        trackList = emptyList(),
         artists = artists,
         videos = videos,
-        trackList = emptyList()
     )
+
+    // endregion Constructors
+
 }

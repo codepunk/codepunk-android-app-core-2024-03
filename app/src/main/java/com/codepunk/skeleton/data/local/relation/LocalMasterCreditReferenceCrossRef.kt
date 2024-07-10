@@ -7,8 +7,8 @@ import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 
 @Entity(
-    tableName = "master_credit_cross_ref",
-    primaryKeys = ["master_id", "credit_id"],
+    tableName = "master_credit_reference_cross_ref",
+    primaryKeys = ["master_id", "reference_id"],
     foreignKeys = [
         ForeignKey(
             entity = LocalMaster::class,
@@ -20,15 +20,15 @@ import com.codepunk.skeleton.data.local.entity.LocalMaster
         ForeignKey(
             entity = LocalCredit::class,
             parentColumns = ["id"],
-            childColumns = ["credit_id"],
+            childColumns = ["reference_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
-data class LocalMasterCreditCrossRef(
+data class LocalMasterCreditReferenceCrossRef(
     @ColumnInfo(name = "master_id")
     val masterId: Long = 0L,
-    @ColumnInfo(name = "credit_id")
-    val creditId: Long = 0L,
+    @ColumnInfo(name = "reference_id")
+    val referenceId: Long = 0L,
 )

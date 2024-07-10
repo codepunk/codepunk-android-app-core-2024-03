@@ -25,7 +25,7 @@ import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceC
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceTrackCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceVideoCrossRef
-import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCrossRef
 
 @Database(
     version = 1,
@@ -49,7 +49,7 @@ import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditCrossRef
         LocalResourceTrackCrossRef::class,
         LocalResourceVideoCrossRef::class,
         LocalTrack::class,
-        LocalTrackCreditCrossRef::class,
+        LocalTrackCreditReferenceCrossRef::class,
         LocalVideo::class
     ]
 )

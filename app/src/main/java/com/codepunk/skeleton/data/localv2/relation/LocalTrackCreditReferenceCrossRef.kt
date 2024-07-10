@@ -7,8 +7,8 @@ import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
 import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 
 @Entity(
-    tableName = "track_credit_cross_ref",
-    primaryKeys = ["track_id", "credit_id"],
+    tableName = "track_credit_reference_cross_ref",
+    primaryKeys = ["track_id", "reference_id"],
     foreignKeys = [
         ForeignKey(
             entity = LocalTrack::class,
@@ -19,18 +19,18 @@ import com.codepunk.skeleton.data.localv2.entity.LocalTrack
         ),
         ForeignKey(
             entity = LocalCreditReference::class,
-            parentColumns = ["credit_id"],
-            childColumns = ["credit_id"],
+            parentColumns = ["reference_id"],
+            childColumns = ["reference_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
-data class LocalTrackCreditCrossRef(
+data class LocalTrackCreditReferenceCrossRef(
     @ColumnInfo(name = "track_id")
     val trackId: Long,
-    @ColumnInfo(name = "credit_id")
-    val creditId: Long,
-    @ColumnInfo(name = "credit_idx")
-    val creditIdx: Int
+    @ColumnInfo(name = "reference_id")
+    val referenceId: Long,
+    @ColumnInfo(name = "reference_idx")
+    val referenceIdx: Int
 )

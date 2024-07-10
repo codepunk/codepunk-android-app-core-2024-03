@@ -11,8 +11,10 @@ data class LocalTrack(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "track_id")
     val trackId: Long = 0L,
-    @ColumnInfo(name = "parent_track_id")
-    val parentTrackId: Long? = null,
+    @ColumnInfo(name = "track_marker")
+    val trackMarker: Int = 0,
+    @ColumnInfo(name = "parent_track_marker")
+    val parentTrackMarker: Int = -1,
     val position: String = "",
     val type: String = "",
     val title: String = "",

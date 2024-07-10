@@ -87,6 +87,7 @@ class MainActivity : ComponentActivity() {
         //testFetchLabel(REPUBLIC_RECORDS)
         //testFetchLabel(ATLANTIC_RECORDS)
         testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+        //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
 
         /*
         testFetchMaster(THE_TORTURED_POETS_DEPARTMENT)
@@ -280,7 +281,7 @@ class MainActivity : ComponentActivity() {
         const val TAYLOR_SWIFT = 1124645L
         const val REPUBLIC_RECORDS = 38017L
         const val ATLANTIC_RECORDS = 681L
-        const val THE_TORTURED_POETS_DEPARTMENT = 3461018L // Master
+        const val THE_TORTURED_POETS_DEPARTMENT_MASTER = 3461018L // Master
         const val AN_HOUR_BEFORE_ITS_DARK_MASTER = 2531977L // Master
         const val THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY = 30438707L // Release
     }

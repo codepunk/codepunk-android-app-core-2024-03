@@ -14,6 +14,7 @@ import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
 import com.codepunk.skeleton.data.localv2.entity.LocalMaster
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
+import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistArtistReferenceCrossRef
@@ -22,8 +23,12 @@ import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndMaster
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceImageCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceTrackCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceVideoCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalTrackWithDetails
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class DiscogsDao {
@@ -59,6 +64,11 @@ abstract class DiscogsDao {
         crossRefs: List<LocalResourceCreditReferenceCrossRef>
     ): List<Long>
 
+    @Insert
+    abstract suspend fun insertTrackCreditReferenceCrossRefs(
+        crossRefs: List<LocalTrackCreditReferenceCrossRef>
+    ): List<Long>
+
     private suspend fun insertResourceCreditReferences(
         resourceId: Long,
         creditRefs: List<LocalCreditReference>
@@ -73,6 +83,24 @@ abstract class DiscogsDao {
         insertResourceCreditReferenceCrossRefs(crossRefs)
         return referenceIds
     }
+
+    @Transaction
+    @Query("")
+    private suspend fun insertTrackCreditReferences(
+        trackId: Long,
+        creditRefs: List<LocalCreditReference>
+    ): List<Long> {
+        // TODO Insert or Upsert? Clean beforehand?
+        val referenceIds = insertCreditReferences(creditRefs)
+        val crossRefs = referenceIds
+            .filter { it != -1L }
+            .mapIndexed { index, referenceId ->
+                LocalTrackCreditReferenceCrossRef(trackId, referenceId, index)
+            }
+        insertTrackCreditReferenceCrossRefs(crossRefs)
+        return referenceIds
+    }
+
 
     // ====================
     // Image
@@ -155,6 +183,8 @@ abstract class DiscogsDao {
         crossRefs: List<LocalArtistArtistReferenceCrossRef>
     ): List<Long>
 
+    @Transaction
+    @Query("")
     private suspend fun insertArtistArtistReferences(
         artistId: Long,
         artistRefs: List<LocalArtistReference>
@@ -255,7 +285,7 @@ abstract class DiscogsDao {
                 if (masterId != -1L) {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-                    // TODO trackList
+                    insertResourceTracksWithDetails(resourceId, trackList)
                     insertResourceCreditReferences(resourceId, artists)
                     insertResourceVideoReferences(resourceId, videos)
                 }
@@ -271,6 +301,80 @@ abstract class DiscogsDao {
          WHERE master.master_id = :masterId
     """)
     abstract fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
+
+    fun getResourceAndMasterWithTrackList(masterId: Long): Flow<LocalResourceAndMaster?> {
+        val resourceAndMaster = getResourceAndMaster(masterId)
+        return resourceAndMaster.map {
+
+            it
+            TODO("")
+        }
+    }
+
+    private fun getTrackList(resourceId: Long): Flow<List<LocalTrack>> {
+        TODO("")
+    }
+
+    // ====================
+    // Track
+    // ====================
+
+    @Insert
+    abstract suspend fun insertTrack(track: LocalTrack): Long
+
+    @Insert
+    abstract suspend fun insertTracks(tracks: List<LocalTrack>): List<Long>
+
+    @Insert
+    abstract suspend fun insertResourceTrackCrossRefs(
+        crossRefs: List<LocalResourceTrackCrossRef>
+    ): List<Long>
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceTrackWithDetails(
+        resourceId: Long?,
+        trackWithDetails: LocalTrackWithDetails
+    ): Long {
+        val trackId = insertTrack(trackWithDetails.track)
+        trackWithDetails.extraArtists?.also { trackCreditReferences ->
+            insertTrackCreditReferences(trackId, trackCreditReferences)
+        }
+        return trackId
+    }
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceTracksWithDetails(
+        resourceId: Long,
+        tracksWithDetails: List<LocalTrackWithDetails>
+    ): List<Long> {
+        // TODO Insert or Upsert? Clean beforehand?
+        val trackIds = tracksWithDetails.map { trackWithDetails ->
+            insertResourceTrackWithDetails(resourceId, trackWithDetails)
+        }
+        val crossRefs = trackIds
+            .filter { it != -1L }
+            .mapIndexed { index, trackId ->
+                LocalResourceTrackCrossRef(resourceId, trackId, index)
+            }
+        insertResourceTrackCrossRefs(crossRefs)
+        return trackIds
+    }
+
+    private suspend fun insertTracksWithDetails(
+        trackWithDetails: List<LocalTrackWithDetails>
+    ): List<Long> {
+        TODO("")
+    }
+
+    @Transaction
+    @Query("")
+    suspend fun insertTrackWithDetails(
+        trackWithDetails: LocalTrackWithDetails
+    ): Long {
+        TODO("")
+    }
 
     // ====================
     // Video

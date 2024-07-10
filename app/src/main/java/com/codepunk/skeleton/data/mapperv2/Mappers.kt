@@ -1,5 +1,7 @@
 package com.codepunk.skeleton.data.mapperv2
 
+import androidx.compose.ui.util.fastForEachReversed
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.type.ArtistReferenceType
 import com.codepunk.skeleton.data.local.type.LabelReferenceType
 import com.codepunk.skeleton.data.local.type.ResourceDetailType
@@ -42,6 +44,7 @@ import com.codepunk.skeleton.domainv2.model.Track
 import com.codepunk.skeleton.domainv2.model.Video
 import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
+import java.util.Stack
 import kotlin.time.DurationUnit
 
 // region Methods
@@ -264,7 +267,7 @@ fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
     year = masterWithDetails.master.year,
     numForSale = masterWithDetails.master.numForSale,
     lowestPrice = masterWithDetails.master.lowestPrice,
-    trackList = masterWithDetails.trackList.map { it.toDomainTrack() }, // TODO
+    trackList = masterWithDetails.trackList.map { it.toDomainTrack() }, // TODO ??????
     artists = masterWithDetails.artists.map { it.toDomainCreditReference() },
     videos = masterWithDetails.videos.map { it.toDomainVideo() },
     mainRelease = masterWithDetails.master.mainRelease,
@@ -297,13 +300,13 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
     images = images.mapIndexed { index, image -> image.toLocalImage(index) },
     details = genres.toLocalResourceDetails(ResourceDetailType.GENRE) +
             styles.toLocalResourceDetails(ResourceDetailType.STYLE),
-    trackList = trackList.map { it.toLocalTrackWithDetails() },
+    trackList = trackList.flattenedToLocalTracksWithDetails(),
     artists = artists.map { it.toLocalCreditReference() },
-    videos = videos.map { it.toLocalVideo() }
+    videos = videos.map { it.toLocalVideo() },
 )
 
 // ====================
-// Credit
+// Credit reference
 // ====================
 
 fun RemoteCreditReference.toLocalCreditReference(): LocalCreditReference = LocalCreditReference(
@@ -333,9 +336,11 @@ fun LocalCreditReference.toDomainCreditReference(): CreditReference = CreditRefe
 // ====================
 
 fun RemoteTrack.toLocalTrack(
-    parentTrackId: Long? = null
+    trackMarker: Int = 0,
+    parentTrackMarker: Int = -1
 ): LocalTrack = LocalTrack(
-    parentTrackId = parentTrackId,
+    trackMarker = trackMarker,
+    parentTrackMarker = parentTrackMarker,
     position = position,
     type = type,
     title = title,
@@ -343,11 +348,11 @@ fun RemoteTrack.toLocalTrack(
 )
 
 fun RemoteTrack.toLocalTrackWithDetails(
-    parentTrackId: Long? = null
+    trackMarker: Int = 0,
+    parentTrackMarker: Int = -1
 ): LocalTrackWithDetails = LocalTrackWithDetails(
-    track = toLocalTrack(parentTrackId),
-    extraArtists = extraArtists?.map { it.toLocalCreditReference() },
-    subTracks = subTracks?.map { it.toLocalTrackWithDetails() }
+    track = toLocalTrack(trackMarker, parentTrackMarker),
+    extraArtists = extraArtists?.map { it.toLocalCreditReference() }
 )
 
 fun LocalTrackWithDetails.toDomainTrack(
@@ -360,6 +365,48 @@ fun LocalTrackWithDetails.toDomainTrack(
     duration = parseElapsedTimeString(track.duration),
     subTracks = subTracks
 )
+
+fun List<RemoteTrack>.flattenedToLocalTracksWithDetails(): List<LocalTrackWithDetails> {
+    // Use stack to non-recursively walk through tracks
+    // See https://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion
+
+    var lastTrackMarker: Int = 0
+    //var parentTrackMarker: Int = -1
+
+    val markerMap = mutableMapOf<RemoteTrack, Pair<Int, Int>>()
+
+    val flattened = mutableListOf<LocalTrackWithDetails>()
+    val stack = Stack<RemoteTrack>()
+    fastForEachReversed {
+        Loginator.d { "Pushing track \"${it.title}\" on to stack" }
+        stack.push(it)
+        markerMap[it] = Pair(++lastTrackMarker, -1)
+    }
+
+    while (stack.isNotEmpty()) {
+        val track = stack.pop()
+        Loginator.d { "Popped track \"${track.title}\" from stack" }
+        val trackMarkers = markerMap[track]
+        val trackMarker = trackMarkers?.first ?: -1
+        val parentTrackMarker = trackMarkers?.second ?: -1
+
+        track.subTracks?.fastForEachReversed {
+            Loginator.d { "Pushing track \"${it.title}\" on to stack" }
+            stack.push(it)
+            markerMap[it] = Pair(++lastTrackMarker, trackMarker)
+        }
+
+        // Process track
+        flattened.add(track.toLocalTrackWithDetails(trackMarker, parentTrackMarker))
+    }
+
+    Loginator.d { "flattened = $flattened" }
+
+    // TODO NEXT
+    //  Figure out how best to store "hierarchy" info in a list of LocalTrack
+    //  Like, UUID or an incremented #
+    return flattened.toList()
+}
 
 // ====================
 // Video

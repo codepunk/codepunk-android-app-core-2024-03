@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
-import com.codepunk.skeleton.data.local.relation.LocalMasterCreditCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalMasterCreditReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterTrackCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalMasterVideoCrossRef
@@ -34,10 +34,10 @@ abstract class MasterDao {
     abstract suspend fun insertMasters(masters: List<LocalMaster>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertMasterCreditCrossRef(crossRef: LocalMasterCreditCrossRef)
+    abstract suspend fun insertMasterCreditCrossRef(crossRef: LocalMasterCreditReferenceCrossRef)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertMasterCreditCrossRefs(crossRefs: List<LocalMasterCreditCrossRef>)
+    abstract suspend fun insertMasterCreditCrossRefs(crossRefs: List<LocalMasterCreditReferenceCrossRef>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertMasterImageCrossRef(crossRef: LocalMasterImageCrossRef)

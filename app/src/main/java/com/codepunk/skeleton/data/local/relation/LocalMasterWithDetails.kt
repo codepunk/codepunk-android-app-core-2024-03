@@ -42,9 +42,9 @@ data class LocalMasterWithDetails(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = LocalMasterCreditCrossRef::class,
+            value = LocalMasterCreditReferenceCrossRef::class,
             parentColumn = "master_id",
-            entityColumn = "credit_id"
+            entityColumn = "reference_id"
         )
     )
     val artists: List<LocalCredit> = emptyList(),

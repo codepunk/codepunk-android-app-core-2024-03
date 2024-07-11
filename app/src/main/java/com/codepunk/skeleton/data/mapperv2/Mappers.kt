@@ -354,15 +354,12 @@ fun RemoteTrack.toLocalTrackWithDetails(
     extraArtists = extraArtists?.map { it.toLocalCreditReference() }
 )
 
-fun LocalTrackWithDetails.toDomainTrack(
-    subTracks: List<Track>? = null
-): Track = Track(
+fun LocalTrackWithDetails.toDomainTrack(): Track = Track(
     position = track.position,
     type = track.type,
     title = track.title,
     extraArtists = extraArtists?.map { it.toDomainCreditReference() },
-    duration = parseElapsedTimeString(track.duration),
-    subTracks = subTracks
+    duration = parseElapsedTimeString(track.duration)
 )
 
 fun List<RemoteTrack>.flattenToLocalTracksWithDetails(): List<LocalTrackWithDetails> {

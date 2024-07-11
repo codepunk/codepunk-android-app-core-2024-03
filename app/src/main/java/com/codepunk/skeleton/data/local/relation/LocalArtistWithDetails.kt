@@ -4,56 +4,28 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.local.entity.LocalArtist
-import com.codepunk.skeleton.data.local.entity.LocalArtistDetail
-import com.codepunk.skeleton.data.local.entity.LocalArtistRelationship
+import com.codepunk.skeleton.data.local.entity.LocalArtistReference
 import com.codepunk.skeleton.data.local.entity.LocalImage
+import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
 data class LocalArtistWithDetails(
     @Embedded
-    val artist: LocalArtist = LocalArtist(),
+    val artist: LocalArtist,
+    @Relation(
+        parentColumn = "resource_id",
+        entityColumn = "image_id",
+        associateBy = Junction(LocalResourceImageCrossRef::class)
+    )
+    val images: List<LocalImage>,
+    @Relation(
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
+    )
+    val details: List<LocalResourceDetail>,
     @Relation(
         parentColumn = "artist_id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalArtistImageCrossRef::class,
-            parentColumn = "artist_id",
-            entityColumn = "image_id"
-        )
+        entityColumn = "reference_id",
+        associateBy = Junction(LocalArtistArtistReferenceCrossRef::class)
     )
-    val images: List<LocalImage> = emptyList(),
-    @Relation(
-        parentColumn = "artist_id",
-        entityColumn = "artist_id"
-    )
-    val details: List<LocalArtistDetail> = emptyList(),
-    @Relation(
-        parentColumn = "artist_id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalArtistAliasCrossRef::class,
-            parentColumn = "artist_id",
-            entityColumn = "relationship_id"
-        )
-    )
-    val aliases: List<LocalArtistRelationship> = emptyList(),
-    @Relation(
-        parentColumn = "artist_id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalArtistMemberCrossRef::class,
-            parentColumn = "artist_id",
-            entityColumn = "relationship_id"
-        )
-    )
-    val members: List<LocalArtistRelationship> = emptyList(),
-    @Relation(
-        parentColumn = "artist_id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalArtistGroupCrossRef::class,
-            parentColumn = "artist_id",
-            entityColumn = "relationship_id"
-        )
-    )
-    val groups: List<LocalArtistRelationship> = emptyList()
+    val artistRefs: List<LocalArtistReference>
 )

@@ -20,14 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.codepunk.skeleton.core.loginator.Loginator
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebserviceV2
-import com.codepunk.skeleton.domain.repository.DiscogsRepository
+import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
-import com.codepunk.skeleton.domainv2.model.Artist
-import com.codepunk.skeleton.domainv2.model.Label
-import com.codepunk.skeleton.domainv2.model.Master
-import com.codepunk.skeleton.domainv2.model.Release
+import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.model.Label
+import com.codepunk.skeleton.domain.model.Master
+import com.codepunk.skeleton.domain.model.Release
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
@@ -46,16 +44,10 @@ import kotlin.time.DurationUnit
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var discogsWebService: DiscogsWebService
+    lateinit var discogsWebservice: DiscogsWebservice
 
     @Inject
-    lateinit var discogsWebserviceV2: DiscogsWebserviceV2
-
-    @Inject
-    lateinit var discogsRepository: DiscogsRepository
-
-    @Inject
-    lateinit var discogsRepositoryV2: DiscogsRepositoryV2
+    lateinit var discogsRepository: DiscogsRepositoryV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,11 +70,11 @@ class MainActivity : ComponentActivity() {
     private fun testStuff() {
         //testFetchArtist(TAYLOR_SWIFT)
         //testFetchLabel(REPUBLIC_RECORDS)
-        //testFetchLabel(ATLANTIC_RECORDS)
+        testFetchLabel(ATLANTIC_RECORDS)
         //testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
-        testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
+        //testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
         //testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
     }
 
@@ -119,7 +111,7 @@ class MainActivity : ComponentActivity() {
     @Suppress("SameParameterValue")
     private fun testFetchArtist(artistId: Long) {
         lifecycleScope.launch {
-            discogsRepositoryV2.fetchArtist(artistId).collect { result ->
+            discogsRepository.fetchArtist(artistId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = it) { "fetchArtist encountered an error" }
@@ -139,7 +131,7 @@ class MainActivity : ComponentActivity() {
     @Suppress("Unused")
     private fun testFetchLabel(labelId: Long) {
         lifecycleScope.launch {
-            discogsRepositoryV2.fetchLabel(labelId).collect { result ->
+            discogsRepository.fetchLabel(labelId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = it) { "fetchLabel encountered an error" }
@@ -159,7 +151,7 @@ class MainActivity : ComponentActivity() {
     @Suppress("Unused")
     private fun testFetchMaster(masterId: Long) {
         lifecycleScope.launch {
-            discogsRepositoryV2.fetchMaster(masterId).collect { result ->
+            discogsRepository.fetchMaster(masterId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = it) { "fetchMaster encountered an error" }
@@ -179,7 +171,7 @@ class MainActivity : ComponentActivity() {
     @Suppress("Unused")
     private fun testFetchRelease(releaseId: Long) {
         lifecycleScope.launch {
-            discogsRepositoryV2.fetchRelease(releaseId).collect { result ->
+            discogsRepository.fetchRelease(releaseId).collect { result ->
                 result.fold(
                     fa = {
                         Loginator.e(throwable = it) { "fetchRelease encountered an error" }

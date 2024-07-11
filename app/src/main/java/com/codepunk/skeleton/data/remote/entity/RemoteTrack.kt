@@ -13,6 +13,9 @@ data class RemoteTrack(
     val title: String = "",
     @Serializable(with = ElapsedTimeSerializer::class)
     val duration: Duration = Duration.ZERO,
+    @Suppress("SpellCheckingInspection")
+    @SerialName("extraartists")
+    val extraArtists: List<RemoteCreditReference>? = null,
     @SerialName("sub_tracks")
     val subTracks: List<RemoteTrack>? = null
 )

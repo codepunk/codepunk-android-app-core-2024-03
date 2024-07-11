@@ -3,59 +3,48 @@ package com.codepunk.skeleton.data.local.relation
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.codepunk.skeleton.data.local.entity.LocalMaster
-import com.codepunk.skeleton.data.local.entity.LocalCredit
+import com.codepunk.skeleton.data.local.entity.LocalCreditReference
 import com.codepunk.skeleton.data.local.entity.LocalImage
-import com.codepunk.skeleton.data.local.entity.LocalMasterDetail
+import com.codepunk.skeleton.data.local.entity.LocalMaster
+import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
 
 data class LocalMasterWithDetails(
     @Embedded
-    val master: LocalMaster = LocalMaster(),
+    val master: LocalMaster,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalMasterImageCrossRef::class,
-            parentColumn = "master_id",
-            entityColumn = "image_id"
-        )
+        parentColumn = "resource_id",
+        entityColumn = "image_id",
+        associateBy = Junction(LocalResourceImageCrossRef::class)
     )
-    val images: List<LocalImage> = emptyList(),
+    val images: List<LocalImage>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "master_id"
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
     )
-    val details: List<LocalMasterDetail> = emptyList(),
+    val details: List<LocalResourceDetail>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
+        entity = LocalTrack::class,
+        parentColumn = "resource_id",
+        entityColumn = "track_id",
         associateBy = Junction(
-            value = LocalMasterTrackCrossRef::class,
-            parentColumn = "master_id",
+            value = LocalResourceTrackCrossRef::class,
+            parentColumn = "resource_id",
             entityColumn = "track_id"
         )
     )
-    val trackList: List<LocalTrack> = emptyList(),
+    val trackList: List<LocalTrackWithDetails>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalMasterCreditReferenceCrossRef::class,
-            parentColumn = "master_id",
-            entityColumn = "reference_id"
-        )
+        parentColumn = "resource_id",
+        entityColumn = "reference_id",
+        associateBy = Junction(LocalResourceCreditReferenceCrossRef::class)
     )
-    val artists: List<LocalCredit> = emptyList(),
+    val artists: List<LocalCreditReference>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalMasterVideoCrossRef::class,
-            parentColumn = "master_id",
-            entityColumn = "video_id"
-        )
+        parentColumn = "resource_id",
+        entityColumn = "video_id",
+        associateBy = Junction(LocalResourceVideoCrossRef::class)
     )
-    val videos: List<LocalVideo> = emptyList()
+    val videos: List<LocalVideo>
 )

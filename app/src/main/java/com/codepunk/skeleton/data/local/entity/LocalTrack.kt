@@ -9,9 +9,12 @@ import androidx.room.PrimaryKey
 )
 data class LocalTrack(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
-    @ColumnInfo(name = "parent_track_id")
-    val parentTrackId: Long? = null,
+    @ColumnInfo(name = "track_id")
+    val trackId: Long = 0L,
+    @ColumnInfo(name = "track_num")
+    val trackNum: Int = 0,
+    @ColumnInfo(name = "parent_track_num")
+    val parentTrackNum: Int = -1,
     val position: String = "",
     val type: String = "",
     val title: String = "",

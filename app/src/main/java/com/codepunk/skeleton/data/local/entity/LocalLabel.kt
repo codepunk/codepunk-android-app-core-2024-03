@@ -1,30 +1,36 @@
 package com.codepunk.skeleton.data.local.entity
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/**
- * Note: Because parentLabel can be null, "parent_label_id" is NOT included as a Foreign Key
- */
 @Entity(
-    tableName = "label"
+    tableName = "label",
+    indices = [
+        Index("resource_id")
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = LocalResource::class,
+            parentColumns = ["resource_id"],
+            childColumns = ["resource_id"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class LocalLabel(
     @PrimaryKey(autoGenerate = false)
-    val id: Long = 0L,
+    @ColumnInfo(name = "label_id")
+    val labelId: Long = 0L,
+    @ColumnInfo(name = "resource_id")
+    val resourceId: Long = 0L,
     val name: String = "",
-    @ColumnInfo(name = "resource_url")
-    val resourceUrl: String = "",
-    val uri: String = "",
+    val profile: String = "",
     @ColumnInfo(name = "releases_url")
     val releasesUrl: String = "",
     @ColumnInfo(name = "contact_info")
-    val contactInfo: String = "",
-    val profile: String = "",
-    @Embedded(prefix = "parent_label_")
-    val parentLabel: LocalLabelRelationship? = null,
-    @ColumnInfo(name = "data_quality")
-    val dataQuality: String = ""
+    val contactInfo: String = ""
 )

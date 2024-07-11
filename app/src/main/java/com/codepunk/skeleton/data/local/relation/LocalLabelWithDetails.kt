@@ -5,35 +5,27 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
-import com.codepunk.skeleton.data.local.entity.LocalLabelDetail
-import com.codepunk.skeleton.data.local.entity.LocalLabelRelationship
+import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
 data class LocalLabelWithDetails(
     @Embedded
-    val label: LocalLabel = LocalLabel(),
+    val label: LocalLabel,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalLabelImageCrossRef::class,
-            parentColumn = "label_id",
-            entityColumn = "image_id"
-        )
+        parentColumn = "resource_id",
+        entityColumn = "image_id",
+        associateBy = Junction(LocalResourceImageCrossRef::class)
     )
-    val images: List<LocalImage> = emptyList(),
+    val images: List<LocalImage>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "label_id"
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
     )
-    val details: List<LocalLabelDetail> = emptyList(),
+    val details: List<LocalResourceDetail>,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = LocalLabelSubLabelCrossRef::class,
-            parentColumn = "label_id",
-            entityColumn = "relationship_id"
-        )
+        parentColumn = "label_id",
+        entityColumn = "reference_id",
+        associateBy = Junction(LocalLabelLabelReferenceCrossRef::class)
     )
-    val subLabels: List<LocalLabelRelationship> = emptyList()
+    val labelRefs: List<LocalLabelReference>
 )

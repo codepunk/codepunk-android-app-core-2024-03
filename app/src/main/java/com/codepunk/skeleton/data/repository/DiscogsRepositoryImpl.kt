@@ -1,80 +1,95 @@
 package com.codepunk.skeleton.data.repository
 
 import arrow.core.Ior
-import com.codepunk.skeleton.data.local.dao.ArtistDao
-import com.codepunk.skeleton.data.local.dao.LabelDao
-import com.codepunk.skeleton.data.local.dao.MasterDao
+import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.mapper.toDomainArtist
 import com.codepunk.skeleton.data.mapper.toDomainLabel
 import com.codepunk.skeleton.data.mapper.toDomainMaster
-import com.codepunk.skeleton.data.mapper.toLocalArtistWithDetails
-import com.codepunk.skeleton.data.mapper.toLocalLabelWithDetails
-import com.codepunk.skeleton.data.mapper.toLocalMasterWithDetails
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
+import com.codepunk.skeleton.data.mapper.toDomainRelease
+import com.codepunk.skeleton.data.mapper.toLocalResourceAndArtist
+import com.codepunk.skeleton.data.mapper.toLocalResourceAndLabel
+import com.codepunk.skeleton.data.mapper.toLocalResourceAndMaster
+import com.codepunk.skeleton.data.mapper.toLocalResourceAndRelease
+import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
+import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
+import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.model.Label
+import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.model.Release
-import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.util.networkBoundResource
 import com.codepunk.skeleton.util.toThrowable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DiscogsRepositoryImpl(
-    private val artistDao: ArtistDao,
-    private val labelDao: LabelDao,
-    private val masterDao: MasterDao,
-    private val discogsWebService: DiscogsWebService
-) : DiscogsRepository {
+    private val discogsDao: DiscogsDao,
+    private val discogsWebService: DiscogsWebservice
+) : DiscogsRepositoryV2 {
 
     // region Methods
+    override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
+        networkBoundResource(
+            query = {
+                discogsDao.getResourceAndArtist(artistId).map { it?.toDomainArtist() }
+            },
+            fetch = {
+                discogsWebService.getArtist(artistId).fold(
+                    ifLeft = { throw it.toThrowable() },
+                    ifRight = { it }
+                )
+            },
+            saveFetchResult = {
+                discogsDao.insertResourceAndArtist(it.toLocalResourceAndArtist())
+            }
+        )
 
-    override fun fetchArtist(artistId: Long) = networkBoundResource(
-        query = {
-            artistDao.getArtistWithDetails(artistId).map { it?.toDomainArtist() }
-        },
-        fetch = {
-            discogsWebService.getArtist(artistId).fold(
-                ifLeft = { throw it.toThrowable() },
-                ifRight = { it }
-            )
-        },
-        saveFetchResult = {
-            artistDao.insertArtistWithDetails(it.toLocalArtistWithDetails())
-        }
-    )
+    override fun fetchLabel(labelId: Long): Flow<Ior<Throwable, Label?>> =
+        networkBoundResource(
+            query = {
+                discogsDao.getResourceAndLabel(labelId).map { it?.toDomainLabel() }
+            },
+            fetch = {
+                discogsWebService.getLabel(labelId).fold(
+                    ifLeft = { throw it.toThrowable() },
+                    ifRight = { it }
+                )
+            },
+            saveFetchResult = {
+                discogsDao.insertResourceAndLabel(it.toLocalResourceAndLabel())
+            }
+        )
 
-    override fun fetchLabel(labelId: Long) = networkBoundResource(
-        query = {
-            labelDao.getLabelWithDetails(labelId).map { it?.toDomainLabel() }
-        },
-        fetch = {
-            discogsWebService.getLabel(labelId).fold(
-                ifLeft = { throw it.toThrowable() },
-                ifRight = { it }
-            )
-        },
-        saveFetchResult = {
-            labelDao.insertLabelWithDetails(it.toLocalLabelWithDetails())
-        }
-    )
+    override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> =
+        networkBoundResource(
+            query = {
+                discogsDao.getResourceAndMaster(masterId).map { it?.toDomainMaster() }
+            },
+            fetch = {
+                discogsWebService.getMaster(masterId).fold(
+                    ifLeft = { throw it.toThrowable() },
+                    ifRight = { it }
+                )
+            },
+            saveFetchResult = {
+                discogsDao.insertResourceAndMaster(it.toLocalResourceAndMaster())
+            }
+        )
 
-    override fun fetchMaster(masterId: Long) = networkBoundResource(
-        query = {
-            masterDao.getMasterWithDetails(masterId).map { it?.toDomainMaster() }
-        },
-        fetch = {
-            discogsWebService.getMaster(masterId).fold(
-                ifLeft = { throw it.toThrowable() },
-                ifRight = { it }
-            )
-        },
-        saveFetchResult = {
-            masterDao.insertMasterWithDetails(it.toLocalMasterWithDetails())
-        }
-    )
-
-    override fun fetchRelease(releaseId: Long): Flow<Ior<Throwable, Release?>> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchRelease(releaseId: Long): Flow<Ior<Throwable, Release?>> =
+        networkBoundResource(
+            query = {
+                discogsDao.getResourceAndRelease(releaseId).map { it?.toDomainRelease() }
+            },
+            fetch = {
+                discogsWebService.getRelease(releaseId).fold(
+                    ifLeft = { throw it.toThrowable() },
+                    ifRight = { it }
+                )
+            },
+            saveFetchResult = {
+                discogsDao.insertResourceAndRelease(it.toLocalResourceAndRelease())
+            }
+        )
 
     // endregion Methods
 

@@ -5,8 +5,7 @@ import arrow.retrofit.adapter.either.EitherCallAdapterFactory
 import com.codepunk.skeleton.BuildConfig
 import com.codepunk.skeleton.data.remote.interceptor.DiscogsAuthorizationInterceptor
 import com.codepunk.skeleton.data.remote.interceptor.DiscogsUserAgentInterceptor
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebService
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebserviceV2
+import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.di.qualifier.Discogs
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -80,12 +79,6 @@ class RemoteModule {
     @Provides
     fun provideDiscogsWebService(
         retrofit: Retrofit
-    ): DiscogsWebService = retrofit.create(DiscogsWebService::class.java)
-
-    @Singleton
-    @Provides
-    fun provideDiscogsWebServiceV2(
-        retrofit: Retrofit
-    ): DiscogsWebserviceV2 = retrofit.create(DiscogsWebserviceV2::class.java)
+    ): DiscogsWebservice = retrofit.create(DiscogsWebservice::class.java)
 
 }

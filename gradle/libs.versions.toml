@@ -27,7 +27,7 @@ okhttp = "4.12.0"
 javapoet = "1.13.0"
 arrow = "1.2.4"
 room = "2.6.1"
-ksp = "1.8.10-1.0.9"
+ksp = "1.9.0-1.0.13"
 kotlinx-datetime = "0.6.0"
 
 [libraries]
@@ -72,7 +72,7 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 
 ##### Added by Codepunk
 kapt = { id = "kapt" }
-ksp = { id = "com.google.devtools.ksp" } # TODO SAS Convert kapt to ksp
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 serialization = { id = "plugin.serialization", version.ref = "serializationPlugin" }
 

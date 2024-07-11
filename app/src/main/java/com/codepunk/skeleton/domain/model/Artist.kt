@@ -1,33 +1,18 @@
 package com.codepunk.skeleton.domain.model
 
-import com.codepunk.skeleton.domainv2.model.Image
-
 data class Artist(
-    val id: Long = 0L,
-    val name: String = "",
-    val resourceUrl: String = "",
-    val uri: String = "",
-    val releasesUrl: String = "",
-    val images: List<Image> = emptyList(),
-    val profile: String = "",
-    val urls: List<String> = emptyList(),
+    override val id: Long = 0L,
+    override val resourceUrl: String = "",
+    override val uri: String = "",
+    override val images: List<Image> = emptyList(),
+    override val dataQuality: String = "",
+    override val name: String = "",
+    override val profile: String = "",
+    override val releasesUrl: String = "",
+    override val urls: List<String> = emptyList(),
+    val realName: String? = null,
     val nameVariations: List<String> = emptyList(),
-    val aliases: List<Relationship> = emptyList(),
-    val members: List<Relationship> = emptyList(),
-    val groups: List<Relationship> = emptyList(),
-    val dataQuality: String = ""
-) {
-
-    // region Classes
-
-    data class Relationship(
-        val id: Long = 0L,
-        val name: String = "",
-        val resourceUrl: String = "",
-        val active: Boolean? = null,
-        val thumbnailUrl: String = ""
-    )
-
-    // endregion Classes
-
-}
+    val aliases: List<ArtistReference> = emptyList(),
+    val members: List<ArtistReference> = emptyList(),
+    val groups: List<ArtistReference> = emptyList()
+) : Entity

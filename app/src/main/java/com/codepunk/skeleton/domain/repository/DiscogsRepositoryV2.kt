@@ -1,10 +1,10 @@
 package com.codepunk.skeleton.domain.repository
 
 import arrow.core.Ior
-import com.codepunk.skeleton.domainv2.model.Artist
-import com.codepunk.skeleton.domainv2.model.Label
-import com.codepunk.skeleton.domainv2.model.Master
-import com.codepunk.skeleton.domainv2.model.Release
+import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.model.Label
+import com.codepunk.skeleton.domain.model.Master
+import com.codepunk.skeleton.domain.model.Release
 import kotlinx.coroutines.flow.Flow
 
 interface DiscogsRepositoryV2 {

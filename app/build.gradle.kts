@@ -3,9 +3,9 @@ import com.android.build.api.dsl.VariantDimension
 plugins {
     id(libs.plugins.androidApplication.get().pluginId)
     id(libs.plugins.jetbrainsKotlinAndroid.get().pluginId)
-    kotlin(libs.plugins.kapt.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
     kotlin(libs.plugins.serialization.get().pluginId) version libs.versions.serializationPlugin.get()
+    id(libs.plugins.ksp.get().pluginId)
 }
 
 android {
@@ -28,6 +28,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         buildConfigField(
@@ -122,7 +126,7 @@ dependencies {
     // region Added by Codepunk
 
     implementation(libs.hilt)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.retrofit)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.converter)
@@ -132,14 +136,9 @@ dependencies {
     implementation(libs.arrow.fx.coroutines)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.kotlinx.datetime)
 
     // endregion Added by Codepunk
 
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
 }

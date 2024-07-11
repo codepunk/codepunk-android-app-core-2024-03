@@ -2,22 +2,36 @@ package com.codepunk.skeleton.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "artist"
+    tableName = "artist",
+    indices = [
+        Index("resource_id")
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = LocalResource::class,
+            parentColumns = ["resource_id"],
+            childColumns = ["resource_id"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class LocalArtist(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "artist_id")
     val artistId: Long = 0L,
+    @ColumnInfo(name = "resource_id")
+    val resourceId: Long = 0L,
+    @Suppress("SpellCheckingInspection")
+    @ColumnInfo(name = "realname")
+    val realName: String? = null,
     val name: String = "",
-    @ColumnInfo(name = "resource_url")
-    val resourceUrl: String = "",
-    val uri: String = "",
+    val profile: String = "",
     @ColumnInfo(name = "releases_url")
     val releasesUrl: String = "",
-    val profile: String = "",
-    @ColumnInfo(name = "data_quality")
-    val dataQuality: String = ""
 )

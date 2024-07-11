@@ -7,34 +7,35 @@ import java.math.BigDecimal
 
 @Serializable
 data class RemoteMaster(
-    val id: Long = 0L,
-    val title: String = "",
+    override val id: Long = 0L,
+    @SerialName("resource_url")
+    override val resourceUrl: String = "",
+    override val uri: String = "",
+    override val images: List<RemoteImage> = emptyList(),
+    @SerialName("data_quality")
+    override val dataQuality: String = "",
+    override val title: String = "",
+    override val genres: List<String> = emptyList(),
+    override val styles: List<String> = emptyList(),
+    override val year: Int = 0,
+    @SerialName("num_for_sale")
+    override val numForSale: Int = 0,
+    @Serializable(with = BigDecimalSerializer::class)
+    @SerialName("lowest_price")
+    override val lowestPrice: BigDecimal? = null,
+    @Suppress("SpellCheckingInspection")
+    @SerialName("tracklist")
+    override val trackList: List<RemoteTrack> = emptyList(),
+    override val artists: List<RemoteCreditReference> = emptyList(),
+    override val videos: List<RemoteVideo> = emptyList(),
     @SerialName("main_release")
     val mainRelease: Long = 0L,
     @SerialName("most_recent_release")
     val mostRecentRelease: Long = 0L,
-    @SerialName("resource_url")
-    val resourceUrl: String = "",
-    val uri: String = "",
     @SerialName("versions_url")
     val versionsUrl: String = "",
     @SerialName("main_release_url")
     val mainReleaseUrl: String = "",
     @SerialName("most_recent_release_url")
-    val mostRecentReleaseUrl: String = "",
-    val numForSale: Int = 0,
-    @Serializable(with = BigDecimalSerializer::class)
-    @SerialName("lowest_price")
-    val lowestPrice: BigDecimal = BigDecimal(0),
-    val images: List<RemoteImage> = emptyList(),
-    val genres: List<String> = emptyList(),
-    val styles: List<String> = emptyList(),
-    val year: Int = 0,
-    @Suppress("SpellCheckingInspection")
-    @SerialName("tracklist")
-    val trackList: List<RemoteTrack> = emptyList(),
-    val artists: List<RemoteCredit> = emptyList(),
-    @SerialName("data_quality")
-    val dataQuality: String = "",
-    val videos: List<RemoteVideo> = emptyList()
-)
+    val mostRecentReleaseUrl: String = ""
+) : RemoteProduct

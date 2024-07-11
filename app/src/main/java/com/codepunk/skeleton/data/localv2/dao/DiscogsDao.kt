@@ -28,6 +28,7 @@ import com.codepunk.skeleton.data.localv2.relation.LocalResourceVideoCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalTrackWithDetails
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @Dao
@@ -303,11 +304,26 @@ abstract class DiscogsDao {
     abstract fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
 
     fun getResourceAndMasterWithTrackList(masterId: Long): Flow<LocalResourceAndMaster?> {
-        val resourceAndMaster = getResourceAndMaster(masterId)
-        return resourceAndMaster.map {
+        val resourceAndMasterFlow = getResourceAndMaster(masterId)
 
-            it
-            TODO("")
+
+        return resourceAndMasterFlow.map { resourceAndMaster ->
+            val tracksWithDetails = resourceAndMaster?.let {
+                val resourceId = it.resource.resourceId
+                getTracksWithDetails(resourceId)
+            }
+            if (tracksWithDetails != null) {
+                val masterWithDetails = resourceAndMaster.masterWithDetails.copy(
+                    trackList = tracksWithDetails
+                )
+                resourceAndMaster.copy(
+                    masterWithDetails = masterWithDetails
+                )
+            } else {
+                resourceAndMaster
+            }.also {
+                val x = "$it"
+            }
         }
     }
 
@@ -375,6 +391,14 @@ abstract class DiscogsDao {
     ): Long {
         TODO("")
     }
+
+    @Query("""
+        SELECT track.* 
+        FROM resource_track_cross_ref, track 
+        WHERE resource_track_cross_ref.track_id = track.track_id
+        AND resource_track_cross_ref.resource_id = :resourceId
+    """)
+    abstract suspend fun getTracksWithDetails(resourceId: Long): List<LocalTrackWithDetails>
 
     // ====================
     // Video

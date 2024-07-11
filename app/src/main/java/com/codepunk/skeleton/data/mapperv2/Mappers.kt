@@ -1,7 +1,6 @@
 package com.codepunk.skeleton.data.mapperv2
 
 import androidx.compose.ui.util.fastForEachReversed
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.type.ArtistReferenceType
 import com.codepunk.skeleton.data.local.type.LabelReferenceType
 import com.codepunk.skeleton.data.local.type.ResourceDetailType
@@ -267,7 +266,7 @@ fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
     year = masterWithDetails.master.year,
     numForSale = masterWithDetails.master.numForSale,
     lowestPrice = masterWithDetails.master.lowestPrice,
-    trackList = masterWithDetails.trackList.map { it.toDomainTrack() }, // TODO ??????
+    trackList = masterWithDetails.trackList.toDomainTracks(),
     artists = masterWithDetails.artists.map { it.toDomainCreditReference() },
     videos = masterWithDetails.videos.map { it.toDomainVideo() },
     mainRelease = masterWithDetails.master.mainRelease,
@@ -336,11 +335,11 @@ fun LocalCreditReference.toDomainCreditReference(): CreditReference = CreditRefe
 // ====================
 
 fun RemoteTrack.toLocalTrack(
-    trackMarker: Int = 0,
-    parentTrackMarker: Int = -1
+    trackNum: Int = 0,
+    parentTrackNum: Int = -1
 ): LocalTrack = LocalTrack(
-    trackMarker = trackMarker,
-    parentTrackMarker = parentTrackMarker,
+    trackNum = trackNum,
+    parentTrackNum = parentTrackNum,
     position = position,
     type = type,
     title = title,
@@ -348,10 +347,10 @@ fun RemoteTrack.toLocalTrack(
 )
 
 fun RemoteTrack.toLocalTrackWithDetails(
-    trackMarker: Int = 0,
-    parentTrackMarker: Int = -1
+    trackNum: Int = 0,
+    parentTrackNum: Int = -1
 ): LocalTrackWithDetails = LocalTrackWithDetails(
-    track = toLocalTrack(trackMarker, parentTrackMarker),
+    track = toLocalTrack(trackNum, parentTrackNum),
     extraArtists = extraArtists?.map { it.toLocalCreditReference() }
 )
 
@@ -366,42 +365,25 @@ fun LocalTrackWithDetails.toDomainTrack(
     subTracks = subTracks
 )
 
+fun List<LocalTrackWithDetails>.toDomainTracks(): List<Track> =
+    map { it.toDomainTrack() }
+
 fun List<RemoteTrack>.flattenedToLocalTracksWithDetails(): List<LocalTrackWithDetails> {
     // Use stack to non-recursively walk through tracks
     // See https://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion
-
+    var lastUsedTrackNum = -1
     val flattened = mutableListOf<LocalTrackWithDetails>()
-    val stack = Stack<Pair<RemoteTrack, LocalTrackWithDetails?>>()
-    fastForEachReversed {
-        Loginator.d { "Pushing track \"${it.title}\" on to stack: parentLocalTrack = null" }
-        stack.push(Pair(it, null))
-    }
-
-    var lastTrackMarker = 0
-
+    val stack = Stack<Pair<RemoteTrack, Int>>()
+    fastForEachReversed { stack.push(Pair(it, lastUsedTrackNum)) }
     while (stack.isNotEmpty()) {
         val pair = stack.pop()
         val track = pair.first
-        val parentLocalTrack = pair.second
-        Loginator.d { "Popped track \"${track.title}\" from stack: parentLocalTrack = $parentLocalTrack" }
-
-        val parentTrackMarker = parentLocalTrack?.track?.trackMarker ?: -1
-        val localTrack = track.toLocalTrackWithDetails(++lastTrackMarker, parentTrackMarker)
-
-        track.subTracks?.fastForEachReversed {
-            Loginator.d { "Pushing track \"${it.title}\" on to stack: parentLocalTrack = $localTrack" }
-            stack.push(Pair(it, localTrack))
-        }
-
-        // Process track
+        val trackNum = ++lastUsedTrackNum
+        val parentTrackNum = pair.second
+        val localTrack = track.toLocalTrackWithDetails(trackNum, parentTrackNum)
+        track.subTracks?.fastForEachReversed { stack.push(Pair(it, trackNum)) }
         flattened.add(localTrack)
     }
-
-    Loginator.d { "flattened = $flattened" }
-
-    // TODO NEXT
-    //  Figure out how best to store "hierarchy" info in a list of LocalTrack
-    //  Like, UUID or an incremented #
     return flattened.toList()
 }
 

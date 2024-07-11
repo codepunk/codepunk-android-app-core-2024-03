@@ -57,7 +57,7 @@ class DiscogsRepositoryImplV2(
 
     override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> = networkBoundResource(
         query = {
-            discogsDao.getResourceAndMaster(masterId).map {
+            discogsDao.getResourceAndMasterWithTrackList(masterId).map {
                 it?.toDomainMaster().also {
                     val x = "$it"
                 }

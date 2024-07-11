@@ -215,7 +215,7 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
         label = toLocalLabel(),
         images = images.mapIndexed { index, image -> image.toLocalImage(index) },
         details = urls.toLocalResourceDetails(ResourceDetailType.URL),
-        labelRefs = parentLabel.toLocalLabelReferences() + 
+        labelRefs = parentLabel.toLocalLabelReferences() +
                 subLabels.toLocalLabelReferences(LabelReferenceType.SUB_LABEL)
     )
 
@@ -266,7 +266,7 @@ fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
     year = masterWithDetails.master.year,
     numForSale = masterWithDetails.master.numForSale,
     lowestPrice = masterWithDetails.master.lowestPrice,
-    trackList = masterWithDetails.trackList.toDomainTracks(),
+    trackList = masterWithDetails.trackList.unflattenToDomainTracks(),
     artists = masterWithDetails.artists.map { it.toDomainCreditReference() },
     videos = masterWithDetails.videos.map { it.toDomainVideo() },
     mainRelease = masterWithDetails.master.mainRelease,
@@ -299,7 +299,7 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
     images = images.mapIndexed { index, image -> image.toLocalImage(index) },
     details = genres.toLocalResourceDetails(ResourceDetailType.GENRE) +
             styles.toLocalResourceDetails(ResourceDetailType.STYLE),
-    trackList = trackList.flattenedToLocalTracksWithDetails(),
+    trackList = trackList.flattenToLocalTracksWithDetails(),
     artists = artists.map { it.toLocalCreditReference() },
     videos = videos.map { it.toLocalVideo() },
 )
@@ -355,7 +355,7 @@ fun RemoteTrack.toLocalTrackWithDetails(
 )
 
 fun LocalTrackWithDetails.toDomainTrack(
-    subTracks: List<Track> = emptyList()
+    subTracks: List<Track>? = null
 ): Track = Track(
     position = track.position,
     type = track.type,
@@ -365,10 +365,7 @@ fun LocalTrackWithDetails.toDomainTrack(
     subTracks = subTracks
 )
 
-fun List<LocalTrackWithDetails>.toDomainTracks(): List<Track> =
-    map { it.toDomainTrack() }
-
-fun List<RemoteTrack>.flattenedToLocalTracksWithDetails(): List<LocalTrackWithDetails> {
+fun List<RemoteTrack>.flattenToLocalTracksWithDetails(): List<LocalTrackWithDetails> {
     // Use stack to non-recursively walk through tracks
     // See https://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion
     var lastUsedTrackNum = -1
@@ -385,6 +382,28 @@ fun List<RemoteTrack>.flattenedToLocalTracksWithDetails(): List<LocalTrackWithDe
         flattened.add(localTrack)
     }
     return flattened.toList()
+}
+
+@Suppress("SpellCheckingInspection")
+fun List<LocalTrackWithDetails>.unflattenToDomainTracks(): List<Track> {
+    val trackMap = this.associateBy(
+        keySelector = { it.track.trackNum }
+    ) { it.toDomainTrack() }.toMutableMap()
+
+    for (localTrackWithDetails in this) {
+        val trackNum = localTrackWithDetails.track.trackNum
+        val track = trackMap[trackNum] ?: continue
+
+        val parentTrackNum = localTrackWithDetails.track.parentTrackNum
+        val parentTrack = trackMap[parentTrackNum] ?: continue
+
+        // We have a valid parent, so we need to add to its subTracks
+        val subTracks = parentTrack.subTracks.orEmpty().toMutableList().apply { add(track) }
+        trackMap.replace(parentTrackNum, parentTrack.copy(subTracks = subTracks))
+    }
+
+    return filter { it.track.parentTrackNum == -1 }
+        .mapNotNull { trackMap[it.track.trackNum] }
 }
 
 // ====================

@@ -16,9 +16,9 @@ import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
-import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistArtistReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalLabelLabelReferenceCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndMaster
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceCrossRef
@@ -28,8 +28,6 @@ import com.codepunk.skeleton.data.localv2.relation.LocalResourceVideoCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalTrackWithDetails
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class DiscogsDao {
@@ -302,34 +300,6 @@ abstract class DiscogsDao {
          WHERE master.master_id = :masterId
     """)
     abstract fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
-
-    fun getResourceAndMasterWithTrackList(masterId: Long): Flow<LocalResourceAndMaster?> {
-        val resourceAndMasterFlow = getResourceAndMaster(masterId)
-
-
-        return resourceAndMasterFlow.map { resourceAndMaster ->
-            val tracksWithDetails = resourceAndMaster?.let {
-                val resourceId = it.resource.resourceId
-                getTracksWithDetails(resourceId)
-            }
-            if (tracksWithDetails != null) {
-                val masterWithDetails = resourceAndMaster.masterWithDetails.copy(
-                    trackList = tracksWithDetails
-                )
-                resourceAndMaster.copy(
-                    masterWithDetails = masterWithDetails
-                )
-            } else {
-                resourceAndMaster
-            }.also {
-                val x = "$it"
-            }
-        }
-    }
-
-    private fun getTrackList(resourceId: Long): Flow<List<LocalTrack>> {
-        TODO("")
-    }
 
     // ====================
     // Track

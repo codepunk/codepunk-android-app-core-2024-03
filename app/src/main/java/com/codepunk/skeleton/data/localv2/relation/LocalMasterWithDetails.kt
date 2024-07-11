@@ -8,6 +8,7 @@ import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
 import com.codepunk.skeleton.data.localv2.entity.LocalImage
 import com.codepunk.skeleton.data.localv2.entity.LocalMaster
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
+import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 
 data class LocalMasterWithDetails(
@@ -24,7 +25,16 @@ data class LocalMasterWithDetails(
         entityColumn = "resource_id"
     )
     val details: List<LocalResourceDetail>,
-    @Ignore
+    @Relation(
+        entity = LocalTrack::class,
+        parentColumn = "resource_id",
+        entityColumn = "track_id",
+        associateBy = Junction(
+            value = LocalResourceTrackCrossRef::class,
+            parentColumn = "resource_id",
+            entityColumn = "track_id"
+        )
+    )
     val trackList: List<LocalTrackWithDetails>,
     @Relation(
         parentColumn = "resource_id",

@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteLabelReference(
-    override val id: Long = 0L,
-    override val name: String = "",
+    val id: Long = 0L,
+    val name: String = "",
     @SerialName("resource_url")
-    override val resourceUrl: String = ""
-) : RemoteReference
+    val resourceUrl: String = ""
+)

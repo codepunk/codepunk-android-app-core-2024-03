@@ -9,8 +9,8 @@ data class LocalFormatWithDetails(
     @Embedded
     val format: LocalFormat,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "label_id"
+        parentColumn = "format_id",
+        entityColumn = "format_id"
     )
     val details: List<LocalFormatDetail> = emptyList()
 )

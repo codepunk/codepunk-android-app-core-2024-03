@@ -1,5 +1,6 @@
 package com.codepunk.skeleton.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,7 +9,8 @@ import androidx.room.PrimaryKey
 )
 data class LocalFormat(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    @ColumnInfo(name = "format_id")
+    val formatId: Long = 0L,
     val name: String = "",
     val qty: Int = 0
 )

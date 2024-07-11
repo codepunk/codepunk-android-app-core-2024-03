@@ -1,19 +1,21 @@
 package com.codepunk.skeleton.data.localv2.relation
 
 import androidx.room.Embedded
-import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
+import com.codepunk.skeleton.data.localv2.entity.LocalFormat
+import com.codepunk.skeleton.data.localv2.entity.LocalIdentifier
 import com.codepunk.skeleton.data.localv2.entity.LocalImage
-import com.codepunk.skeleton.data.localv2.entity.LocalMaster
+import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
+import com.codepunk.skeleton.data.localv2.entity.LocalRelease
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 
-data class LocalMasterWithDetails(
+data class LocalReleaseWithDetails(
     @Embedded
-    val master: LocalMaster,
+    val release: LocalRelease,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "image_id",
@@ -41,11 +43,28 @@ data class LocalMasterWithDetails(
         entityColumn = "reference_id",
         associateBy = Junction(LocalResourceCreditReferenceCrossRef::class)
     )
-    val artists: List<LocalCreditReference>,
+    val relatedArtists: List<LocalCreditReference>,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",
         associateBy = Junction(LocalResourceVideoCrossRef::class)
     )
-    val videos: List<LocalVideo>
+    val videos: List<LocalVideo>,
+    @Relation(
+        parentColumn = "release_id",
+        entityColumn = "reference_id",
+        associateBy = Junction(LocalReleaseLabelReferenceCrossRef::class)
+    )
+    val labelRefs: List<LocalLabelReference>,
+    @Relation(
+        entity = LocalFormat::class,
+        parentColumn = "release_id",
+        entityColumn = "release_id"
+    )
+    val formats: List<LocalFormatWithDescriptions>,
+    @Relation(
+        parentColumn = "release_id",
+        entityColumn = "release_id"
+    )
+    val identifiers: List<LocalIdentifier>
 )

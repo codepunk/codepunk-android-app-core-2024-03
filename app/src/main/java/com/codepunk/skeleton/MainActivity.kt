@@ -27,7 +27,7 @@ import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
 import com.codepunk.skeleton.domainv2.model.Artist
 import com.codepunk.skeleton.domainv2.model.Label
 import com.codepunk.skeleton.domainv2.model.Master
-import com.codepunk.skeleton.domainv2.model.Track
+import com.codepunk.skeleton.domainv2.model.Release
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.util.parseElapsedTimeString
 import com.codepunk.skeleton.util.toElapsedTimeString
@@ -76,24 +76,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testStuff() {
-        /*
-        testElapsedTimeString()
-        testFetchArtist(TAYLOR_SWIFT)
-        testFetchLabel(REPUBLIC_RECORDS)
-        testFetchMaster(THE_TORTURED_POETS_DEPARTMENT)
-        testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
-         */
-
         //testFetchArtist(TAYLOR_SWIFT)
         //testFetchLabel(REPUBLIC_RECORDS)
         //testFetchLabel(ATLANTIC_RECORDS)
         //testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
-        testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
-
-        /*
-        testFetchMaster(THE_TORTURED_POETS_DEPARTMENT)
-        testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
-         */
+        //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
+        //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
+        testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
+        //testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
     }
 
     @Suppress("Unused")
@@ -125,82 +115,6 @@ class MainActivity : ComponentActivity() {
         Loginator.d { x }
     }
 
-    /*
-    @Suppress("Unused")
-    private fun testFetchArtist(artistId: Long) {
-        lifecycleScope.launch {
-            discogsRepository.fetchArtist(artistId).collect { result ->
-                result.fold(
-                    fa = {
-                        Loginator.e(throwable = Throwable(it)) {
-                            "fetchArtist encountered an error"
-                        }
-                    },
-                    fb = {
-                        Loginator.d { "artist = $it" }
-                    },
-                    fab = { th: Throwable, artist: Artist? ->
-                        Loginator.e(throwable = Throwable(th)) {
-                            "fetchArtist encountered an error"
-                        }
-                        Loginator.d { "artist = $artist" }
-                    }
-                )
-            }
-        }
-    }
-
-    private fun testFetchLabel(labelId: Long) {
-        lifecycleScope.launch {
-            discogsRepository.fetchLabel(labelId).collect { result ->
-                result.fold(
-                    fa = {
-                        Loginator.e(throwable = Throwable(it)) {
-                            "fetchLabel encountered an error"
-                        }
-                    },
-                    fb = {
-                        Loginator.d { "label = $it" }
-                    },
-                    fab = { th: Throwable, label: Label? ->
-                        Loginator.e(throwable = Throwable(th)) {
-                            "fetchLabel encountered an error"
-                        }
-                        Loginator.d { "label = $label" }
-                    }
-                )
-            }
-        }
-    }
-
-    private fun testFetchMaster(masterId: Long) {
-        lifecycleScope.launch {
-            discogsRepository.fetchMaster(masterId).collect { result ->
-                result.fold(
-                    fa = {
-                        Loginator.e(throwable = Throwable(it)) {
-                            "fetchMaster encountered an error"
-                        }
-                    },
-                    fb = {
-                        Loginator.d { "master = $it" }
-                    },
-                    fab = { th: Throwable, master: Master? ->
-                        Loginator.e(throwable = Throwable(th)) {
-                            "fetchMaster encountered an error"
-                        }
-                        Loginator.d { "master = $master" }
-                    }
-                )
-            }
-        }
-    }
-
-    @Suppress("Unused")
-    private fun testFetchRelease(releaseId: Long) {
-        val x = "$releaseId"
-    }
-     */
 
     @Suppress("SameParameterValue")
     private fun testFetchArtist(artistId: Long) {
@@ -262,20 +176,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*
     @Suppress("Unused")
     private fun testFetchRelease(releaseId: Long) {
         lifecycleScope.launch {
-            discogsWebserviceV2.getRelease(releaseId)
-                .onLeft { error ->
-                    val x = "$error"
-                }
-                .onRight { remoteRelease ->
-                    val x = "$remoteRelease"
-                }
+            discogsRepositoryV2.fetchRelease(releaseId).collect { result ->
+                result.fold(
+                    fa = {
+                        Loginator.e(throwable = it) { "fetchRelease encountered an error" }
+                    },
+                    fb = {
+                        Loginator.d { "release = $it" }
+                    },
+                    fab = { th: Throwable, release: Release? ->
+                        Loginator.e(throwable = th) { "fetchRelease encountered an error" }
+                        Loginator.d { "release = $release" }
+                    }
+                )
+            }
         }
     }
-     */
 
     @Suppress("Unused")
     companion object {
@@ -285,6 +204,7 @@ class MainActivity : ComponentActivity() {
         const val THE_TORTURED_POETS_DEPARTMENT_MASTER = 3461018L // Master
         const val AN_HOUR_BEFORE_ITS_DARK_MASTER = 2531977L // Master
         const val THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY = 30438707L // Release
+        const val AN_HOUR_BEFORE_ITS_DARK_RELEASE = 22351390L // Master
     }
 }
 

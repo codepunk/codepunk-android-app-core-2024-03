@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
+import com.codepunk.skeleton.data.local.typeconverter.InstantTypeConverter
+import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
 import com.codepunk.skeleton.data.localv2.dao.DiscogsDao
 import com.codepunk.skeleton.data.localv2.entity.LocalArtist
 import com.codepunk.skeleton.data.localv2.entity.LocalArtistReference
@@ -15,12 +17,14 @@ import com.codepunk.skeleton.data.localv2.entity.LocalImage
 import com.codepunk.skeleton.data.localv2.entity.LocalLabel
 import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
 import com.codepunk.skeleton.data.localv2.entity.LocalMaster
+import com.codepunk.skeleton.data.localv2.entity.LocalRelease
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistArtistReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalLabelLabelReferenceCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalReleaseLabelReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceTrackCrossRef
@@ -42,6 +46,8 @@ import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCros
         LocalLabelLabelReferenceCrossRef::class,
         LocalLabelReference::class,
         LocalMaster::class,
+        LocalRelease::class,
+        LocalReleaseLabelReferenceCrossRef::class,
         LocalResource::class,
         LocalResourceCreditReferenceCrossRef::class,
         LocalResourceDetail::class,
@@ -54,7 +60,11 @@ import com.codepunk.skeleton.data.localv2.relation.LocalTrackCreditReferenceCros
     ]
 )
 @TypeConverters(
-    BigDecimalTypeConverter::class
+    value = [
+        BigDecimalTypeConverter::class,
+        InstantTypeConverter::class,
+        LocalDateTypeConverter::class
+    ]
 )
 abstract class DiscogsDatabaseV2: RoomDatabase() {
 

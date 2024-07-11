@@ -8,19 +8,26 @@ import androidx.room.Upsert
 import com.codepunk.skeleton.data.localv2.entity.LocalArtist
 import com.codepunk.skeleton.data.localv2.entity.LocalArtistReference
 import com.codepunk.skeleton.data.localv2.entity.LocalCreditReference
+import com.codepunk.skeleton.data.localv2.entity.LocalFormat
+import com.codepunk.skeleton.data.localv2.entity.LocalFormatDescription
+import com.codepunk.skeleton.data.localv2.entity.LocalIdentifier
 import com.codepunk.skeleton.data.localv2.entity.LocalImage
 import com.codepunk.skeleton.data.localv2.entity.LocalLabel
 import com.codepunk.skeleton.data.localv2.entity.LocalLabelReference
 import com.codepunk.skeleton.data.localv2.entity.LocalMaster
+import com.codepunk.skeleton.data.localv2.entity.LocalRelease
 import com.codepunk.skeleton.data.localv2.entity.LocalResource
 import com.codepunk.skeleton.data.localv2.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.localv2.entity.LocalTrack
 import com.codepunk.skeleton.data.localv2.entity.LocalVideo
 import com.codepunk.skeleton.data.localv2.relation.LocalArtistArtistReferenceCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalFormatWithDescriptions
 import com.codepunk.skeleton.data.localv2.relation.LocalLabelLabelReferenceCrossRef
+import com.codepunk.skeleton.data.localv2.relation.LocalReleaseLabelReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndMaster
+import com.codepunk.skeleton.data.localv2.relation.LocalResourceAndRelease
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceCreditReferenceCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.localv2.relation.LocalResourceTrackCrossRef
@@ -248,6 +255,11 @@ abstract class DiscogsDao {
         crossRefs: List<LocalLabelLabelReferenceCrossRef>
     ): List<Long>
 
+    @Insert
+    abstract suspend fun insertReleaseLabelReferenceCrossRefs(
+        crossRefs: List<LocalReleaseLabelReferenceCrossRef>
+    ): List<Long>
+
     private suspend fun insertLabelLabelReferences(
         labelId: Long,
         labelRefs: List<LocalLabelReference>
@@ -260,6 +272,21 @@ abstract class DiscogsDao {
                 LocalLabelLabelReferenceCrossRef(labelId, referenceId, index)
             }
         insertLabelLabelReferenceCrossRefs(crossRefs)
+        return referenceIds
+    }
+
+    private suspend fun insertReleaseLabelReferences(
+        releaseId: Long,
+        labelRefs: List<LocalLabelReference>
+    ): List<Long> {
+        // TODO Insert or Upsert? Clean beforehand?
+        val referenceIds = insertLabelReferences(labelRefs)
+        val crossRefs = referenceIds
+            .filter { it != -1L }
+            .mapIndexed { index, referenceId ->
+                LocalReleaseLabelReferenceCrossRef(releaseId, referenceId, index)
+            }
+        insertReleaseLabelReferenceCrossRefs(crossRefs)
         return referenceIds
     }
 
@@ -292,6 +319,7 @@ abstract class DiscogsDao {
         }
         return resourceId
     }
+
     @Query("""
         SELECT *
           FROM resource
@@ -300,6 +328,48 @@ abstract class DiscogsDao {
          WHERE master.master_id = :masterId
     """)
     abstract fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
+
+    // ====================
+    // Release
+    // ====================
+
+    @Insert
+    abstract suspend fun insertRelease(release: LocalRelease): Long
+
+    @Upsert
+    abstract suspend fun upsertRelease(release: LocalRelease): Long
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long {
+        val resourceId = upsertResource(resourceAndRelease.resource)
+        if (resourceId != -1L) {
+            with(resourceAndRelease.releaseWithDetails) {
+                val updatedRelease = release.copy(resourceId = resourceId)
+                val releaseId = upsertRelease(updatedRelease)
+                if (releaseId != -1L) {
+                    insertResourceImages(resourceId, images)
+                    insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+                    insertResourceTracksWithDetails(resourceId, trackList)
+                    insertResourceCreditReferences(resourceId, relatedArtists)
+                    insertResourceVideoReferences(resourceId, videos)
+                    insertReleaseLabelReferences(releaseId, labelRefs)
+                    formats.forEach { insertReleaseFormatWithDescription(releaseId, it) }
+                    insertReleaseIdentifiers(identifiers.map { it.copy(releaseId = releaseId) })
+                }
+            }
+        }
+        return resourceId
+    }
+
+    @Query("""
+        SELECT *
+          FROM resource
+          LEFT OUTER JOIN `release`
+            ON resource.resource_id = `release`.resource_id
+         WHERE `release`.release_id = :releaseId
+    """)
+    abstract fun getResourceAndRelease(releaseId: Long): Flow<LocalResourceAndRelease?>
 
     // ====================
     // Track
@@ -369,6 +439,41 @@ abstract class DiscogsDao {
         AND resource_track_cross_ref.resource_id = :resourceId
     """)
     abstract suspend fun getTracksWithDetails(resourceId: Long): List<LocalTrackWithDetails>
+
+    // ====================
+    // Identifier
+    // ====================
+
+    @Insert
+    abstract suspend fun insertReleaseIdentifiers(identifiers: List<LocalIdentifier>): List<Long>
+
+    // ====================
+    // Format
+    // ====================
+
+    @Insert
+    abstract suspend fun insertReleaseFormat(format: LocalFormat): Long
+
+    @Transaction
+    @Query("")
+    suspend fun insertReleaseFormatWithDescription(
+        releaseId: Long,
+        formatWithDescriptions: LocalFormatWithDescriptions
+    ) {
+        val formatId = insertReleaseFormat(
+            formatWithDescriptions.format.copy(releaseId = releaseId)
+        )
+        insertReleaseFormatDescriptions(
+            formatWithDescriptions.descriptions.map {
+                it.copy(formatId = formatId)
+            }
+        )
+    }
+
+    @Insert
+    abstract suspend fun insertReleaseFormatDescriptions(
+        descriptions: List<LocalFormatDescription>
+    )
 
     // ====================
     // Video

@@ -379,9 +379,6 @@ abstract class DiscogsDao {
     abstract suspend fun insertTrack(track: LocalTrack): Long
 
     @Insert
-    abstract suspend fun insertTracks(tracks: List<LocalTrack>): List<Long>
-
-    @Insert
     abstract suspend fun insertResourceTrackCrossRefs(
         crossRefs: List<LocalResourceTrackCrossRef>
     ): List<Long>
@@ -389,7 +386,6 @@ abstract class DiscogsDao {
     @Transaction
     @Query("")
     suspend fun insertResourceTrackWithDetails(
-        resourceId: Long?,
         trackWithDetails: LocalTrackWithDetails
     ): Long {
         val trackId = insertTrack(trackWithDetails.track)
@@ -407,7 +403,7 @@ abstract class DiscogsDao {
     ): List<Long> {
         // TODO Insert or Upsert? Clean beforehand?
         val trackIds = tracksWithDetails.map { trackWithDetails ->
-            insertResourceTrackWithDetails(resourceId, trackWithDetails)
+            insertResourceTrackWithDetails(trackWithDetails)
         }
         val crossRefs = trackIds
             .filter { it != -1L }
@@ -416,20 +412,6 @@ abstract class DiscogsDao {
             }
         insertResourceTrackCrossRefs(crossRefs)
         return trackIds
-    }
-
-    private suspend fun insertTracksWithDetails(
-        trackWithDetails: List<LocalTrackWithDetails>
-    ): List<Long> {
-        TODO("")
-    }
-
-    @Transaction
-    @Query("")
-    suspend fun insertTrackWithDetails(
-        trackWithDetails: LocalTrackWithDetails
-    ): Long {
-        TODO("")
     }
 
     @Query("""

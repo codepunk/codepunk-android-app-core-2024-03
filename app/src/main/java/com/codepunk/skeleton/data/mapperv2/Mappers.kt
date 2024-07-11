@@ -370,34 +370,31 @@ fun List<RemoteTrack>.flattenedToLocalTracksWithDetails(): List<LocalTrackWithDe
     // Use stack to non-recursively walk through tracks
     // See https://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion
 
-    var lastTrackMarker: Int = 0
-    //var parentTrackMarker: Int = -1
-
-    val markerMap = mutableMapOf<RemoteTrack, Pair<Int, Int>>()
-
     val flattened = mutableListOf<LocalTrackWithDetails>()
-    val stack = Stack<RemoteTrack>()
+    val stack = Stack<Pair<RemoteTrack, LocalTrackWithDetails?>>()
     fastForEachReversed {
-        Loginator.d { "Pushing track \"${it.title}\" on to stack" }
-        stack.push(it)
-        markerMap[it] = Pair(++lastTrackMarker, -1)
+        Loginator.d { "Pushing track \"${it.title}\" on to stack: parentLocalTrack = null" }
+        stack.push(Pair(it, null))
     }
 
+    var lastTrackMarker = 0
+
     while (stack.isNotEmpty()) {
-        val track = stack.pop()
-        Loginator.d { "Popped track \"${track.title}\" from stack" }
-        val trackMarkers = markerMap[track]
-        val trackMarker = trackMarkers?.first ?: -1
-        val parentTrackMarker = trackMarkers?.second ?: -1
+        val pair = stack.pop()
+        val track = pair.first
+        val parentLocalTrack = pair.second
+        Loginator.d { "Popped track \"${track.title}\" from stack: parentLocalTrack = $parentLocalTrack" }
+
+        val parentTrackMarker = parentLocalTrack?.track?.trackMarker ?: -1
+        val localTrack = track.toLocalTrackWithDetails(++lastTrackMarker, parentTrackMarker)
 
         track.subTracks?.fastForEachReversed {
-            Loginator.d { "Pushing track \"${it.title}\" on to stack" }
-            stack.push(it)
-            markerMap[it] = Pair(++lastTrackMarker, trackMarker)
+            Loginator.d { "Pushing track \"${it.title}\" on to stack: parentLocalTrack = $localTrack" }
+            stack.push(Pair(it, localTrack))
         }
 
         // Process track
-        flattened.add(track.toLocalTrackWithDetails(trackMarker, parentTrackMarker))
+        flattened.add(localTrack)
     }
 
     Loginator.d { "flattened = $flattened" }

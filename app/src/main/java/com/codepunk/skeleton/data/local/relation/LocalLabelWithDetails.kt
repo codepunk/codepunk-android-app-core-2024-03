@@ -23,9 +23,8 @@ data class LocalLabelWithDetails(
     )
     val details: List<LocalResourceDetail>,
     @Relation(
-        parentColumn = "label_id",
-        entityColumn = "reference_id",
-        associateBy = Junction(LocalLabelLabelReferenceCrossRef::class)
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
     )
     val labelRefs: List<LocalLabelReference>
 )

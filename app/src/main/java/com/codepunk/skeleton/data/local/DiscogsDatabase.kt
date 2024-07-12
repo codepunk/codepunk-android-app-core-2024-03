@@ -3,9 +3,6 @@ package com.codepunk.skeleton.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
-import com.codepunk.skeleton.data.local.typeconverter.InstantTypeConverter
-import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistReference
@@ -22,20 +19,19 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
-import com.codepunk.skeleton.data.local.relation.LocalArtistArtistReferenceCrossRef
-import com.codepunk.skeleton.data.local.relation.LocalLabelLabelReferenceCrossRef
-import com.codepunk.skeleton.data.local.relation.LocalReleaseLabelReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceCreditReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceTrackCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceVideoCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalTrackCreditReferenceCrossRef
+import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
+import com.codepunk.skeleton.data.local.typeconverter.InstantTypeConverter
+import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
 
 @Database(
     version = 1,
     entities = [
         LocalArtist::class,
-        LocalArtistArtistReferenceCrossRef::class,
         LocalArtistReference::class,
         LocalCreditReference::class,
         LocalFormat::class,
@@ -43,11 +39,9 @@ import com.codepunk.skeleton.data.local.relation.LocalTrackCreditReferenceCrossR
         LocalIdentifier::class,
         LocalImage::class,
         LocalLabel::class,
-        LocalLabelLabelReferenceCrossRef::class,
         LocalLabelReference::class,
         LocalMaster::class,
         LocalRelease::class,
-        LocalReleaseLabelReferenceCrossRef::class,
         LocalResource::class,
         LocalResourceCreditReferenceCrossRef::class,
         LocalResourceDetail::class,

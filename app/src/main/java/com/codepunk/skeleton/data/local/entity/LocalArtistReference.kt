@@ -2,15 +2,27 @@ package com.codepunk.skeleton.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "artist_reference"
+    tableName = "artist_reference",
+    foreignKeys = [
+        ForeignKey(
+            entity = LocalResource::class,
+            parentColumns = ["resource_id"],
+            childColumns = ["resource_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        )
+    ]
 )
 data class LocalArtistReference(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "reference_id")
     val referenceId: Long = 0L,
+    @ColumnInfo(name = "resource_id")
+    val resourceId: Long = 0L,
     @ColumnInfo(name = "reference_type")
     val relationType: RelationType,
     @ColumnInfo(name = "artist_id")

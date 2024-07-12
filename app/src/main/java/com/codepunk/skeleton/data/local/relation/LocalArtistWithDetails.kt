@@ -23,9 +23,8 @@ data class LocalArtistWithDetails(
     )
     val details: List<LocalResourceDetail>,
     @Relation(
-        parentColumn = "artist_id",
-        entityColumn = "reference_id",
-        associateBy = Junction(LocalArtistArtistReferenceCrossRef::class)
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
     )
     val artistRefs: List<LocalArtistReference>
 )

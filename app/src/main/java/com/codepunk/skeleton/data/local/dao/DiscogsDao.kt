@@ -20,10 +20,7 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
-import com.codepunk.skeleton.data.local.relation.LocalArtistArtistReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalFormatWithDescriptions
-import com.codepunk.skeleton.data.local.relation.LocalLabelLabelReferenceCrossRef
-import com.codepunk.skeleton.data.local.relation.LocalReleaseLabelReferenceCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
@@ -158,16 +155,13 @@ abstract class DiscogsDao {
                 if (artistId != -1L) {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-                    insertArtistArtistReferences(artistId, artistRefs)
+                    insertArtistReferences(artistRefs.map { it.copy(resourceId = resourceId) })
                 }
             }
         }
         return resourceId
     }
 
-    /*
-     * Old version: "SELECT * FROM resource WHERE resource_id = (SELECT resource_id FROM ARTIST WHERE artist_id = :artistId)"
-     */
     @Transaction
     @Query("""
         SELECT resource.*
@@ -185,28 +179,6 @@ abstract class DiscogsDao {
     @Insert
     abstract suspend fun insertArtistReferences(artistRefs: List<LocalArtistReference>): List<Long>
 
-    @Insert
-    abstract suspend fun insertArtistArtistReferenceCrossRefs(
-        crossRefs: List<LocalArtistArtistReferenceCrossRef>
-    ): List<Long>
-
-    @Transaction
-    @Query("")
-    private suspend fun insertArtistArtistReferences(
-        artistId: Long,
-        artistRefs: List<LocalArtistReference>
-    ): List<Long> {
-        // TODO Insert or Upsert? Clean beforehand?
-        val referenceIds = insertArtistReferences(artistRefs)
-        val crossRefs = referenceIds
-            .filter { it != -1L }
-            .mapIndexed { index, referenceId ->
-                LocalArtistArtistReferenceCrossRef(artistId, referenceId, index)
-            }
-        insertArtistArtistReferenceCrossRefs(crossRefs)
-        return referenceIds
-    }
-
     // ====================
     // Label
     // ====================
@@ -223,12 +195,12 @@ abstract class DiscogsDao {
         val resourceId = upsertResource(resourceAndLabel.resource)
         if (resourceId != -1L) {
             with(resourceAndLabel.labelWithDetails) {
-                val updatedLabel = label.copy(resourceId = resourceId)
-                val labelId = upsertLabel(updatedLabel)
+                val labelId = upsertLabel(label.copy(resourceId = resourceId))
                 if (labelId != -1L) {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-                    insertLabelLabelReferences(labelId, labelRefs)
+                    val mapped = labelRefs.map { it.copy(resourceId = resourceId) }
+                    insertLabelReferences(mapped)
                 }
             }
         }
@@ -251,46 +223,6 @@ abstract class DiscogsDao {
 
     @Insert
     abstract suspend fun insertLabelReferences(labelRefs: List<LocalLabelReference>): List<Long>
-
-    @Insert
-    abstract suspend fun insertLabelLabelReferenceCrossRefs(
-        crossRefs: List<LocalLabelLabelReferenceCrossRef>
-    ): List<Long>
-
-    @Insert
-    abstract suspend fun insertReleaseLabelReferenceCrossRefs(
-        crossRefs: List<LocalReleaseLabelReferenceCrossRef>
-    ): List<Long>
-
-    private suspend fun insertLabelLabelReferences(
-        labelId: Long,
-        labelRefs: List<LocalLabelReference>
-    ): List<Long> {
-        // TODO Insert or Upsert? Clean beforehand?
-        val referenceIds = insertLabelReferences(labelRefs)
-        val crossRefs = referenceIds
-            .filter { it != -1L }
-            .mapIndexed { index, referenceId ->
-                LocalLabelLabelReferenceCrossRef(labelId, referenceId, index)
-            }
-        insertLabelLabelReferenceCrossRefs(crossRefs)
-        return referenceIds
-    }
-
-    private suspend fun insertReleaseLabelReferences(
-        releaseId: Long,
-        labelRefs: List<LocalLabelReference>
-    ): List<Long> {
-        // TODO Insert or Upsert? Clean beforehand?
-        val referenceIds = insertLabelReferences(labelRefs)
-        val crossRefs = referenceIds
-            .filter { it != -1L }
-            .mapIndexed { index, referenceId ->
-                LocalReleaseLabelReferenceCrossRef(releaseId, referenceId, index)
-            }
-        insertReleaseLabelReferenceCrossRefs(crossRefs)
-        return referenceIds
-    }
 
     // ====================
     // Master
@@ -356,7 +288,7 @@ abstract class DiscogsDao {
                     insertResourceTracksWithDetails(resourceId, trackList)
                     insertResourceCreditReferences(resourceId, relatedArtists)
                     insertResourceVideoReferences(resourceId, videos)
-                    insertReleaseLabelReferences(releaseId, labelRefs)
+                    insertLabelReferences(labelRefs.map { it.copy(resourceId = resourceId) })
                     formats.forEach { insertReleaseFormatWithDescription(releaseId, it) }
                     insertReleaseIdentifiers(identifiers.map { it.copy(releaseId = releaseId) })
                 }

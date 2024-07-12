@@ -51,9 +51,8 @@ data class LocalReleaseWithDetails(
     )
     val videos: List<LocalVideo>,
     @Relation(
-        parentColumn = "release_id",
-        entityColumn = "reference_id",
-        associateBy = Junction(LocalReleaseLabelReferenceCrossRef::class)
+        parentColumn = "resource_id",
+        entityColumn = "resource_id"
     )
     val labelRefs: List<LocalLabelReference>,
     @Relation(

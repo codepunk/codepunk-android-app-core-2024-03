@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0ab2a85a19f1048f9d622cd042932472",
+    "identityHash": "97784ba325e7c8d395a0dccd2f6a7c6e",
     "entities": [
       {
         "tableName": "artist",
@@ -77,83 +77,8 @@
         ]
       },
       {
-        "tableName": "artist_artist_reference_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artist_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`artist_id`, `reference_id`), FOREIGN KEY(`artist_id`) REFERENCES `artist`(`artist_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `artist_reference`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "artistId",
-            "columnName": "artist_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceId",
-            "columnName": "reference_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceIdx",
-            "columnName": "reference_idx",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "artist_id",
-            "reference_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_artist_artist_reference_cross_ref_artist_id",
-            "unique": false,
-            "columnNames": [
-              "artist_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_artist_artist_reference_cross_ref_artist_id` ON `${TABLE_NAME}` (`artist_id`)"
-          },
-          {
-            "name": "index_artist_artist_reference_cross_ref_reference_id",
-            "unique": false,
-            "columnNames": [
-              "reference_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_artist_artist_reference_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "artist",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "artist_id"
-            ],
-            "referencedColumns": [
-              "artist_id"
-            ]
-          },
-          {
-            "table": "artist_reference",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "reference_id"
-            ],
-            "referencedColumns": [
-              "reference_id"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "artist_reference",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "referenceId",
@@ -162,7 +87,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "referenceType",
+            "fieldPath": "resourceId",
+            "columnName": "resource_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relationType",
             "columnName": "reference_type",
             "affinity": "TEXT",
             "notNull": true
@@ -205,7 +136,19 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "resource",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "resource_id"
+            ],
+            "referencedColumns": [
+              "resource_id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "credit_reference",
@@ -590,87 +533,18 @@
         ]
       },
       {
-        "tableName": "label_label_reference_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`label_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`label_id`, `reference_id`), FOREIGN KEY(`label_id`) REFERENCES `label`(`label_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `label_reference`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "labelId",
-            "columnName": "label_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceId",
-            "columnName": "reference_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceIdx",
-            "columnName": "reference_idx",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "label_id",
-            "reference_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_label_label_reference_cross_ref_label_id",
-            "unique": false,
-            "columnNames": [
-              "label_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_label_label_reference_cross_ref_label_id` ON `${TABLE_NAME}` (`label_id`)"
-          },
-          {
-            "name": "index_label_label_reference_cross_ref_reference_id",
-            "unique": false,
-            "columnNames": [
-              "reference_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_label_label_reference_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "label",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "label_id"
-            ],
-            "referencedColumns": [
-              "label_id"
-            ]
-          },
-          {
-            "table": "label_reference",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "reference_id"
-            ],
-            "referencedColumns": [
-              "reference_id"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "label_reference",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reference_type` TEXT NOT NULL, `label_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `label_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "referenceId",
             "columnName": "reference_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourceId",
+            "columnName": "resource_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -706,7 +580,19 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "resource",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "resource_id"
+            ],
+            "referencedColumns": [
+              "resource_id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "master",
@@ -950,81 +836,6 @@
             ],
             "referencedColumns": [
               "resource_id"
-            ]
-          }
-        ]
-      },
-      {
-        "tableName": "release_label_reference_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`release_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`release_id`, `reference_id`), FOREIGN KEY(`release_id`) REFERENCES `release`(`release_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `label_reference`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "releaseId",
-            "columnName": "release_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceId",
-            "columnName": "reference_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "referenceIdx",
-            "columnName": "reference_idx",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "release_id",
-            "reference_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_release_label_reference_cross_ref_release_id",
-            "unique": false,
-            "columnNames": [
-              "release_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_release_label_reference_cross_ref_release_id` ON `${TABLE_NAME}` (`release_id`)"
-          },
-          {
-            "name": "index_release_label_reference_cross_ref_reference_id",
-            "unique": false,
-            "columnNames": [
-              "reference_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_release_label_reference_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "release",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "release_id"
-            ],
-            "referencedColumns": [
-              "release_id"
-            ]
-          },
-          {
-            "table": "label_reference",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "reference_id"
-            ],
-            "referencedColumns": [
-              "reference_id"
             ]
           }
         ]
@@ -1604,7 +1415,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0ab2a85a19f1048f9d622cd042932472')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97784ba325e7c8d395a0dccd2f6a7c6e')"
     ]
   }
 }

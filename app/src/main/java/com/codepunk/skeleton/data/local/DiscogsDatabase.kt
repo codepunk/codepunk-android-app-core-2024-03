@@ -5,14 +5,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.entity.LocalArtist
-import com.codepunk.skeleton.data.local.entity.LocalArtistReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
-import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResource
@@ -32,14 +32,14 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
     version = 1,
     entities = [
         LocalArtist::class,
-        LocalArtistReference::class,
+        LocalRelatedArtist::class,
         LocalCredit::class,
         LocalFormat::class,
         LocalFormatDescription::class,
         LocalIdentifier::class,
         LocalImage::class,
         LocalLabel::class,
-        LocalLabelReference::class,
+        LocalRelatedLabel::class,
         LocalMaster::class,
         LocalRelease::class,
         LocalResource::class,

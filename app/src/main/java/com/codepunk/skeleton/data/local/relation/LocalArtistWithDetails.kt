@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.local.entity.LocalArtist
-import com.codepunk.skeleton.data.local.entity.LocalArtistReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
@@ -26,5 +26,5 @@ data class LocalArtistWithDetails(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val artistRefs: List<LocalArtistReference>
+    val relatedArtists: List<LocalRelatedArtist>
 )

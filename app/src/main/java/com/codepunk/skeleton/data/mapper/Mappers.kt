@@ -2,14 +2,14 @@ package com.codepunk.skeleton.data.mapper
 
 import androidx.compose.ui.util.fastForEachReversed
 import com.codepunk.skeleton.data.local.entity.LocalArtist
-import com.codepunk.skeleton.data.local.entity.LocalArtistReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
-import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResource
@@ -27,26 +27,26 @@ import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndRelease
 import com.codepunk.skeleton.data.local.relation.LocalTrackWithDetails
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
-import com.codepunk.skeleton.data.remote.entity.RemoteArtistReference
+import com.codepunk.skeleton.data.remote.entity.RemoteRelatedArtist
 import com.codepunk.skeleton.data.remote.entity.RemoteCredit
 import com.codepunk.skeleton.data.remote.entity.RemoteFormat
 import com.codepunk.skeleton.data.remote.entity.RemoteIdentifier
 import com.codepunk.skeleton.data.remote.entity.RemoteImage
 import com.codepunk.skeleton.data.remote.entity.RemoteLabel
-import com.codepunk.skeleton.data.remote.entity.RemoteLabelReference
+import com.codepunk.skeleton.data.remote.entity.RemoteRelatedLabel
 import com.codepunk.skeleton.data.remote.entity.RemoteMaster
 import com.codepunk.skeleton.data.remote.entity.RemoteRelease
 import com.codepunk.skeleton.data.remote.entity.RemoteResource
 import com.codepunk.skeleton.data.remote.entity.RemoteTrack
 import com.codepunk.skeleton.data.remote.entity.RemoteVideo
 import com.codepunk.skeleton.domain.model.Artist
-import com.codepunk.skeleton.domain.model.ArtistReference
+import com.codepunk.skeleton.domain.model.RelatedArtist
 import com.codepunk.skeleton.domain.model.Credit
 import com.codepunk.skeleton.domain.model.Format
 import com.codepunk.skeleton.domain.model.Identifier
 import com.codepunk.skeleton.domain.model.Image
 import com.codepunk.skeleton.domain.model.Label
-import com.codepunk.skeleton.domain.model.LabelReference
+import com.codepunk.skeleton.domain.model.RelatedLabel
 import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.model.Release
 import com.codepunk.skeleton.domain.model.Track
@@ -127,9 +127,9 @@ fun LocalResourceAndArtist.toDomainArtist(): Artist = Artist(
     urls = artistWithDetails.details.toDomainDetails(LocalResourceDetail.DetailType.URL),
     realName = artistWithDetails.artist.realName,
     nameVariations = artistWithDetails.details.toDomainDetails(LocalResourceDetail.DetailType.NAME_VARIATION),
-    aliases = artistWithDetails.artistRefs.toDomainArtistReferences(LocalArtistReference.RelationType.ALIAS),
-    members = artistWithDetails.artistRefs.toDomainArtistReferences(LocalArtistReference.RelationType.MEMBER),
-    groups = artistWithDetails.artistRefs.toDomainArtistReferences(LocalArtistReference.RelationType.GROUP)
+    aliases = artistWithDetails.relatedArtists.toDomainRelatedArtists(LocalRelatedArtist.RelationType.ALIAS),
+    members = artistWithDetails.relatedArtists.toDomainRelatedArtists(LocalRelatedArtist.RelationType.MEMBER),
+    groups = artistWithDetails.relatedArtists.toDomainRelatedArtists(LocalRelatedArtist.RelationType.GROUP)
 )
 
 fun RemoteArtist.toLocalResourceAndArtist(): LocalResourceAndArtist = LocalResourceAndArtist(
@@ -151,16 +151,16 @@ fun RemoteArtist.toLocalArtistWithDetails(): LocalArtistWithDetails =
         images = images.mapIndexed { index, image -> image.toLocalImage(index) },
         details = urls.toLocalResourceDetails(LocalResourceDetail.DetailType.URL) +
                 nameVariations.toLocalResourceDetails(LocalResourceDetail.DetailType.NAME_VARIATION),
-        artistRefs = aliases.toLocalArtistReferences(LocalArtistReference.RelationType.ALIAS) +
-                members.toLocalArtistReferences(LocalArtistReference.RelationType.MEMBER) +
-                groups.toLocalArtistReferences(LocalArtistReference.RelationType.GROUP)
+        relatedArtists = aliases.toLocalRelatedArtists(LocalRelatedArtist.RelationType.ALIAS) +
+                members.toLocalRelatedArtists(LocalRelatedArtist.RelationType.MEMBER) +
+                groups.toLocalRelatedArtists(LocalRelatedArtist.RelationType.GROUP)
     )
 
 // ====================
 // Artist reference
 // ====================
 
-fun LocalArtistReference.toDomainArtistReference() = ArtistReference(
+fun LocalRelatedArtist.toDomainRelatedArtist() = RelatedArtist(
     id = artistId,
     name = name,
     resourceUrl = resourceUrl,
@@ -168,15 +168,15 @@ fun LocalArtistReference.toDomainArtistReference() = ArtistReference(
     thumbnailUrl = thumbnailUrl
 )
 
-fun List<LocalArtistReference>.toDomainArtistReferences(
-    relationType: LocalArtistReference.RelationType
-): List<ArtistReference> = filter { it.relationType == relationType }
-    .map { it.toDomainArtistReference() }
+fun List<LocalRelatedArtist>.toDomainRelatedArtists(
+    relationType: LocalRelatedArtist.RelationType
+): List<RelatedArtist> = filter { it.relationType == relationType }
+    .map { it.toDomainRelatedArtist() }
 
-fun List<RemoteArtistReference>.toLocalArtistReferences(
-    relationType: LocalArtistReference.RelationType
+fun List<RemoteRelatedArtist>.toLocalRelatedArtists(
+    relationType: LocalRelatedArtist.RelationType
 ) = map { ref ->
-    LocalArtistReference(
+    LocalRelatedArtist(
         relationType = relationType,
         artistId = ref.id,
         name = ref.name,
@@ -201,10 +201,10 @@ fun LocalResourceAndLabel.toDomainLabel(): Label = Label(
     releasesUrl = labelWithDetails.label.releasesUrl,
     urls = labelWithDetails.details.toDomainDetails(LocalResourceDetail.DetailType.URL),
     contactInfo = labelWithDetails.label.contactInfo,
-    parentLabel = labelWithDetails.labelRefs.toDomainLabelReferences(
-        LocalLabelReference.RelationType.PARENT_LABEL
+    parentLabel = labelWithDetails.relatedLabels.toDomainRelatedLabels(
+        LocalRelatedLabel.RelationType.PARENT_LABEL
     ).firstOrNull(),
-    subLabels = labelWithDetails.labelRefs.toDomainLabelReferences(LocalLabelReference.RelationType.SUB_LABEL)
+    subLabels = labelWithDetails.relatedLabels.toDomainRelatedLabels(LocalRelatedLabel.RelationType.SUB_LABEL)
 )
 
 fun RemoteLabel.toLocalResourceAndLabel(): LocalResourceAndLabel = LocalResourceAndLabel(
@@ -225,29 +225,29 @@ fun RemoteLabel.toLocalLabelWithDetails(): LocalLabelWithDetails =
         label = toLocalLabel(),
         images = images.mapIndexed { index, image -> image.toLocalImage(index) },
         details = urls.toLocalResourceDetails(LocalResourceDetail.DetailType.URL),
-        labelRefs = parentLabel.toLocalLabelReferences() +
-                subLabels.toLocalLabelReferences(LocalLabelReference.RelationType.SUB_LABEL)
+        relatedLabels = parentLabel.toLocalRelatedLabels() +
+                subLabels.toLocalRelatedLabels(LocalRelatedLabel.RelationType.SUB_LABEL)
     )
 
 // ====================
 // Label reference
 // ====================
 
-fun LocalLabelReference.toDomainLabelReference() = LabelReference(
+fun LocalRelatedLabel.toDomainRelatedLabel() = RelatedLabel(
     id = labelId,
     name = name,
     resourceUrl = resourceUrl
 )
 
-fun List<LocalLabelReference>.toDomainLabelReferences(
-    relationType: LocalLabelReference.RelationType
-): List<LabelReference> = filter { it.referenceType == relationType }
-    .map { it.toDomainLabelReference() }
+fun List<LocalRelatedLabel>.toDomainRelatedLabels(
+    relationType: LocalRelatedLabel.RelationType
+): List<RelatedLabel> = filter { it.referenceType == relationType }
+    .map { it.toDomainRelatedLabel() }
 
-fun List<RemoteLabelReference>.toLocalLabelReferences(
-    relationType: LocalLabelReference.RelationType
+fun List<RemoteRelatedLabel>.toLocalRelatedLabels(
+    relationType: LocalRelatedLabel.RelationType
 ) = map { ref ->
-    LocalLabelReference(
+    LocalRelatedLabel(
         referenceType = relationType,
         labelId = ref.id,
         name = ref.name,
@@ -256,9 +256,9 @@ fun List<RemoteLabelReference>.toLocalLabelReferences(
 }
 
 // TODO Is there a way to avoid parentLabel being a list?
-fun RemoteLabelReference?.toLocalLabelReferences(
-    relationType: LocalLabelReference.RelationType = LocalLabelReference.RelationType.PARENT_LABEL
-) = (this?.let { listOf(it) } ?: emptyList()).toLocalLabelReferences(relationType)
+fun RemoteRelatedLabel?.toLocalRelatedLabels(
+    relationType: LocalRelatedLabel.RelationType = LocalRelatedLabel.RelationType.PARENT_LABEL
+) = (this?.let { listOf(it) } ?: emptyList()).toLocalRelatedLabels(relationType)
 
 // ====================
 // Master
@@ -335,9 +335,9 @@ fun LocalResourceAndRelease.toDomainRelease(): Release = Release(
     videos = releaseWithDetails.videos.map { it.toDomainVideo() },
     status = releaseWithDetails.release.status,
     artistsSort = releaseWithDetails.release.artistsSort,
-    labels = releaseWithDetails.labelRefs.toDomainLabelReferences(LocalLabelReference.RelationType.LABEL),
-    series = releaseWithDetails.labelRefs.toDomainLabelReferences(LocalLabelReference.RelationType.SERIES),
-    companies = releaseWithDetails.labelRefs.toDomainLabelReferences(LocalLabelReference.RelationType.COMPANY),
+    labels = releaseWithDetails.relatedLabels.toDomainRelatedLabels(LocalRelatedLabel.RelationType.LABEL),
+    series = releaseWithDetails.relatedLabels.toDomainRelatedLabels(LocalRelatedLabel.RelationType.SERIES),
+    companies = releaseWithDetails.relatedLabels.toDomainRelatedLabels(LocalRelatedLabel.RelationType.COMPANY),
     formats = releaseWithDetails.formats.map { it.toDomainFormat() },
     formatQuantity = releaseWithDetails.release.formatQuantity,
     dateAdded = releaseWithDetails.release.dateAdded,
@@ -387,9 +387,9 @@ fun RemoteRelease.toLocalReleaseWithDetails(): LocalReleaseWithDetails = LocalRe
     relatedArtists = artists.toLocalCredits(LocalCredit.CreditType.ARTIST) +
             extraArtists.toLocalCredits(LocalCredit.CreditType.EXTRA_ARTIST),
     videos = videos.map { it.toLocalVideo() },
-    labelRefs = labels.toLocalLabelReferences(LocalLabelReference.RelationType.LABEL) +
-            series.toLocalLabelReferences(LocalLabelReference.RelationType.SERIES) +
-            companies.toLocalLabelReferences(LocalLabelReference.RelationType.COMPANY),
+    relatedLabels = labels.toLocalRelatedLabels(LocalRelatedLabel.RelationType.LABEL) +
+            series.toLocalRelatedLabels(LocalRelatedLabel.RelationType.SERIES) +
+            companies.toLocalRelatedLabels(LocalRelatedLabel.RelationType.COMPANY),
     formats = formats.toLocalFormatsWithDescriptions(),
     identifiers = identifiers.toLocalIdentifiers()
 )

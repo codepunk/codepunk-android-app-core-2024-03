@@ -5,7 +5,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
-import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
 data class LocalLabelWithDetails(
@@ -26,5 +26,5 @@ data class LocalLabelWithDetails(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val labelRefs: List<LocalLabelReference>
+    val relatedLabels: List<LocalRelatedLabel>
 )

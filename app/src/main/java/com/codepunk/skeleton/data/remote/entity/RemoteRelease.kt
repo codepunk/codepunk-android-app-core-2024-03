@@ -33,9 +33,9 @@ data class RemoteRelease(
     val status: String = "",
     @SerialName("artists_sort")
     val artistsSort: String = "",
-    val labels: List<RemoteLabelReference> = emptyList(),
-    val series: List<RemoteLabelReference> = emptyList(),
-    val companies: List<RemoteLabelReference> = emptyList(),
+    val labels: List<RemoteRelatedLabel> = emptyList(),
+    val series: List<RemoteRelatedLabel> = emptyList(),
+    val companies: List<RemoteRelatedLabel> = emptyList(),
     val formats: List<RemoteFormat> = emptyList(),
     @SerialName("format_quantity")
     val formatQuantity: Int = 0,

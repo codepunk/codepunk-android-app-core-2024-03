@@ -6,14 +6,14 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.codepunk.skeleton.data.local.entity.LocalArtist
-import com.codepunk.skeleton.data.local.entity.LocalArtistReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
-import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResource
@@ -60,7 +60,7 @@ abstract class DiscogsDao {
     // ====================
 
     @Insert
-    abstract suspend fun insertCredits(creditRefs: List<LocalCredit>): List<Long>
+    abstract suspend fun insertCredits(credits: List<LocalCredit>): List<Long>
 
     @Insert
     abstract suspend fun insertResourceCreditCrossRefs(
@@ -74,10 +74,10 @@ abstract class DiscogsDao {
 
     private suspend fun insertResourceCredits(
         resourceId: Long,
-        creditRefs: List<LocalCredit>
+        credits: List<LocalCredit>
     ): List<Long> {
         // TODO Insert or Upsert? Clean beforehand?
-        val referenceIds = insertCredits(creditRefs)
+        val referenceIds = insertCredits(credits)
         val crossRefs = referenceIds
             .filter { it != -1L }
             .mapIndexed { index, referenceId ->
@@ -91,10 +91,10 @@ abstract class DiscogsDao {
     @Query("")
     private suspend fun insertTrackCredits(
         trackId: Long,
-        creditRefs: List<LocalCredit>
+        credits: List<LocalCredit>
     ): List<Long> {
         // TODO Insert or Upsert? Clean beforehand?
-        val referenceIds = insertCredits(creditRefs)
+        val referenceIds = insertCredits(credits)
         val crossRefs = referenceIds
             .filter { it != -1L }
             .mapIndexed { index, referenceId ->
@@ -155,7 +155,7 @@ abstract class DiscogsDao {
                 if (artistId != -1L) {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-                    insertArtistReferences(artistRefs.map { it.copy(resourceId = resourceId) })
+                    insertRelatedArtists(relatedArtists.map { it.copy(resourceId = resourceId) })
                 }
             }
         }
@@ -177,7 +177,7 @@ abstract class DiscogsDao {
     // ====================
 
     @Insert
-    abstract suspend fun insertArtistReferences(artistRefs: List<LocalArtistReference>): List<Long>
+    abstract suspend fun insertRelatedArtists(relatedArtists: List<LocalRelatedArtist>): List<Long>
 
     // ====================
     // Label
@@ -199,8 +199,8 @@ abstract class DiscogsDao {
                 if (labelId != -1L) {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-                    val mapped = labelRefs.map { it.copy(resourceId = resourceId) }
-                    insertLabelReferences(mapped)
+                    val mapped = relatedLabels.map { it.copy(resourceId = resourceId) }
+                    insertRelatedLabels(mapped)
                 }
             }
         }
@@ -222,7 +222,7 @@ abstract class DiscogsDao {
     // ====================
 
     @Insert
-    abstract suspend fun insertLabelReferences(labelRefs: List<LocalLabelReference>): List<Long>
+    abstract suspend fun insertRelatedLabels(relatedLabels: List<LocalRelatedLabel>): List<Long>
 
     // ====================
     // Master
@@ -288,7 +288,7 @@ abstract class DiscogsDao {
                     insertResourceTracksWithDetails(resourceId, trackList)
                     insertResourceCredits(resourceId, relatedArtists)
                     insertResourceVideoReferences(resourceId, videos)
-                    insertLabelReferences(labelRefs.map { it.copy(resourceId = resourceId) })
+                    insertRelatedLabels(relatedLabels.map { it.copy(resourceId = resourceId) })
                     formats.forEach { insertReleaseFormatWithDescription(releaseId, it) }
                     insertReleaseIdentifiers(identifiers.map { it.copy(releaseId = releaseId) })
                 }

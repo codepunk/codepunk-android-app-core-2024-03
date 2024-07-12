@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "artist_reference",
+    tableName = "related_artist",
     foreignKeys = [
         ForeignKey(
             entity = LocalResource::class,
@@ -17,10 +17,10 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class LocalArtistReference(
+data class LocalRelatedArtist(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "reference_id")
-    val referenceId: Long = 0L,
+    @ColumnInfo(name = "related_artist_id")
+    val relatedArtistId: Long = 0L,
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
     @ColumnInfo(name = "reference_type")

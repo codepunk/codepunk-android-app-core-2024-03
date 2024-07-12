@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ce79d2bd7ddd4f84a013579d990928ab",
+    "identityHash": "5961ed8169a9020165a8215cfb5ab875",
     "entities": [
       {
         "tableName": "artist",
@@ -77,12 +77,12 @@
         ]
       },
       {
-        "tableName": "artist_reference",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "related_artist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_artist_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "referenceId",
-            "columnName": "reference_id",
+            "fieldPath": "relatedArtistId",
+            "columnName": "related_artist_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -132,7 +132,7 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "reference_id"
+            "related_artist_id"
           ]
         },
         "indices": [],
@@ -533,12 +533,12 @@
         ]
       },
       {
-        "tableName": "label_reference",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `label_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "related_label",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_label_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `label_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "referenceId",
-            "columnName": "reference_id",
+            "fieldPath": "relatedLabelId",
+            "columnName": "related_label_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -576,7 +576,7 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "reference_id"
+            "related_label_id"
           ]
         },
         "indices": [],
@@ -1415,7 +1415,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce79d2bd7ddd4f84a013579d990928ab')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5961ed8169a9020165a8215cfb5ab875')"
     ]
   }
 }

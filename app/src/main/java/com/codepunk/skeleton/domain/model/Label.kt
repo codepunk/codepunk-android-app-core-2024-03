@@ -11,6 +11,6 @@ data class Label(
     override val releasesUrl: String = "",
     override val urls: List<String> = emptyList(),
     val contactInfo: String = "",
-    val parentLabel: LabelReference? = null,
-    val subLabels: List<LabelReference> = emptyList()
+    val parentLabel: RelatedLabel? = null,
+    val subLabels: List<RelatedLabel> = emptyList()
 ) : Entity

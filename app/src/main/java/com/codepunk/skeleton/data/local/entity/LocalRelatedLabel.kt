@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "label_reference",
+    tableName = "related_label",
     foreignKeys = [
         ForeignKey(
             entity = LocalResource::class,
@@ -17,10 +17,10 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class LocalLabelReference(
+data class LocalRelatedLabel(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "reference_id")
-    val referenceId: Long = 0L,
+    @ColumnInfo(name = "related_label_id")
+    val relatedLabelId: Long = 0L,
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
     @ColumnInfo(name = "reference_type")

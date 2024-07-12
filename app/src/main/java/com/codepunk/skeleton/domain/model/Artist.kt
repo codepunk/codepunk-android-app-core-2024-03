@@ -12,7 +12,7 @@ data class Artist(
     override val urls: List<String> = emptyList(),
     val realName: String? = null,
     val nameVariations: List<String> = emptyList(),
-    val aliases: List<ArtistReference> = emptyList(),
-    val members: List<ArtistReference> = emptyList(),
-    val groups: List<ArtistReference> = emptyList()
+    val aliases: List<RelatedArtist> = emptyList(),
+    val members: List<RelatedArtist> = emptyList(),
+    val groups: List<RelatedArtist> = emptyList()
 ) : Entity

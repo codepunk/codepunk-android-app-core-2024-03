@@ -23,7 +23,7 @@ data class RemoteArtist(
     @Suppress("SpellCheckingInspection")
     @SerialName("namevariations")
     val nameVariations: List<String> = emptyList(),
-    val aliases: List<RemoteArtistReference> = emptyList(),
-    val members: List<RemoteArtistReference> = emptyList(),
-    val groups: List<RemoteArtistReference> = emptyList()
+    val aliases: List<RemoteRelatedArtist> = emptyList(),
+    val members: List<RemoteRelatedArtist> = emptyList(),
+    val groups: List<RemoteRelatedArtist> = emptyList()
 ) : RemoteEntity

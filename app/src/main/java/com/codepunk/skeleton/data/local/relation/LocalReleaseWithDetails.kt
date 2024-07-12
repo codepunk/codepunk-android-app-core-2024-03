@@ -7,7 +7,7 @@ import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
-import com.codepunk.skeleton.data.local.entity.LocalLabelReference
+import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
@@ -54,7 +54,7 @@ data class LocalReleaseWithDetails(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val labelRefs: List<LocalLabelReference>,
+    val relatedLabels: List<LocalRelatedLabel>,
     @Relation(
         entity = LocalFormat::class,
         parentColumn = "release_id",

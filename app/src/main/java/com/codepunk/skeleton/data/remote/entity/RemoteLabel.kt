@@ -20,8 +20,8 @@ data class RemoteLabel(
     @SerialName("contact_info")
     val contactInfo: String = "",
     @SerialName("parent_label")
-    val parentLabel: RemoteLabelReference? = null,
+    val parentLabel: RemoteRelatedLabel? = null,
     @Suppress("SpellCheckingInspection")
     @SerialName("sublabels")
-    val subLabels: List<RemoteLabelReference> = emptyList()
+    val subLabels: List<RemoteRelatedLabel> = emptyList()
 ) : RemoteEntity

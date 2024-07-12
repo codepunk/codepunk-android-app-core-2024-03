@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.CreditDao
-import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.dao.FormatDao
 import com.codepunk.skeleton.data.local.dao.IdentifierDao
 import com.codepunk.skeleton.data.local.dao.ImageDao
@@ -38,10 +37,6 @@ object LocalModule {
             klass = DiscogsDatabase::class.java,
             name = "discogs_db"
         ).build()
-
-    @Provides
-    @Singleton
-    fun provideDiscogsDao(database: DiscogsDatabase): DiscogsDao = database.discogsDao()
 
     @Provides
     @Singleton

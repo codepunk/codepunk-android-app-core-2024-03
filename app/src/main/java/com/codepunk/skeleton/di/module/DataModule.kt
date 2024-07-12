@@ -2,7 +2,6 @@ package com.codepunk.skeleton.di.module
 
 import com.codepunk.skeleton.data.local.dao.AllDao
 import com.codepunk.skeleton.data.local.dao.ArtistDao
-import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
@@ -22,7 +21,6 @@ class DataModule {
     @Singleton
     @Provides
     fun provideDiscogsRepository(
-        discogsDao: DiscogsDao,
         allDao: AllDao,
         artistDao: ArtistDao,
         labelDao: LabelDao,
@@ -30,7 +28,6 @@ class DataModule {
         releaseDao: ReleaseDao,
         discogsWebservice: DiscogsWebservice
     ) : DiscogsRepository = DiscogsRepositoryImpl(
-        discogsDao = discogsDao,
         allDao = allDao,
         artistDao = artistDao,
         labelDao = labelDao,

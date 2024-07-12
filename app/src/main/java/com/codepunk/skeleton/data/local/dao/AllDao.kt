@@ -17,19 +17,19 @@ import javax.inject.Inject
 // (And similarly any other cross-refs
 
 class AllDao @Inject constructor(
-    val artistDao: ArtistDao,
-    val creditDao: CreditDao,
-    val formatDao: FormatDao,
-    val identifierDao: IdentifierDao,
-    val imageDao: ImageDao,
-    val labelDao: LabelDao,
-    val masterDao: MasterDao,
-    val relatedArtistDao: RelatedArtistDao,
-    val relatedLabelDao: RelatedLabelDao,
-    val releaseDao: ReleaseDao,
-    val resourceDao: ResourceDao,
-    val trackDao: TrackDao,
-    val videoDao: VideoDao
+    private val artistDao: ArtistDao,
+    private val creditDao: CreditDao,
+    private val formatDao: FormatDao,
+    private val identifierDao: IdentifierDao,
+    private val imageDao: ImageDao,
+    private val labelDao: LabelDao,
+    private val masterDao: MasterDao,
+    private val relatedArtistDao: RelatedArtistDao,
+    private val relatedLabelDao: RelatedLabelDao,
+    private val releaseDao: ReleaseDao,
+    private val resourceDao: ResourceDao,
+    private val trackDao: TrackDao,
+    private val videoDao: VideoDao
 ) {
 
     // region Methods
@@ -60,10 +60,8 @@ class AllDao @Inject constructor(
         with(resourceAndArtist.artistWithDetails) {
             artistDao.insertArtist(artist.copy(resourceId = resourceId))
             imageDao.insertResourceImages(resourceId, images)
-            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-            relatedArtistDao.insertRelatedArtists(
-                relatedArtists.map { it.copy(resourceId = resourceId) }
-            )
+            resourceDao.insertResourceDetails(resourceId, details)
+            relatedArtistDao.insertRelatedArtists(resourceId, relatedArtists)
         }
         return resourceId
     }
@@ -93,10 +91,8 @@ class AllDao @Inject constructor(
         with(resourceAndLabel.labelWithDetails) {
             labelDao.insertLabel(label.copy(resourceId = resourceId))
             imageDao.insertResourceImages(resourceId, images)
-            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
-            relatedLabelDao.insertRelatedLabels(
-                relatedLabels.map { it.copy(resourceId = resourceId) }
-            )
+            resourceDao.insertResourceDetails(resourceId, details)
+            relatedLabelDao.insertRelatedLabels(resourceId, relatedLabels)
         }
         return resourceId
     }
@@ -127,7 +123,7 @@ class AllDao @Inject constructor(
         with(resourceAndMaster.masterWithDetails) {
             masterDao.insertMaster(master.copy(resourceId = resourceId))
             imageDao.insertResourceImages(resourceId, images)
-            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+            resourceDao.insertResourceDetails(resourceId, details)
             insertResourceTracksWithDetails(resourceId, trackList)
             creditDao.insertResourceCredits(resourceId, credits)
             videoDao.insertResourceVideos(resourceId, videos)
@@ -155,10 +151,22 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long =
-        resourceDao.insertResource(resourceAndRelease.resource).also { resourceId ->
-            TODO("")
+    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long {
+        deleteResourceAndRelease(resourceAndRelease)
+        val resourceId = resourceDao.insertResource(resourceAndRelease.resource)
+        with(resourceAndRelease.releaseWithDetails) {
+            val releaseId = releaseDao.insertRelease(release.copy(resourceId = resourceId))
+            imageDao.insertResourceImages(resourceId, images)
+            resourceDao.insertResourceDetails(resourceId, details)
+            insertResourceTracksWithDetails(resourceId, trackList)
+            creditDao.insertResourceCredits(resourceId, credits)
+            videoDao.insertResourceVideos(resourceId, videos)
+            relatedLabelDao.insertRelatedLabels(resourceId, relatedLabels)
+            insertFormatsWithDetails(releaseId, formats)
+            identifierDao.insertIdentifiers(releaseId, identifiers)
         }
+        return resourceId
+    }
 
     // ====================
     // Format
@@ -167,12 +175,13 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun insertFormatsWithDetails(
+        releaseId: Long,
         formatsWithDetails: List<LocalFormatWithDetails>
-    ): List<Long> = formatDao.insertFormats(formatsWithDetails.map { it.format }).apply {
-        zip(formatsWithDetails).forEach { (formatId, formatWithDetails) ->
-            formatDao.insertFormatDetails(
-                formatWithDetails.details.map { it.copy(formatId = formatId) }
-            )
+    ): List<Long> = formatDao.insertFormats(
+        formatsWithDetails.map { it.format.copy(releaseId = releaseId) }
+    ).also { formatIds ->
+        formatIds.zip(formatsWithDetails).forEach { (formatId, formatWithDetails) ->
+            formatDao.insertFormatDetails(formatId, formatWithDetails.details)
         }
     }
 
@@ -184,8 +193,10 @@ class AllDao @Inject constructor(
     @Query("")
     suspend fun insertTracksWithDetails(
         tracksWithDetails: List<LocalTrackWithDetails>
-    ): List<Long> = trackDao.insertTracks(tracksWithDetails.map { it.track }).apply {
-        zip(tracksWithDetails).forEach { (trackId, trackWithDetails) ->
+    ): List<Long> = trackDao.insertTracks(
+        tracksWithDetails.map { it.track }
+    ).also { trackIds ->
+        trackIds.zip(tracksWithDetails).forEach { (trackId, trackWithDetails) ->
             trackWithDetails.extraArtists?.run {
                 creditDao.insertTrackCredits(trackId, this)
             }

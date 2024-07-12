@@ -43,7 +43,7 @@ data class LocalReleaseWithDetails(
         entityColumn = "credit_id",
         associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
-    val relatedArtists: List<LocalCredit>,
+    val credits: List<LocalCredit>,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",

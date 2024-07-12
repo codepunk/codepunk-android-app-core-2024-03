@@ -331,7 +331,7 @@ fun LocalResourceAndRelease.toDomainRelease(): Release = Release(
     numForSale = releaseWithDetails.release.numForSale,
     lowestPrice = releaseWithDetails.release.lowestPrice,
     trackList = releaseWithDetails.trackList.unflattenToDomainTracks(),
-    artists = releaseWithDetails.relatedArtists.toDomainCredit(LocalCredit.CreditType.ARTIST),
+    artists = releaseWithDetails.credits.toDomainCredit(LocalCredit.CreditType.ARTIST),
     videos = releaseWithDetails.videos.map { it.toDomainVideo() },
     status = releaseWithDetails.release.status,
     artistsSort = releaseWithDetails.release.artistsSort,
@@ -349,7 +349,7 @@ fun LocalResourceAndRelease.toDomainRelease(): Release = Release(
     notes = releaseWithDetails.release.notes,
     releasedFormatted = releaseWithDetails.release.releasedFormatted,
     identifiers = releaseWithDetails.identifiers.map { it.toDomainIdentifier() },
-    extraArtists = releaseWithDetails.relatedArtists.toDomainCredit(LocalCredit.CreditType.EXTRA_ARTIST),
+    extraArtists = releaseWithDetails.credits.toDomainCredit(LocalCredit.CreditType.EXTRA_ARTIST),
     thumb = releaseWithDetails.release.thumb
 )
 
@@ -384,7 +384,7 @@ fun RemoteRelease.toLocalReleaseWithDetails(): LocalReleaseWithDetails = LocalRe
     details = genres.toLocalResourceDetails(LocalResourceDetail.DetailType.GENRE) +
             styles.toLocalResourceDetails(LocalResourceDetail.DetailType.STYLE),
     trackList = trackList.flattenToLocalTracksWithDetails(),
-    relatedArtists = artists.toLocalCredits(LocalCredit.CreditType.ARTIST) +
+    credits = artists.toLocalCredits(LocalCredit.CreditType.ARTIST) +
             extraArtists.toLocalCredits(LocalCredit.CreditType.EXTRA_ARTIST),
     videos = videos.map { it.toLocalVideo() },
     relatedLabels = labels.toLocalRelatedLabels(LocalRelatedLabel.RelationType.LABEL) +

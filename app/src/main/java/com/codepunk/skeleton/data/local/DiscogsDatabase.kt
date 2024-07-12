@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.CreditDao
-import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.dao.FormatDao
 import com.codepunk.skeleton.data.local.dao.IdentifierDao
 import com.codepunk.skeleton.data.local.dao.ImageDao
@@ -76,8 +75,6 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
 abstract class DiscogsDatabase: RoomDatabase() {
 
     // region Methods
-
-    abstract fun discogsDao(): DiscogsDao
 
     abstract fun artistDao(): ArtistDao
 

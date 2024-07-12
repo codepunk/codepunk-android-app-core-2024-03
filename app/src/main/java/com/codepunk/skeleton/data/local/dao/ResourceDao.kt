@@ -8,18 +8,23 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
 @Dao
-interface ResourceDao {
+abstract class  ResourceDao {
 
     // region Methods
 
     @Insert
-    suspend fun insertResource(resource: LocalResource): Long
+    abstract suspend fun insertResource(resource: LocalResource): Long
 
     @Delete
-    fun deleteResource(resource: LocalResource): Int
+    abstract fun deleteResource(resource: LocalResource): Int
 
     @Insert
     abstract suspend fun insertResourceDetails(details: List<LocalResourceDetail>): List<Long>
+
+    @Query("")
+    suspend fun insertResourceDetails(
+        resourceId: Long, details: List<LocalResourceDetail>
+    ): List<Long> = insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
 
     @Query("""
         SELECT resource.*
@@ -57,7 +62,7 @@ interface ResourceDao {
         SELECT resource.*
           FROM resource
           LEFT OUTER JOIN `release`
-            ON resource.resource_id = `release`.release_id
+            ON resource.resource_id = `release`.resource_id
          WHERE `release`.release_id = :releaseId
     """
     )

@@ -7,11 +7,11 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 
 data class LocalResourceAndRelease(
     @Embedded
-    val resource: LocalResource,
+    val resource: LocalResource = LocalResource(),
     @Relation(
         entity = LocalRelease::class,
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val releaseWithDetails: LocalReleaseWithDetails
+    val releaseWithDetails: LocalReleaseWithDetails = LocalReleaseWithDetails()
 )

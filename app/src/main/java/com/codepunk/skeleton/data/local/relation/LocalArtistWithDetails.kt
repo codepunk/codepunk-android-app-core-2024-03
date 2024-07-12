@@ -10,21 +10,21 @@ import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
 data class LocalArtistWithDetails(
     @Embedded
-    val artist: LocalArtist,
+    val artist: LocalArtist = LocalArtist(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "image_id",
         associateBy = Junction(LocalResourceImageCrossRef::class)
     )
-    val images: List<LocalImage>,
+    val images: List<LocalImage> = emptyList(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val details: List<LocalResourceDetail>,
+    val details: List<LocalResourceDetail> = emptyList(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val relatedArtists: List<LocalRelatedArtist>
+    val relatedArtists: List<LocalRelatedArtist> = emptyList()
 )

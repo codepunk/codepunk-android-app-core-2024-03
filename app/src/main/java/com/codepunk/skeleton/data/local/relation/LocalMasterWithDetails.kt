@@ -12,18 +12,18 @@ import com.codepunk.skeleton.data.local.entity.LocalVideo
 
 data class LocalMasterWithDetails(
     @Embedded
-    val master: LocalMaster,
+    val master: LocalMaster = LocalMaster(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "image_id",
         associateBy = Junction(LocalResourceImageCrossRef::class)
     )
-    val images: List<LocalImage>,
+    val images: List<LocalImage> = emptyList(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val details: List<LocalResourceDetail>,
+    val details: List<LocalResourceDetail> = emptyList(),
     @Relation(
         entity = LocalTrack::class,
         parentColumn = "resource_id",
@@ -34,17 +34,17 @@ data class LocalMasterWithDetails(
             entityColumn = "track_id"
         )
     )
-    val trackList: List<LocalTrackWithDetails>,
+    val trackList: List<LocalTrackWithDetails> = emptyList(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "credit_id",
         associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
-    val credits: List<LocalCredit>,
+    val credits: List<LocalCredit> = emptyList(),
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",
         associateBy = Junction(LocalResourceVideoCrossRef::class)
     )
-    val videos: List<LocalVideo>
+    val videos: List<LocalVideo> = emptyList()
 )

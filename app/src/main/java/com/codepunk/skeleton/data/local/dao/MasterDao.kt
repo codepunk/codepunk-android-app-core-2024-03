@@ -2,6 +2,7 @@ package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
@@ -12,7 +13,7 @@ interface MasterDao {
 
     // region Methods
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMaster(master: LocalMaster): Long
 
     @Query("""

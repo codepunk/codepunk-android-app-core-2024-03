@@ -7,11 +7,11 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 
 data class LocalResourceAndArtist(
     @Embedded
-    val resource: LocalResource,
+    val resource: LocalResource = LocalResource(),
     @Relation(
         entity = LocalArtist::class,
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val artistWithDetails: LocalArtistWithDetails
+    val artistWithDetails: LocalArtistWithDetails = LocalArtistWithDetails()
 )

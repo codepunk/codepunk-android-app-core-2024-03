@@ -18,16 +18,7 @@ abstract class TrackDao {
     abstract suspend fun insertResourceTrackCrossRefs(
         crossRefs: List<LocalResourceTrackCrossRef>
     ): List<Long>
-
-    suspend fun insertResourceTracks(
-        resourceId: Long,
-        tracks: List<LocalTrack>
-    ): List<Long> = insertTracks(tracks).apply {
-        filter { it != -1L }
-            .map { LocalResourceTrackCrossRef(resourceId, it) }
-            .run { insertResourceTrackCrossRefs(this) }
-    }
-
+    
     @Query("""
         DELETE 
           FROM track

@@ -11,7 +11,7 @@ data class LocalCredit(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("credit_id")
     val creditId: Long = 0L,
-    val type: CreditType,
+    val type: CreditType = CreditType.ARTIST,
     val artistId: Long = 0L,
     val name: String = "",
     val anv: String = "",

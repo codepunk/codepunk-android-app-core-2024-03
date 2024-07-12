@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.codepunk.skeleton.core.loginator.Loginator
+import com.codepunk.skeleton.data.local.dao.AllDao
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.domain.model.Artist
@@ -27,18 +28,9 @@ import com.codepunk.skeleton.domain.model.Label
 import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.model.Release
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
-import com.codepunk.skeleton.util.parseElapsedTimeString
-import com.codepunk.skeleton.util.toElapsedTimeString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -48,6 +40,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var discogsRepository: DiscogsRepository
+
+    @Inject
+    lateinit var allDao: AllDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,53 +55,31 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Greeting(
                         name = "Scott",
-                        onFetchData = ::testStuff
+                        onFetchData = ::testFetchStuff,
+                        onDeleteData = ::testDeleteStuff
                     )
                 }
             }
         }
     }
 
-    private fun testStuff() {
+    private fun testFetchStuff() {
         //testFetchArtist(TAYLOR_SWIFT)
         //testFetchLabel(REPUBLIC_RECORDS)
         //testFetchLabel(ATLANTIC_RECORDS)
-        //testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+        testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+        testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
-        //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
-        testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
+        //testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
         //testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
     }
 
-    @Suppress("Unused")
-    private fun testElapsedTimeString() {
-        val durations = listOf(
-            DurationUnit.DAYS to 10.days + 5.hours + 13.minutes + 0.seconds + 246.milliseconds,
-            DurationUnit.HOURS to 10.days + 5.hours + 13.minutes + 49.seconds + 246.milliseconds,
-            DurationUnit.MINUTES to 1.hours + 4.seconds,
-            DurationUnit.DAYS to 28.seconds,
-            DurationUnit.HOURS to 1.hours + 10.milliseconds,
-            DurationUnit.MINUTES to Duration.ZERO,
-            DurationUnit.DAYS to Duration.ZERO,
-            DurationUnit.DAYS to Duration.INFINITE,
-            DurationUnit.HOURS to -Duration.INFINITE
-        )
-        val mapped = durations.map { (durationUnit, duration) ->
-            duration.toElapsedTimeString(durationUnit)
-        }.toMutableList().apply {
-            add("")
-        }.toList()
-        val remapped = mapped.map {
-            try {
-                parseElapsedTimeString(it)
-            } catch (e: IllegalArgumentException) {
-                Duration.ZERO
-            }
+    private fun testDeleteStuff() {
+        lifecycleScope.launch {
+            allDao.deleteResourceAndMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+            allDao.deleteResourceAndMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         }
-        val x = "$durations $mapped $remapped"
-        Loginator.d { x }
     }
-
 
     @Suppress("SameParameterValue")
     private fun testFetchArtist(artistId: Long) {
@@ -204,7 +177,8 @@ class MainActivity : ComponentActivity() {
 fun Greeting(
     name: String,
     modifier: Modifier = Modifier,
-    onFetchData: () -> Unit = {}
+    onFetchData: () -> Unit = {},
+    onDeleteData: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -224,6 +198,15 @@ fun Greeting(
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
             Text("Fetch Data")
+        }
+        Button(
+            onClick = {
+                onDeleteData()
+            },
+            modifier = modifier
+                .align(alignment = Alignment.CenterHorizontally)
+        ) {
+            Text("Delete Data")
         }
     }
 }

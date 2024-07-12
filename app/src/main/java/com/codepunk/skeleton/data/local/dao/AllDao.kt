@@ -13,9 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-// TODO When deleting resource, need to cleanly delete all related images
-// (And similarly any other cross-refs
-
 class AllDao @Inject constructor(
     private val artistDao: ArtistDao,
     private val creditDao: CreditDao,
@@ -40,22 +37,18 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Boolean =
+    suspend fun deleteResourceAndArtist(artistId: Long): Boolean =
         withContext(Dispatchers.IO) {
-            resourceDao.getResourceByArtistId(
-                resourceAndArtist.artistWithDetails.artist.artistId
-            )?.let {
-                resourceDao.deleteResource(it)
+            resourceDao.getResourceByArtistId(artistId)?.apply {
+                resourceDao.deleteResource(this)
                 imageDao.scrubImages()
-                true
-            } ?: false
+            } != null
         }
 
     @Transaction
     @Query("")
     suspend fun insertResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Long {
-        // TODO Make use of insert(REPLACE), then I need to clean images myself
-        deleteResourceAndArtist(resourceAndArtist)
+        deleteResourceAndArtist(resourceAndArtist.artistWithDetails.artist.artistId)
         val resourceId = resourceDao.insertResource(resourceAndArtist.resource)
         with(resourceAndArtist.artistWithDetails) {
             artistDao.insertArtist(artist.copy(resourceId = resourceId))
@@ -72,21 +65,18 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Boolean =
+    suspend fun deleteResourceAndLabel(labelId: Long): Boolean =
         withContext(Dispatchers.IO) {
-            resourceDao.getResourceByLabelId(
-                resourceAndLabel.labelWithDetails.label.labelId
-            )?.let {
-                resourceDao.deleteResource(it)
+            resourceDao.getResourceByLabelId(labelId)?.apply {
+                resourceDao.deleteResource(this)
                 imageDao.scrubImages()
-                true
-            } ?: false
+            } != null
         }
 
     @Transaction
     @Query("")
     suspend fun insertResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Long {
-        deleteResourceAndLabel(resourceAndLabel)
+        deleteResourceAndLabel(resourceAndLabel.labelWithDetails.label.labelId)
         val resourceId = resourceDao.insertResource(resourceAndLabel.resource)
         with(resourceAndLabel.labelWithDetails) {
             labelDao.insertLabel(label.copy(resourceId = resourceId))
@@ -103,22 +93,23 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Boolean =
+    suspend fun deleteResourceAndMaster(masterId: Long): Boolean =
         withContext(Dispatchers.IO) {
-            resourceDao.getResourceByMasterId(
-                resourceAndMaster.masterWithDetails.master.masterId
-            )?.let {
-                resourceDao.deleteResource(it)
+            resourceDao.getResourceByMasterId(masterId).apply {
+                val x = "$this"
+            }?.apply {
+                val result = resourceDao.deleteResource(this)
+                val x = "$result"
                 imageDao.scrubImages()
                 trackDao.scrubTracks()
-                true
-            } ?: false
+                creditDao.scrubCredits()
+            } != null
         }
 
     @Transaction
     @Query("")
     suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long {
-        deleteResourceAndMaster(resourceAndMaster)
+        deleteResourceAndMaster(resourceAndMaster.masterWithDetails.master.masterId)
         val resourceId = resourceDao.insertResource(resourceAndMaster.resource)
         with(resourceAndMaster.masterWithDetails) {
             masterDao.insertMaster(master.copy(resourceId = resourceId))
@@ -137,22 +128,20 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Boolean =
+    suspend fun deleteResourceAndRelease(releaseId: Long): Boolean =
         withContext(Dispatchers.IO) {
-            resourceDao.getResourceByReleaseId(
-                resourceAndRelease.releaseWithDetails.release.releaseId
-            )?.let {
-                resourceDao.deleteResource(it)
+            resourceDao.getResourceByReleaseId(releaseId)?.apply {
+                resourceDao.deleteResource(this)
                 imageDao.scrubImages()
                 trackDao.scrubTracks()
-                true
-            } ?: false
+                creditDao.scrubCredits()
+            } != null
         }
 
     @Transaction
     @Query("")
     suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long {
-        deleteResourceAndRelease(resourceAndRelease)
+        deleteResourceAndRelease(resourceAndRelease.releaseWithDetails.release.releaseId)
         val resourceId = resourceDao.insertResource(resourceAndRelease.resource)
         with(resourceAndRelease.releaseWithDetails) {
             val releaseId = releaseDao.insertRelease(release.copy(resourceId = resourceId))
@@ -198,7 +187,7 @@ class AllDao @Inject constructor(
     ).also { trackIds ->
         trackIds.zip(tracksWithDetails).forEach { (trackId, trackWithDetails) ->
             trackWithDetails.extraArtists?.run {
-                creditDao.insertTrackCredits(trackId, this)
+               creditDao.insertTrackCredits(trackId, this)
             }
         }
     }

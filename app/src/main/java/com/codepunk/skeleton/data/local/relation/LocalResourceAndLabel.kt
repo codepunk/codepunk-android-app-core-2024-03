@@ -7,11 +7,11 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 
 data class LocalResourceAndLabel(
     @Embedded
-    val resource: LocalResource,
+    val resource: LocalResource = LocalResource(),
     @Relation(
         entity = LocalLabel::class,
         parentColumn = "resource_id",
         entityColumn = "resource_id"
     )
-    val labelWithDetails: LocalLabelWithDetails
+    val labelWithDetails: LocalLabelWithDetails = LocalLabelWithDetails()
 )

@@ -7,10 +7,10 @@ import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
 
 data class LocalFormatWithDetails(
     @Embedded
-    val format: LocalFormat,
+    val format: LocalFormat = LocalFormat(),
     @Relation(
         parentColumn = "format_id",
         entityColumn = "format_id"
     )
-    val details: List<LocalFormatDetail>
+    val details: List<LocalFormatDetail> = emptyList()
 )

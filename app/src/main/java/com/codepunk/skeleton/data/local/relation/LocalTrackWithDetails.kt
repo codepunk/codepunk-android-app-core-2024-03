@@ -8,7 +8,7 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
 
 data class LocalTrackWithDetails(
     @Embedded
-    val track: LocalTrack,
+    val track: LocalTrack = LocalTrack(),
     @Relation(
         parentColumn = "track_id",
         entityColumn = "credit_id",

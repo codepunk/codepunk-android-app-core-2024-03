@@ -2,6 +2,7 @@ package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndLabel
@@ -12,7 +13,7 @@ interface LabelDao {
 
     // region Methods
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLabel(label: LocalLabel): Long
 
     @Query("""

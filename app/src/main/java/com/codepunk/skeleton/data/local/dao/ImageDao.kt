@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.relation.LocalResourceImageCrossRef
 
@@ -23,6 +24,8 @@ abstract class ImageDao {
         crossRefs: List<LocalResourceImageCrossRef>
     ): List<Long>
 
+    @Transaction
+    @Query("")
     suspend fun insertResourceImages(
         resourceId: Long,
         images: List<LocalImage>

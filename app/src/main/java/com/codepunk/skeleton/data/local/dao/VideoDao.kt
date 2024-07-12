@@ -2,6 +2,8 @@ package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalVideo
 import com.codepunk.skeleton.data.local.relation.LocalResourceVideoCrossRef
 
@@ -18,6 +20,8 @@ abstract class VideoDao {
         crossRefs: List<LocalResourceVideoCrossRef>
     ): List<Long>
 
+    @Transaction
+    @Query("")
     suspend fun insertResourceVideos(
         resourceId: Long,
         videos: List<LocalVideo>

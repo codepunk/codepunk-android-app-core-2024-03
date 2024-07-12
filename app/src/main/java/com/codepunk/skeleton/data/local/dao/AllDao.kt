@@ -95,14 +95,12 @@ class AllDao @Inject constructor(
     @Query("")
     suspend fun deleteResourceAndMaster(masterId: Long): Boolean =
         withContext(Dispatchers.IO) {
-            resourceDao.getResourceByMasterId(masterId).apply {
-                val x = "$this"
-            }?.apply {
-                val result = resourceDao.deleteResource(this)
-                val x = "$result"
+            resourceDao.getResourceByMasterId(masterId)?.apply {
+                resourceDao.deleteResource(this)
                 imageDao.scrubImages()
                 trackDao.scrubTracks()
                 creditDao.scrubCredits()
+                videoDao.scrubVideos()
             } != null
         }
 
@@ -135,6 +133,7 @@ class AllDao @Inject constructor(
                 imageDao.scrubImages()
                 trackDao.scrubTracks()
                 creditDao.scrubCredits()
+                videoDao.scrubVideos()
             } != null
         }
 

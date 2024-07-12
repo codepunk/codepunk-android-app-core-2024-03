@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting(
-                        name = "Scott",
+                        name = "Codepunk",
                         onFetchData = ::testFetchStuff,
                         onDeleteData = ::testDeleteStuff
                     )

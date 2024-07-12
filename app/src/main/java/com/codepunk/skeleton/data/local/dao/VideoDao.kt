@@ -31,6 +31,17 @@ abstract class VideoDao {
             .run { insertResourceVideoCrossRefs(this) }
     }
 
+    @Query("""
+        DELETE 
+          FROM video 
+         WHERE NOT EXISTS (
+               SELECT resource_video_cross_ref.video_id
+                 FROM resource_video_cross_ref
+                WHERE video.video_id = resource_video_cross_ref.video_id
+         )
+    """)
+    abstract suspend fun scrubVideos()
+
     // endregion Methods
 
 }

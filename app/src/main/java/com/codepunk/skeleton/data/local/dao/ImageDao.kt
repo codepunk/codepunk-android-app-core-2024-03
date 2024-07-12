@@ -1,7 +1,6 @@
 package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -15,9 +14,6 @@ abstract class ImageDao {
 
     @Insert
     abstract suspend fun insertImages(images: List<LocalImage>): List<Long>
-
-    @Delete
-    abstract fun deleteImages(images: List<LocalImage>): Int
 
     @Insert
     abstract suspend fun insertResourceImageCrossRefs(

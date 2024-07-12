@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 
@@ -16,8 +17,10 @@ abstract class  ResourceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertResource(resource: LocalResource): Long
 
+    @Transaction
     @Delete
     abstract fun deleteResource(resource: LocalResource): Int
+
 
     @Insert
     abstract suspend fun insertResourceDetails(details: List<LocalResourceDetail>): List<Long>

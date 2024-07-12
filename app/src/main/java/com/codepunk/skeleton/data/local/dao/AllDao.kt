@@ -46,7 +46,7 @@ class AllDao @Inject constructor(
                 resourceAndArtist.artistWithDetails.artist.artistId
             )?.let {
                 resourceDao.deleteResource(it)
-                imageDao.cleanImages()
+                imageDao.scrubImages()
                 true
             } ?: false
         }
@@ -54,6 +54,7 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun insertResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Long {
+        // TODO Make use of insert(REPLACE), then I need to clean images myself
         deleteResourceAndArtist(resourceAndArtist)
         val resourceId = resourceDao.insertResource(resourceAndArtist.resource)
         with(resourceAndArtist.artistWithDetails) {
@@ -79,7 +80,7 @@ class AllDao @Inject constructor(
                 resourceAndLabel.labelWithDetails.label.labelId
             )?.let {
                 resourceDao.deleteResource(it)
-                imageDao.cleanImages()
+                imageDao.scrubImages()
                 true
             } ?: false
         }
@@ -112,17 +113,27 @@ class AllDao @Inject constructor(
                 resourceAndMaster.masterWithDetails.master.masterId
             )?.let {
                 resourceDao.deleteResource(it)
-                imageDao.cleanImages()
+                imageDao.scrubImages()
+                trackDao.scrubTracks()
                 true
             } ?: false
         }
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long =
-        resourceDao.insertResource(resourceAndMaster.resource).also { resourceId ->
-            TODO("")
+    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long {
+        deleteResourceAndMaster(resourceAndMaster)
+        val resourceId = resourceDao.insertResource(resourceAndMaster.resource)
+        with(resourceAndMaster.masterWithDetails) {
+            masterDao.insertMaster(master.copy(resourceId = resourceId))
+            imageDao.insertResourceImages(resourceId, images)
+            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+            insertResourceTracksWithDetails(resourceId, trackList)
+            creditDao.insertResourceCredits(resourceId, credits)
+            videoDao.insertResourceVideos(resourceId, videos)
         }
+        return resourceId
+    }
 
     // ====================
     // Release
@@ -136,7 +147,8 @@ class AllDao @Inject constructor(
                 resourceAndRelease.releaseWithDetails.release.releaseId
             )?.let {
                 resourceDao.deleteResource(it)
-                imageDao.cleanImages()
+                imageDao.scrubImages()
+                trackDao.scrubTracks()
                 true
             } ?: false
         }

@@ -277,7 +277,7 @@ fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
     numForSale = masterWithDetails.master.numForSale,
     lowestPrice = masterWithDetails.master.lowestPrice,
     trackList = masterWithDetails.trackList.unflattenToDomainTracks(),
-    artists = masterWithDetails.artists.toDomainCredit(LocalCredit.CreditType.ARTIST),
+    artists = masterWithDetails.credits.toDomainCredit(LocalCredit.CreditType.ARTIST),
     videos = masterWithDetails.videos.map { it.toDomainVideo() },
     mainRelease = masterWithDetails.master.mainRelease,
     mostRecentRelease = masterWithDetails.master.mostRecentRelease,
@@ -310,7 +310,7 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
     details = genres.toLocalResourceDetails(LocalResourceDetail.DetailType.GENRE) +
             styles.toLocalResourceDetails(LocalResourceDetail.DetailType.STYLE),
     trackList = trackList.flattenToLocalTracksWithDetails(),
-    artists = artists.toLocalCredits(LocalCredit.CreditType.ARTIST),
+    credits = artists.toLocalCredits(LocalCredit.CreditType.ARTIST),
     videos = videos.map { it.toLocalVideo() },
 )
 
@@ -495,7 +495,7 @@ fun List<LocalTrackWithDetails>.unflattenToDomainTracks(): List<Track> {
         val parentTrack = trackMap[parentTrackNum] ?: continue
 
         // We have a valid parent, so we need to add to its subTracks
-        val subTracks = parentTrack.subTracks.orEmpty().toMutableList().apply { add(track) }
+        val subTracks = parentTrack.subTracks?.toMutableList()?.apply { add(track) }
         trackMap.replace(parentTrackNum, parentTrack.copy(subTracks = subTracks))
     }
 

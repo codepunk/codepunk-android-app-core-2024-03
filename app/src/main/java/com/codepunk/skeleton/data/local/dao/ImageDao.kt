@@ -41,7 +41,7 @@ abstract class ImageDao {
                 WHERE image.image_id = resource_image_cross_ref.image_id
          )
     """)
-    abstract suspend fun cleanImages()
+    abstract suspend fun scrubImages()
 
     // endregion Methods
 

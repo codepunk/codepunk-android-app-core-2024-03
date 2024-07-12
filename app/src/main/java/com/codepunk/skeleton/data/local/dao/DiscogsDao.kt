@@ -240,7 +240,7 @@ abstract class DiscogsDao {
                     insertResourceImages(resourceId, images)
                     insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
                     insertResourceTracksWithDetails(resourceId, trackList)
-                    insertResourceCredits(resourceId, artists)
+                    insertResourceCredits(resourceId, credits)
                     insertResourceVideoReferences(resourceId, videos)
                 }
             }

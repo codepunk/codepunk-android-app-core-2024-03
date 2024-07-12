@@ -70,8 +70,8 @@ class MainActivity : ComponentActivity() {
     private fun testStuff() {
         //testFetchArtist(TAYLOR_SWIFT)
         //testFetchLabel(REPUBLIC_RECORDS)
-        testFetchLabel(ATLANTIC_RECORDS)
-        //testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+        //testFetchLabel(ATLANTIC_RECORDS)
+        testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)

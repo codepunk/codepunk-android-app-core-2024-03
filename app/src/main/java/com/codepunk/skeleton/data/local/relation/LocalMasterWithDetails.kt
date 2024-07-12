@@ -40,7 +40,7 @@ data class LocalMasterWithDetails(
         entityColumn = "credit_id",
         associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
-    val artists: List<LocalCredit>,
+    val credits: List<LocalCredit>,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",

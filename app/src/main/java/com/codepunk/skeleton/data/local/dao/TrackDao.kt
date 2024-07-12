@@ -2,6 +2,7 @@ package com.codepunk.skeleton.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.Query
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.relation.LocalResourceTrackCrossRef
 
@@ -17,6 +18,26 @@ abstract class TrackDao {
     abstract suspend fun insertResourceTrackCrossRefs(
         crossRefs: List<LocalResourceTrackCrossRef>
     ): List<Long>
+
+    suspend fun insertResourceTracks(
+        resourceId: Long,
+        tracks: List<LocalTrack>
+    ): List<Long> = insertTracks(tracks).apply {
+        filter { it != -1L }
+            .map { LocalResourceTrackCrossRef(resourceId, it) }
+            .run { insertResourceTrackCrossRefs(this) }
+    }
+
+    @Query("""
+        DELETE 
+          FROM track
+         WHERE NOT EXISTS (
+               SELECT resource_track_cross_ref.track_id
+                 FROM resource_track_cross_ref
+                WHERE track.track_id = resource_track_cross_ref.track_id
+         )
+    """)
+    abstract suspend fun scrubTracks()
 
     // endregion Methods
 

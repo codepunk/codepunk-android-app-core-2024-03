@@ -2,7 +2,11 @@ package com.codepunk.skeleton.data.repository
 
 import arrow.core.Ior
 import com.codepunk.skeleton.data.local.dao.AllDao
+import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
+import com.codepunk.skeleton.data.local.dao.LabelDao
+import com.codepunk.skeleton.data.local.dao.MasterDao
+import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.mapper.toDomainArtist
 import com.codepunk.skeleton.data.mapper.toDomainLabel
 import com.codepunk.skeleton.data.mapper.toDomainMaster
@@ -25,11 +29,12 @@ import kotlinx.coroutines.flow.map
 class DiscogsRepositoryImpl(
     private val discogsDao: DiscogsDao,
     private val allDao: AllDao,
+    private val artistDao: ArtistDao,
+    private val labelDao: LabelDao,
+    private val masterDao: MasterDao,
+    private val releaseDao: ReleaseDao,
     private val discogsWebService: DiscogsWebservice
 ) : DiscogsRepository {
-
-    private val artistDao = allDao.artistDao
-    private val labelDao = allDao.labelDao
 
     // region Methods
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
@@ -67,7 +72,7 @@ class DiscogsRepositoryImpl(
     override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> =
         networkBoundResource(
             query = {
-                discogsDao.getResourceAndMaster(masterId).map { it?.toDomainMaster() }
+                masterDao.getResourceAndMaster(masterId).map { it?.toDomainMaster() }
             },
             fetch = {
                 discogsWebService.getMaster(masterId).fold(
@@ -76,7 +81,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                discogsDao.insertResourceAndMaster(it.toLocalResourceAndMaster())
+                allDao.insertResourceAndMaster(it.toLocalResourceAndMaster())
             }
         )
 

@@ -30,6 +30,39 @@ interface ResourceDao {
     """)
     abstract suspend fun getResourceByArtistId(artistId: Long): LocalResource?
 
+    @Query(
+        """
+        SELECT resource.*
+          FROM resource
+          LEFT OUTER JOIN label
+            ON resource.resource_id = label.resource_id
+         WHERE label.label_id = :labelId
+    """
+    )
+    abstract suspend fun getResourceByLabelId(labelId: Long): LocalResource?
+
+    @Query(
+        """
+        SELECT resource.*
+          FROM resource
+          LEFT OUTER JOIN master
+            ON resource.resource_id = master.resource_id
+         WHERE master.master_id = :masterId
+    """
+    )
+    abstract suspend fun getResourceByMasterId(masterId: Long): LocalResource?
+
+    @Query(
+        """
+        SELECT resource.*
+          FROM resource
+          LEFT OUTER JOIN `release`
+            ON resource.resource_id = `release`.release_id
+         WHERE `release`.release_id = :releaseId
+    """
+    )
+    abstract suspend fun getResourceByReleaseId(releaseId: Long): LocalResource?
+
     // Delete detail should be cascaded when deleting Resource
 
     // endregion Methods

@@ -17,35 +17,140 @@ import javax.inject.Inject
 // (And similarly any other cross-refs
 
 class AllDao @Inject constructor(
-    private val artistDao: ArtistDao,
-    private val creditDao: CreditDao,
-    private val formatDao: FormatDao,
-    private val identifierDao: IdentifierDao,
-    private val imageDao: ImageDao,
-    private val labelDao: LabelDao,
-    private val masterDao: MasterDao,
-    private val relatedArtistDao: RelatedArtistDao,
-    private val relatedLabelDao: RelatedLabelDao,
-    private val releaseDao: ReleaseDao,
-    private val resourceDao: ResourceDao,
-    private val trackDao: TrackDao,
-    private val videoDao: VideoDao
+    val artistDao: ArtistDao,
+    val creditDao: CreditDao,
+    val formatDao: FormatDao,
+    val identifierDao: IdentifierDao,
+    val imageDao: ImageDao,
+    val labelDao: LabelDao,
+    val masterDao: MasterDao,
+    val relatedArtistDao: RelatedArtistDao,
+    val relatedLabelDao: RelatedLabelDao,
+    val releaseDao: ReleaseDao,
+    val resourceDao: ResourceDao,
+    val trackDao: TrackDao,
+    val videoDao: VideoDao
 ) {
 
     // region Methods
+
+    // ====================
+    // Artist
+    // ====================
 
     @Transaction
     @Query("")
     suspend fun deleteResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Boolean =
         withContext(Dispatchers.IO) {
-            val artistId = resourceAndArtist.artistWithDetails.artist.artistId
-            val savedResource = resourceDao.getResourceByArtistId(artistId)
-            savedResource?.let {
+            resourceDao.getResourceByArtistId(
+                resourceAndArtist.artistWithDetails.artist.artistId
+            )?.let {
                 resourceDao.deleteResource(it)
                 imageDao.cleanImages()
                 true
             } ?: false
         }
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Long {
+        deleteResourceAndArtist(resourceAndArtist)
+        val resourceId = resourceDao.insertResource(resourceAndArtist.resource)
+        with(resourceAndArtist.artistWithDetails) {
+            artistDao.insertArtist(artist.copy(resourceId = resourceId))
+            imageDao.insertResourceImages(resourceId, images)
+            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+            relatedArtistDao.insertRelatedArtists(
+                relatedArtists.map { it.copy(resourceId = resourceId) }
+            )
+        }
+        return resourceId
+    }
+
+    // ====================
+    // Label
+    // ====================
+
+    @Transaction
+    @Query("")
+    suspend fun deleteResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Boolean =
+        withContext(Dispatchers.IO) {
+            resourceDao.getResourceByLabelId(
+                resourceAndLabel.labelWithDetails.label.labelId
+            )?.let {
+                resourceDao.deleteResource(it)
+                imageDao.cleanImages()
+                true
+            } ?: false
+        }
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Long {
+        deleteResourceAndLabel(resourceAndLabel)
+        val resourceId = resourceDao.insertResource(resourceAndLabel.resource)
+        with(resourceAndLabel.labelWithDetails) {
+            labelDao.insertLabel(label.copy(resourceId = resourceId))
+            imageDao.insertResourceImages(resourceId, images)
+            resourceDao.insertResourceDetails(details.map { it.copy(resourceId = resourceId) })
+            relatedLabelDao.insertRelatedLabels(
+                relatedLabels.map { it.copy(resourceId = resourceId) }
+            )
+        }
+        return resourceId
+    }
+
+    // ====================
+    // Master
+    // ====================
+
+    @Transaction
+    @Query("")
+    suspend fun deleteResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Boolean =
+        withContext(Dispatchers.IO) {
+            resourceDao.getResourceByMasterId(
+                resourceAndMaster.masterWithDetails.master.masterId
+            )?.let {
+                resourceDao.deleteResource(it)
+                imageDao.cleanImages()
+                true
+            } ?: false
+        }
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long =
+        resourceDao.insertResource(resourceAndMaster.resource).also { resourceId ->
+            TODO("")
+        }
+
+    // ====================
+    // Release
+    // ====================
+
+    @Transaction
+    @Query("")
+    suspend fun deleteResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Boolean =
+        withContext(Dispatchers.IO) {
+            resourceDao.getResourceByReleaseId(
+                resourceAndRelease.releaseWithDetails.release.releaseId
+            )?.let {
+                resourceDao.deleteResource(it)
+                imageDao.cleanImages()
+                true
+            } ?: false
+        }
+
+    @Transaction
+    @Query("")
+    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long =
+        resourceDao.insertResource(resourceAndRelease.resource).also { resourceId ->
+            TODO("")
+        }
+
+    // ====================
+    // Format
+    // ====================
 
     @Transaction
     @Query("")
@@ -58,6 +163,10 @@ class AllDao @Inject constructor(
             )
         }
     }
+
+    // ====================
+    // Track
+    // ====================
 
     @Transaction
     @Query("")
@@ -81,53 +190,6 @@ class AllDao @Inject constructor(
             .map { LocalResourceTrackCrossRef(resourceId, it) }
             .run { trackDao.insertResourceTrackCrossRefs(this) }
     }
-
-    @Transaction
-    @Query("")
-    suspend fun insertResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Long {
-        // I think the easiest thing here is:
-        // Just delete existing resource/artist (if it exists) and start over
-        deleteResourceAndArtist(resourceAndArtist)
-
-        // Upsert the resource
-        val resourceId = resourceDao.insertResource(resourceAndArtist.resource)
-        with(resourceAndArtist.artistWithDetails) {
-            // Upsert the artist
-            val artistId = artistDao.insertArtist(artist.copy(resourceId = resourceId))
-
-            // Insert the various images, details, etc.
-            val imageResults = imageDao.insertResourceImages(resourceId, images)
-            val detailsResults = resourceDao.insertResourceDetails(
-                details.map { it.copy(resourceId = resourceId) }
-            )
-            val relatedArtistResults = relatedArtistDao.insertRelatedArtists(
-                relatedArtists.map { it.copy(resourceId = resourceId) }
-            )
-            val x = "$resourceId $artistId $imageResults $detailsResults $relatedArtistResults"
-        }
-        return resourceId
-    }
-
-    @Transaction
-    @Query("")
-    suspend fun insertResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Long =
-        resourceDao.insertResource(resourceAndLabel.resource).also { resourceId ->
-            TODO("")
-        }
-
-    @Transaction
-    @Query("")
-    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long =
-        resourceDao.insertResource(resourceAndMaster.resource).also { resourceId ->
-            TODO("")
-        }
-
-    @Transaction
-    @Query("")
-    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long =
-        resourceDao.insertResource(resourceAndRelease.resource).also { resourceId ->
-            TODO("")
-        }
 
     // endregion Methods
 

@@ -2,7 +2,6 @@ package com.codepunk.skeleton.data.repository
 
 import arrow.core.Ior
 import com.codepunk.skeleton.data.local.dao.AllDao
-import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.mapper.toDomainArtist
 import com.codepunk.skeleton.data.mapper.toDomainLabel
@@ -25,10 +24,12 @@ import kotlinx.coroutines.flow.map
 
 class DiscogsRepositoryImpl(
     private val discogsDao: DiscogsDao,
-    private val artistDao: ArtistDao,
     private val allDao: AllDao,
     private val discogsWebService: DiscogsWebservice
 ) : DiscogsRepository {
+
+    private val artistDao = allDao.artistDao
+    private val labelDao = allDao.labelDao
 
     // region Methods
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
@@ -50,7 +51,7 @@ class DiscogsRepositoryImpl(
     override fun fetchLabel(labelId: Long): Flow<Ior<Throwable, Label?>> =
         networkBoundResource(
             query = {
-                discogsDao.getResourceAndLabel(labelId).map { it?.toDomainLabel() }
+                labelDao.getResourceAndLabel(labelId).map { it?.toDomainLabel() }
             },
             fetch = {
                 discogsWebService.getLabel(labelId).fold(
@@ -59,7 +60,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                discogsDao.insertResourceAndLabel(it.toLocalResourceAndLabel())
+                allDao.insertResourceAndLabel(it.toLocalResourceAndLabel())
             }
         )
 

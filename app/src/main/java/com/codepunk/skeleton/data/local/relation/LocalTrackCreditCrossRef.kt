@@ -9,10 +9,10 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
 
 @Entity(
     tableName = "track_credit_cross_ref",
-    primaryKeys = ["track_id", "reference_id"],
+    primaryKeys = ["track_id", "credit_id"],
     indices = [
         Index("track_id"),
-        Index("reference_id")
+        Index("credit_id")
     ],
     foreignKeys = [
         ForeignKey(
@@ -24,8 +24,8 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
         ),
         ForeignKey(
             entity = LocalCredit::class,
-            parentColumns = ["reference_id"],
-            childColumns = ["reference_id"],
+            parentColumns = ["credit_id"],
+            childColumns = ["credit_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
@@ -34,8 +34,6 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
 data class LocalTrackCreditCrossRef(
     @ColumnInfo(name = "track_id")
     val trackId: Long,
-    @ColumnInfo(name = "reference_id")
-    val referenceId: Long,
-    @ColumnInfo(name = "reference_idx")
-    val referenceIdx: Int
+    @ColumnInfo(name = "credit_id")
+    val creditId: Long
 )

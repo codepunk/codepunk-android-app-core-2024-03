@@ -11,7 +11,7 @@ data class LocalTrackWithDetails(
     val track: LocalTrack,
     @Relation(
         parentColumn = "track_id",
-        entityColumn = "reference_id",
+        entityColumn = "credit_id",
         associateBy = Junction(LocalTrackCreditCrossRef::class)
     )
     val extraArtists: List<LocalCredit>? = null,

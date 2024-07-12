@@ -35,7 +35,6 @@ data class LocalResourceDetail(
 
     enum class DetailType {
         BARCODE,
-        DESCRIPTION,
         FORMAT,
         GENRE,
         LABEL,

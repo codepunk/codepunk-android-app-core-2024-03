@@ -5,7 +5,7 @@ import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
-import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
+import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
@@ -17,7 +17,7 @@ import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
 import com.codepunk.skeleton.data.local.relation.LocalArtistWithDetails
-import com.codepunk.skeleton.data.local.relation.LocalFormatWithDescriptions
+import com.codepunk.skeleton.data.local.relation.LocalFormatWithDetails
 import com.codepunk.skeleton.data.local.relation.LocalLabelWithDetails
 import com.codepunk.skeleton.data.local.relation.LocalMasterWithDetails
 import com.codepunk.skeleton.data.local.relation.LocalReleaseWithDetails
@@ -527,30 +527,30 @@ fun LocalVideo.toDomainVideo(): Video = Video(
 // Format
 // ====================
 
-fun List<RemoteFormat>.toLocalFormatsWithDescriptions(): List<LocalFormatWithDescriptions> =
+fun List<RemoteFormat>.toLocalFormatsWithDescriptions(): List<LocalFormatWithDetails> =
     mapIndexed { formatIdx, remoteFormat ->
-        LocalFormatWithDescriptions(
+        LocalFormatWithDetails(
             format = LocalFormat(
                 formatIdx = formatIdx,
                 name = remoteFormat.name,
                 quantity = remoteFormat.quantity,
                 text = remoteFormat.text
             ),
-            descriptions = remoteFormat.descriptions.mapIndexed { descriptionIdx, description ->
-                LocalFormatDescription(
-                    descriptionIdx = descriptionIdx,
-                    description = description
+            details = remoteFormat.descriptions.mapIndexed { descriptionIdx, description ->
+                LocalFormatDetail(
+                    detailIdx = descriptionIdx,
+                    detail = description
 
                 )
             }
         )
     }
 
-fun LocalFormatWithDescriptions.toDomainFormat(): Format = Format(
+fun LocalFormatWithDetails.toDomainFormat(): Format = Format(
     name = format.name,
     quantity = format.quantity,
     text = format.text,
-    descriptions = descriptions.map { it.description }
+    descriptions = details.map { it.detail }
 )
 
 // ====================

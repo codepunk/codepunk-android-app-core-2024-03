@@ -9,7 +9,7 @@ import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
-import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
+import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
@@ -20,7 +20,7 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
-import com.codepunk.skeleton.data.local.relation.LocalFormatWithDescriptions
+import com.codepunk.skeleton.data.local.relation.LocalFormatWithDetails
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
@@ -80,9 +80,7 @@ abstract class DiscogsDao {
         val referenceIds = insertCredits(credits)
         val crossRefs = referenceIds
             .filter { it != -1L }
-            .mapIndexed { index, referenceId ->
-                LocalResourceCreditCrossRef(resourceId, referenceId, index)
-            }
+            .map { referenceId -> LocalResourceCreditCrossRef(resourceId, referenceId) }
         insertResourceCreditCrossRefs(crossRefs)
         return referenceIds
     }
@@ -97,9 +95,7 @@ abstract class DiscogsDao {
         val referenceIds = insertCredits(credits)
         val crossRefs = referenceIds
             .filter { it != -1L }
-            .mapIndexed { index, referenceId ->
-                LocalTrackCreditCrossRef(trackId, referenceId, index)
-            }
+            .map { referenceId -> LocalTrackCreditCrossRef(trackId, referenceId) }
         insertTrackCreditCrossRefs(crossRefs)
         return referenceIds
     }
@@ -128,9 +124,7 @@ abstract class DiscogsDao {
         val imageIds = insertImages(images)
         val crossRefs = imageIds
             .filter { it != -1L }
-            .mapIndexed { index, imageId ->
-                LocalResourceImageCrossRef(resourceId, imageId, index)
-            }
+            .map { imageId -> LocalResourceImageCrossRef(resourceId, imageId) }
         insertResourceImageCrossRefs(crossRefs)
         return imageIds
     }
@@ -173,7 +167,7 @@ abstract class DiscogsDao {
     abstract fun getResourceAndArtist(artistId: Long): Flow<LocalResourceAndArtist?>
 
     // ====================
-    // Artist reference
+    // Related artist
     // ====================
 
     @Insert
@@ -218,7 +212,7 @@ abstract class DiscogsDao {
     abstract fun getResourceAndLabel(labelId: Long): Flow<LocalResourceAndLabel?>
 
     // ====================
-    // Label reference
+    // Related label
     // ====================
 
     @Insert
@@ -341,9 +335,7 @@ abstract class DiscogsDao {
         }
         val crossRefs = trackIds
             .filter { it != -1L }
-            .mapIndexed { index, trackId ->
-                LocalResourceTrackCrossRef(resourceId, trackId, index)
-            }
+            .map { trackId -> LocalResourceTrackCrossRef(resourceId, trackId) }
         insertResourceTrackCrossRefs(crossRefs)
         return trackIds
     }
@@ -366,13 +358,13 @@ abstract class DiscogsDao {
     @Query("")
     suspend fun insertReleaseFormatWithDescription(
         releaseId: Long,
-        formatWithDescriptions: LocalFormatWithDescriptions
+        formatWithDescriptions: LocalFormatWithDetails
     ) {
         val formatId = insertReleaseFormat(
             formatWithDescriptions.format.copy(releaseId = releaseId)
         )
         insertReleaseFormatDescriptions(
-            formatWithDescriptions.descriptions.map {
+            formatWithDescriptions.details.map {
                 it.copy(formatId = formatId)
             }
         )
@@ -380,7 +372,7 @@ abstract class DiscogsDao {
 
     @Insert
     abstract suspend fun insertReleaseFormatDescriptions(
-        descriptions: List<LocalFormatDescription>
+        descriptions: List<LocalFormatDetail>
     )
 
     // ====================
@@ -403,9 +395,7 @@ abstract class DiscogsDao {
         val videoIds = insertVideos(videos)
         val crossRefs = videoIds
             .filter { it != -1L }
-            .mapIndexed { index, videoId ->
-                LocalResourceVideoCrossRef(resourceId, videoId, index)
-            }
+            .map { videoId -> LocalResourceVideoCrossRef(resourceId, videoId) }
         insertResourceVideoCrossRefs(crossRefs)
         return videoIds
     }

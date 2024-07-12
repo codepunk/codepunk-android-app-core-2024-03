@@ -3,12 +3,25 @@ package com.codepunk.skeleton.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.codepunk.skeleton.data.local.dao.ArtistDao
+import com.codepunk.skeleton.data.local.dao.CreditDao
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
+import com.codepunk.skeleton.data.local.dao.FormatDao
+import com.codepunk.skeleton.data.local.dao.IdentifierDao
+import com.codepunk.skeleton.data.local.dao.ImageDao
+import com.codepunk.skeleton.data.local.dao.LabelDao
+import com.codepunk.skeleton.data.local.dao.MasterDao
+import com.codepunk.skeleton.data.local.dao.RelatedArtistDao
+import com.codepunk.skeleton.data.local.dao.RelatedLabelDao
+import com.codepunk.skeleton.data.local.dao.ReleaseDao
+import com.codepunk.skeleton.data.local.dao.ResourceDao
+import com.codepunk.skeleton.data.local.dao.TrackDao
+import com.codepunk.skeleton.data.local.dao.VideoDao
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalRelatedArtist
 import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
-import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
+import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
@@ -35,7 +48,7 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
         LocalRelatedArtist::class,
         LocalCredit::class,
         LocalFormat::class,
-        LocalFormatDescription::class,
+        LocalFormatDetail::class,
         LocalIdentifier::class,
         LocalImage::class,
         LocalLabel::class,
@@ -65,6 +78,32 @@ abstract class DiscogsDatabase: RoomDatabase() {
     // region Methods
 
     abstract fun discogsDao(): DiscogsDao
+
+    abstract fun artistDao(): ArtistDao
+
+    abstract fun creditDao(): CreditDao
+
+    abstract fun formatDao(): FormatDao
+
+    abstract fun identifierDao(): IdentifierDao
+
+    abstract fun imageDao(): ImageDao
+
+    abstract fun labelDao(): LabelDao
+
+    abstract fun masterDao(): MasterDao
+
+    abstract fun relatedArtistDao(): RelatedArtistDao
+
+    abstract fun relatedLabelDao(): RelatedLabelDao
+
+    abstract fun releaseDao(): ReleaseDao
+
+    abstract fun resourceDao(): ResourceDao
+
+    abstract fun trackDao(): TrackDao
+
+    abstract fun videoDao(): VideoDao
 
     // endregion Methods
 }

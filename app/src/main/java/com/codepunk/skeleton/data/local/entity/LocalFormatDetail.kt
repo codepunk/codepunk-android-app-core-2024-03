@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "format_description",
-    primaryKeys = ["format_id", "description_idx"],
+    tableName = "format_detail",
+    primaryKeys = ["format_id", "detail_idx"],
     foreignKeys = [
         ForeignKey(
             entity = LocalFormat::class,
@@ -17,10 +17,20 @@ import androidx.room.ForeignKey
         )
     ]
 )
-data class LocalFormatDescription(
+data class LocalFormatDetail(
     @ColumnInfo(name = "format_id")
     val formatId: Long = 0L,
-    @ColumnInfo(name = "description_idx")
-    val descriptionIdx: Int = 0,
-    val description: String = ""
-)
+    @ColumnInfo(name = "detail_idx")
+    val detailIdx: Int = 0,
+    val detail: String = ""
+) {
+
+    // region Nested & inner classes
+
+    enum class Type {
+        DESCRIPTION
+    }
+
+    // endregion Nested & inner classes
+
+}

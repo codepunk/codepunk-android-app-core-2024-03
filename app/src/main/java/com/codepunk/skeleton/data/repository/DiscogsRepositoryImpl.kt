@@ -1,6 +1,8 @@
 package com.codepunk.skeleton.data.repository
 
 import arrow.core.Ior
+import com.codepunk.skeleton.data.local.dao.AllDao
+import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.mapper.toDomainArtist
 import com.codepunk.skeleton.data.mapper.toDomainLabel
@@ -11,7 +13,7 @@ import com.codepunk.skeleton.data.mapper.toLocalResourceAndLabel
 import com.codepunk.skeleton.data.mapper.toLocalResourceAndMaster
 import com.codepunk.skeleton.data.mapper.toLocalResourceAndRelease
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
-import com.codepunk.skeleton.domain.repository.DiscogsRepositoryV2
+import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.Label
 import com.codepunk.skeleton.domain.model.Master
@@ -23,14 +25,16 @@ import kotlinx.coroutines.flow.map
 
 class DiscogsRepositoryImpl(
     private val discogsDao: DiscogsDao,
+    private val artistDao: ArtistDao,
+    private val allDao: AllDao,
     private val discogsWebService: DiscogsWebservice
-) : DiscogsRepositoryV2 {
+) : DiscogsRepository {
 
     // region Methods
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
         networkBoundResource(
             query = {
-                discogsDao.getResourceAndArtist(artistId).map { it?.toDomainArtist() }
+                artistDao.getResourceAndArtist(artistId).map { it?.toDomainArtist() }
             },
             fetch = {
                 discogsWebService.getArtist(artistId).fold(
@@ -39,7 +43,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                discogsDao.insertResourceAndArtist(it.toLocalResourceAndArtist())
+                allDao.insertResourceAndArtist(it.toLocalResourceAndArtist())
             }
         )
 

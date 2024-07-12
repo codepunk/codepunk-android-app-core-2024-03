@@ -35,7 +35,5 @@ data class LocalResourceVideoCrossRef(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long,
     @ColumnInfo(name = "video_id")
-    val videoId: Long,
-    @ColumnInfo(name = "video_idx")
-    val videoIdx: Int
+    val videoId: Long
 )

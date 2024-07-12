@@ -37,7 +37,7 @@ data class LocalMasterWithDetails(
     val trackList: List<LocalTrackWithDetails>,
     @Relation(
         parentColumn = "resource_id",
-        entityColumn = "reference_id",
+        entityColumn = "credit_id",
         associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
     val artists: List<LocalCredit>,

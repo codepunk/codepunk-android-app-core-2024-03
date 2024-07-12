@@ -35,7 +35,5 @@ data class LocalResourceTrackCrossRef(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long,
     @ColumnInfo(name = "track_id")
-    val trackId: Long,
-    @ColumnInfo(name = "track_idx")
-    val trackIdx: Int
+    val trackId: Long
 )

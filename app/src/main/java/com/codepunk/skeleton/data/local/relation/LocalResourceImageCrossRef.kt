@@ -35,7 +35,5 @@ data class LocalResourceImageCrossRef(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long,
     @ColumnInfo(name = "image_id")
-    val imageId: Long,
-    @ColumnInfo(name = "image_idx")
-    val imageIdx: Int
+    val imageId: Long
 )

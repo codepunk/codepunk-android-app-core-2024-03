@@ -9,8 +9,8 @@ import androidx.room.PrimaryKey
 )
 data class LocalCredit(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("reference_id")
-    val referenceId: Long = 0L,
+    @ColumnInfo("credit_id")
+    val creditId: Long = 0L,
     val type: CreditType,
     val artistId: Long = 0L,
     val name: String = "",

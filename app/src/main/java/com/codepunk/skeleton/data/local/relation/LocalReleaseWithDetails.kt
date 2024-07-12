@@ -40,7 +40,7 @@ data class LocalReleaseWithDetails(
     val trackList: List<LocalTrackWithDetails>,
     @Relation(
         parentColumn = "resource_id",
-        entityColumn = "reference_id",
+        entityColumn = "credit_id",
         associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
     val relatedArtists: List<LocalCredit>,
@@ -60,7 +60,7 @@ data class LocalReleaseWithDetails(
         parentColumn = "release_id",
         entityColumn = "release_id"
     )
-    val formats: List<LocalFormatWithDescriptions>,
+    val formats: List<LocalFormatWithDetails>,
     @Relation(
         parentColumn = "release_id",
         entityColumn = "release_id"

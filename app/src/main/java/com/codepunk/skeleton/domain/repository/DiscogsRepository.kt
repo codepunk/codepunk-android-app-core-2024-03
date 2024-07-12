@@ -7,7 +7,7 @@ import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.model.Release
 import kotlinx.coroutines.flow.Flow
 
-interface DiscogsRepositoryV2 {
+interface DiscogsRepository {
 
     // TODO suspend fun search(query: String): SearchResults
 

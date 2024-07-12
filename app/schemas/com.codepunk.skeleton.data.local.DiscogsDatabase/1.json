@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "97784ba325e7c8d395a0dccd2f6a7c6e",
+    "identityHash": "ce79d2bd7ddd4f84a013579d990928ab",
     "entities": [
       {
         "tableName": "artist",
@@ -151,8 +151,8 @@
         ]
       },
       {
-        "tableName": "credit_reference",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reference_type` TEXT NOT NULL, `artistId` INTEGER NOT NULL, `name` TEXT NOT NULL, `anv` TEXT NOT NULL, `join` TEXT NOT NULL, `role` TEXT NOT NULL, `tracks` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `thumbnail_url` TEXT NOT NULL)",
+        "tableName": "credit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reference_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `artistId` INTEGER NOT NULL, `name` TEXT NOT NULL, `anv` TEXT NOT NULL, `join` TEXT NOT NULL, `role` TEXT NOT NULL, `tracks` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `thumbnail_url` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "referenceId",
@@ -161,8 +161,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "referenceType",
-            "columnName": "reference_type",
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -879,8 +879,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "resource_credit_reference_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`resource_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`resource_id`, `reference_id`), FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `credit_reference`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "resource_credit_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`resource_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`resource_id`, `reference_id`), FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `credit`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "resourceId",
@@ -910,22 +910,22 @@
         },
         "indices": [
           {
-            "name": "index_resource_credit_reference_cross_ref_resource_id",
+            "name": "index_resource_credit_cross_ref_resource_id",
             "unique": false,
             "columnNames": [
               "resource_id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_resource_credit_reference_cross_ref_resource_id` ON `${TABLE_NAME}` (`resource_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_resource_credit_cross_ref_resource_id` ON `${TABLE_NAME}` (`resource_id`)"
           },
           {
-            "name": "index_resource_credit_reference_cross_ref_reference_id",
+            "name": "index_resource_credit_cross_ref_reference_id",
             "unique": false,
             "columnNames": [
               "reference_id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_resource_credit_reference_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_resource_credit_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
           }
         ],
         "foreignKeys": [
@@ -941,7 +941,7 @@
             ]
           },
           {
-            "table": "credit_reference",
+            "table": "credit",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
@@ -1287,8 +1287,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "track_credit_reference_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`track_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`track_id`, `reference_id`), FOREIGN KEY(`track_id`) REFERENCES `track`(`track_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `credit_reference`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "track_credit_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`track_id` INTEGER NOT NULL, `reference_id` INTEGER NOT NULL, `reference_idx` INTEGER NOT NULL, PRIMARY KEY(`track_id`, `reference_id`), FOREIGN KEY(`track_id`) REFERENCES `track`(`track_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`reference_id`) REFERENCES `credit`(`reference_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "trackId",
@@ -1318,22 +1318,22 @@
         },
         "indices": [
           {
-            "name": "index_track_credit_reference_cross_ref_track_id",
+            "name": "index_track_credit_cross_ref_track_id",
             "unique": false,
             "columnNames": [
               "track_id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_track_credit_reference_cross_ref_track_id` ON `${TABLE_NAME}` (`track_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_track_credit_cross_ref_track_id` ON `${TABLE_NAME}` (`track_id`)"
           },
           {
-            "name": "index_track_credit_reference_cross_ref_reference_id",
+            "name": "index_track_credit_cross_ref_reference_id",
             "unique": false,
             "columnNames": [
               "reference_id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_track_credit_reference_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_track_credit_cross_ref_reference_id` ON `${TABLE_NAME}` (`reference_id`)"
           }
         ],
         "foreignKeys": [
@@ -1349,7 +1349,7 @@
             ]
           },
           {
-            "table": "credit_reference",
+            "table": "credit",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
@@ -1415,7 +1415,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97784ba325e7c8d395a0dccd2f6a7c6e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce79d2bd7ddd4f84a013579d990928ab')"
     ]
   }
 }

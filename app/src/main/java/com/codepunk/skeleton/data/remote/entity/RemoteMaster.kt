@@ -26,7 +26,7 @@ data class RemoteMaster(
     @Suppress("SpellCheckingInspection")
     @SerialName("tracklist")
     override val trackList: List<RemoteTrack> = emptyList(),
-    override val artists: List<RemoteCreditReference> = emptyList(),
+    override val artists: List<RemoteCredit> = emptyList(),
     override val videos: List<RemoteVideo> = emptyList(),
     @SerialName("main_release")
     val mainRelease: Long = 0L,

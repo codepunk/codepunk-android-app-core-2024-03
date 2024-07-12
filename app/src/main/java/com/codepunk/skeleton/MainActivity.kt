@@ -68,14 +68,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testStuff() {
-        //testFetchArtist(TAYLOR_SWIFT)
+        testFetchArtist(TAYLOR_SWIFT)
         //testFetchLabel(REPUBLIC_RECORDS)
         testFetchLabel(ATLANTIC_RECORDS)
-        //testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
+        testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
-        //testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
+        testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
     }
 
     @Suppress("Unused")

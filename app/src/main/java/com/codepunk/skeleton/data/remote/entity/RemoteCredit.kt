@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RemoteCreditReference(
+data class RemoteCredit(
     val id: Long = 0L,
     val name: String = "",
     @SerialName("resource_url")

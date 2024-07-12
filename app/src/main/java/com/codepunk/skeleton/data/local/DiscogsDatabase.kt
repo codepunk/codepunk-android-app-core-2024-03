@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.codepunk.skeleton.data.local.dao.DiscogsDao
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistReference
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
@@ -19,11 +19,11 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
-import com.codepunk.skeleton.data.local.relation.LocalResourceCreditReferenceCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalResourceCreditCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceTrackCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceVideoCrossRef
-import com.codepunk.skeleton.data.local.relation.LocalTrackCreditReferenceCrossRef
+import com.codepunk.skeleton.data.local.relation.LocalTrackCreditCrossRef
 import com.codepunk.skeleton.data.local.typeconverter.BigDecimalTypeConverter
 import com.codepunk.skeleton.data.local.typeconverter.InstantTypeConverter
 import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
@@ -33,7 +33,7 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
     entities = [
         LocalArtist::class,
         LocalArtistReference::class,
-        LocalCreditReference::class,
+        LocalCredit::class,
         LocalFormat::class,
         LocalFormatDescription::class,
         LocalIdentifier::class,
@@ -43,13 +43,13 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
         LocalMaster::class,
         LocalRelease::class,
         LocalResource::class,
-        LocalResourceCreditReferenceCrossRef::class,
+        LocalResourceCreditCrossRef::class,
         LocalResourceDetail::class,
         LocalResourceImageCrossRef::class,
         LocalResourceTrackCrossRef::class,
         LocalResourceVideoCrossRef::class,
         LocalTrack::class,
-        LocalTrackCreditReferenceCrossRef::class,
+        LocalTrackCreditCrossRef::class,
         LocalVideo::class
     ]
 )

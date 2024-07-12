@@ -17,7 +17,7 @@ data class Release(
     override val numForSale: Int = 0,
     override val lowestPrice: BigDecimal? = null,
     override val trackList: List<Track> = emptyList(),
-    override val artists: List<CreditReference> = emptyList(),
+    override val artists: List<Credit> = emptyList(),
     override val videos: List<Video> = emptyList(),
     val status: String = "",
     val artistsSort: String = "",
@@ -35,6 +35,6 @@ data class Release(
     val notes: String = "",
     val releasedFormatted: String = "",
     val identifiers: List<Identifier> = emptyList(),
-    val extraArtists: List<CreditReference> = emptyList(),
+    val extraArtists: List<Credit> = emptyList(),
     val thumb: String = ""
 ) : Product

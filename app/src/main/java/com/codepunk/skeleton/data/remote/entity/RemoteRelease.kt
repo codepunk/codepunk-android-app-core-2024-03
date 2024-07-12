@@ -28,7 +28,7 @@ data class RemoteRelease(
     @Suppress("SpellCheckingInspection")
     @SerialName("tracklist")
     override val trackList: List<RemoteTrack> = emptyList(),
-    override val artists: List<RemoteCreditReference> = emptyList(),
+    override val artists: List<RemoteCredit> = emptyList(),
     override val videos: List<RemoteVideo> = emptyList(),
     val status: String = "",
     @SerialName("artists_sort")
@@ -55,6 +55,6 @@ data class RemoteRelease(
     val identifiers: List<RemoteIdentifier> = emptyList(),
     @Suppress("SpellCheckingInspection")
     @SerialName("extraartists")
-    val extraArtists: List<RemoteCreditReference> = emptyList(),
+    val extraArtists: List<RemoteCredit> = emptyList(),
     val thumb: String = ""
 ) : RemoteProduct

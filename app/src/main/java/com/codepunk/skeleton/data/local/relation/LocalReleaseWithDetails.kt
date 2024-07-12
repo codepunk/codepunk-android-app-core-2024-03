@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.local.relation
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
 import com.codepunk.skeleton.data.local.entity.LocalImage
@@ -41,9 +41,9 @@ data class LocalReleaseWithDetails(
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "reference_id",
-        associateBy = Junction(LocalResourceCreditReferenceCrossRef::class)
+        associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
-    val relatedArtists: List<LocalCreditReference>,
+    val relatedArtists: List<LocalCredit>,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",

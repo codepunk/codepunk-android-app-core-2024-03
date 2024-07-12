@@ -9,7 +9,7 @@ sealed interface RemoteProduct : RemoteResource {
     val year: Int
     val numForSale: Int
     val lowestPrice: BigDecimal?
-    val artists: List<RemoteCreditReference>
+    val artists: List<RemoteCredit>
     val trackList: List<RemoteTrack>
     val videos: List<RemoteVideo>
 }

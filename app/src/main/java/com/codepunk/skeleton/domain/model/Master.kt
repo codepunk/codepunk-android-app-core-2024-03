@@ -15,7 +15,7 @@ data class Master(
     override val numForSale: Int = 0,
     override val lowestPrice: BigDecimal? = null,
     override val trackList: List<Track> = emptyList(),
-    override val artists: List<CreditReference> = emptyList(),
+    override val artists: List<Credit> = emptyList(),
     override val videos: List<Video> = emptyList(),
     val mainRelease: Long = 0L,
     val mostRecentRelease: Long = 0L,

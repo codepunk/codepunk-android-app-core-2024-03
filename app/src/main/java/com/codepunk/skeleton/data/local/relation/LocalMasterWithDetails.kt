@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.local.relation
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
@@ -38,9 +38,9 @@ data class LocalMasterWithDetails(
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "reference_id",
-        associateBy = Junction(LocalResourceCreditReferenceCrossRef::class)
+        associateBy = Junction(LocalResourceCreditCrossRef::class)
     )
-    val artists: List<LocalCreditReference>,
+    val artists: List<LocalCredit>,
     @Relation(
         parentColumn = "resource_id",
         entityColumn = "video_id",

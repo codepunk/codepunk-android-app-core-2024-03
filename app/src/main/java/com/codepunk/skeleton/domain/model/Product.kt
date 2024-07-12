@@ -9,7 +9,7 @@ sealed interface Product : Resource {
     val year: Int
     val numForSale: Int
     val lowestPrice: BigDecimal?
-    val artists: List<CreditReference>
+    val artists: List<Credit>
     val trackList: List<Track>
     val videos: List<Video>
 }

@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.mapper
 import androidx.compose.ui.util.fastForEachReversed
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.entity.LocalArtistReference
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDescription
 import com.codepunk.skeleton.data.local.entity.LocalIdentifier
@@ -28,7 +28,7 @@ import com.codepunk.skeleton.data.local.relation.LocalResourceAndRelease
 import com.codepunk.skeleton.data.local.relation.LocalTrackWithDetails
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
 import com.codepunk.skeleton.data.remote.entity.RemoteArtistReference
-import com.codepunk.skeleton.data.remote.entity.RemoteCreditReference
+import com.codepunk.skeleton.data.remote.entity.RemoteCredit
 import com.codepunk.skeleton.data.remote.entity.RemoteFormat
 import com.codepunk.skeleton.data.remote.entity.RemoteIdentifier
 import com.codepunk.skeleton.data.remote.entity.RemoteImage
@@ -41,7 +41,7 @@ import com.codepunk.skeleton.data.remote.entity.RemoteTrack
 import com.codepunk.skeleton.data.remote.entity.RemoteVideo
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.ArtistReference
-import com.codepunk.skeleton.domain.model.CreditReference
+import com.codepunk.skeleton.domain.model.Credit
 import com.codepunk.skeleton.domain.model.Format
 import com.codepunk.skeleton.domain.model.Identifier
 import com.codepunk.skeleton.domain.model.Image
@@ -277,7 +277,7 @@ fun LocalResourceAndMaster.toDomainMaster(): Master = Master(
     numForSale = masterWithDetails.master.numForSale,
     lowestPrice = masterWithDetails.master.lowestPrice,
     trackList = masterWithDetails.trackList.unflattenToDomainTracks(),
-    artists = masterWithDetails.artists.toDomainCreditReference(LocalCreditReference.RelationType.ARTIST),
+    artists = masterWithDetails.artists.toDomainCredit(LocalCredit.CreditType.ARTIST),
     videos = masterWithDetails.videos.map { it.toDomainVideo() },
     mainRelease = masterWithDetails.master.mainRelease,
     mostRecentRelease = masterWithDetails.master.mostRecentRelease,
@@ -310,7 +310,7 @@ fun RemoteMaster.toLocalMasterWithDetails(): LocalMasterWithDetails = LocalMaste
     details = genres.toLocalResourceDetails(LocalResourceDetail.DetailType.GENRE) +
             styles.toLocalResourceDetails(LocalResourceDetail.DetailType.STYLE),
     trackList = trackList.flattenToLocalTracksWithDetails(),
-    artists = artists.toLocalCreditReferences(LocalCreditReference.RelationType.ARTIST),
+    artists = artists.toLocalCredits(LocalCredit.CreditType.ARTIST),
     videos = videos.map { it.toLocalVideo() },
 )
 
@@ -331,7 +331,7 @@ fun LocalResourceAndRelease.toDomainRelease(): Release = Release(
     numForSale = releaseWithDetails.release.numForSale,
     lowestPrice = releaseWithDetails.release.lowestPrice,
     trackList = releaseWithDetails.trackList.unflattenToDomainTracks(),
-    artists = releaseWithDetails.relatedArtists.toDomainCreditReference(LocalCreditReference.RelationType.ARTIST),
+    artists = releaseWithDetails.relatedArtists.toDomainCredit(LocalCredit.CreditType.ARTIST),
     videos = releaseWithDetails.videos.map { it.toDomainVideo() },
     status = releaseWithDetails.release.status,
     artistsSort = releaseWithDetails.release.artistsSort,
@@ -349,7 +349,7 @@ fun LocalResourceAndRelease.toDomainRelease(): Release = Release(
     notes = releaseWithDetails.release.notes,
     releasedFormatted = releaseWithDetails.release.releasedFormatted,
     identifiers = releaseWithDetails.identifiers.map { it.toDomainIdentifier() },
-    extraArtists = releaseWithDetails.relatedArtists.toDomainCreditReference(LocalCreditReference.RelationType.EXTRA_ARTIST),
+    extraArtists = releaseWithDetails.relatedArtists.toDomainCredit(LocalCredit.CreditType.EXTRA_ARTIST),
     thumb = releaseWithDetails.release.thumb
 )
 
@@ -384,8 +384,8 @@ fun RemoteRelease.toLocalReleaseWithDetails(): LocalReleaseWithDetails = LocalRe
     details = genres.toLocalResourceDetails(LocalResourceDetail.DetailType.GENRE) +
             styles.toLocalResourceDetails(LocalResourceDetail.DetailType.STYLE),
     trackList = trackList.flattenToLocalTracksWithDetails(),
-    relatedArtists = artists.toLocalCreditReferences(LocalCreditReference.RelationType.ARTIST) +
-            extraArtists.toLocalCreditReferences(LocalCreditReference.RelationType.EXTRA_ARTIST),
+    relatedArtists = artists.toLocalCredits(LocalCredit.CreditType.ARTIST) +
+            extraArtists.toLocalCredits(LocalCredit.CreditType.EXTRA_ARTIST),
     videos = videos.map { it.toLocalVideo() },
     labelRefs = labels.toLocalLabelReferences(LocalLabelReference.RelationType.LABEL) +
             series.toLocalLabelReferences(LocalLabelReference.RelationType.SERIES) +
@@ -398,11 +398,11 @@ fun RemoteRelease.toLocalReleaseWithDetails(): LocalReleaseWithDetails = LocalRe
 // Credit reference
 // ====================
 
-fun List<RemoteCreditReference>.toLocalCreditReferences(
-    relationType: LocalCreditReference.RelationType
-): List<LocalCreditReference> = map { ref ->
-    LocalCreditReference(
-        referenceType = relationType,
+fun List<RemoteCredit>.toLocalCredits(
+    type: LocalCredit.CreditType
+): List<LocalCredit> = map { ref ->
+    LocalCredit(
+        type = type,
         artistId = ref.id,
         name = ref.name,
         anv = ref.anv,
@@ -414,7 +414,7 @@ fun List<RemoteCreditReference>.toLocalCreditReferences(
     )
 }
 
-fun LocalCreditReference.toDomainCreditReference(): CreditReference = CreditReference(
+fun LocalCredit.toDomainCredit(): Credit = Credit(
     id = artistId,
     name = name,
     resourceUrl = resourceUrl,
@@ -425,10 +425,10 @@ fun LocalCreditReference.toDomainCreditReference(): CreditReference = CreditRefe
     thumbnailUrl = thumbnailUrl
 )
 
-fun List<LocalCreditReference>.toDomainCreditReference(
-    relationType: LocalCreditReference.RelationType
-): List<CreditReference> = filter { it.referenceType == relationType }
-    .map { it.toDomainCreditReference() }
+fun List<LocalCredit>.toDomainCredit(
+    type: LocalCredit.CreditType
+): List<Credit> = filter { it.type == type }
+    .map { it.toDomainCredit() }
 
 // ====================
 // Track
@@ -451,14 +451,14 @@ fun RemoteTrack.toLocalTrackWithDetails(
     parentTrackNum: Int = -1
 ): LocalTrackWithDetails = LocalTrackWithDetails(
     track = toLocalTrack(trackNum, parentTrackNum),
-    extraArtists = extraArtists?.toLocalCreditReferences(LocalCreditReference.RelationType.EXTRA_ARTIST)
+    extraArtists = extraArtists?.toLocalCredits(LocalCredit.CreditType.EXTRA_ARTIST)
 )
 
 fun LocalTrackWithDetails.toDomainTrack(): Track = Track(
     position = track.position,
     type = track.type,
     title = track.title,
-    extraArtists = extraArtists?.map { it.toDomainCreditReference() },
+    extraArtists = extraArtists?.map { it.toDomainCredit() },
     duration = parseElapsedTimeString(track.duration)
 )
 

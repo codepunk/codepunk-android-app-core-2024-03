@@ -3,7 +3,7 @@ package com.codepunk.skeleton.data.local.relation
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 
 data class LocalTrackWithDetails(
@@ -12,7 +12,7 @@ data class LocalTrackWithDetails(
     @Relation(
         parentColumn = "track_id",
         entityColumn = "reference_id",
-        associateBy = Junction(LocalTrackCreditReferenceCrossRef::class)
+        associateBy = Junction(LocalTrackCreditCrossRef::class)
     )
-    val extraArtists: List<LocalCreditReference>? = null,
+    val extraArtists: List<LocalCredit>? = null,
 )

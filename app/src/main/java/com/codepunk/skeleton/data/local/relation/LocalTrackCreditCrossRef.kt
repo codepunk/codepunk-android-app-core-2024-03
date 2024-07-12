@@ -4,11 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import com.codepunk.skeleton.data.local.entity.LocalCreditReference
+import com.codepunk.skeleton.data.local.entity.LocalCredit
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 
 @Entity(
-    tableName = "track_credit_reference_cross_ref",
+    tableName = "track_credit_cross_ref",
     primaryKeys = ["track_id", "reference_id"],
     indices = [
         Index("track_id"),
@@ -23,7 +23,7 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
             onUpdate = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = LocalCreditReference::class,
+            entity = LocalCredit::class,
             parentColumns = ["reference_id"],
             childColumns = ["reference_id"],
             onDelete = ForeignKey.CASCADE,
@@ -31,7 +31,7 @@ import com.codepunk.skeleton.data.local.entity.LocalTrack
         )
     ]
 )
-data class LocalTrackCreditReferenceCrossRef(
+data class LocalTrackCreditCrossRef(
     @ColumnInfo(name = "track_id")
     val trackId: Long,
     @ColumnInfo(name = "reference_id")

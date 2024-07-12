@@ -5,14 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "credit_reference"
+    tableName = "credit"
 )
-data class LocalCreditReference(
+data class LocalCredit(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("reference_id")
     val referenceId: Long = 0L,
-    @ColumnInfo(name = "reference_type")
-    val referenceType: RelationType,
+    val type: CreditType,
     val artistId: Long = 0L,
     val name: String = "",
     val anv: String = "",
@@ -27,7 +26,7 @@ data class LocalCreditReference(
 
     // region Nested & inner classes
 
-    enum class RelationType {
+    enum class CreditType {
         ARTIST,
         EXTRA_ARTIST
     }

@@ -28,7 +28,7 @@ abstract class TrackDao {
                 WHERE track.track_id = resource_track_cross_ref.track_id
          )
     """)
-    abstract suspend fun scrubTracks()
+    abstract suspend fun scrubTracks(): Int
 
     // endregion Methods
 

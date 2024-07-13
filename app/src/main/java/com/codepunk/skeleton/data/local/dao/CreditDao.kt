@@ -19,12 +19,12 @@ abstract class CreditDao {
     @Insert
     abstract suspend fun insertResourceCreditCrossRefs(
         crossRefs: List<LocalResourceCreditCrossRef>
-    ): List<Long>
+    )
 
     @Insert
     abstract suspend fun insertTrackCreditCrossRefs(
         crossRefs: List<LocalTrackCreditCrossRef>
-    ): List<Long>
+    )
 
     // endregion abstract Methods
 
@@ -66,7 +66,7 @@ abstract class CreditDao {
                 WHERE credit.credit_id = track_credit_cross_ref.credit_id
          )
     """)
-    abstract suspend fun scrubCredits()
+    abstract suspend fun scrubCredits(): Int
 
     // endregion Methods
 

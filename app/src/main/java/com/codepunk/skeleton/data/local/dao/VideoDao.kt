@@ -40,7 +40,7 @@ abstract class VideoDao {
                 WHERE video.video_id = resource_video_cross_ref.video_id
          )
     """)
-    abstract suspend fun scrubVideos()
+    abstract suspend fun scrubVideos(): Int
 
     // endregion Methods
 

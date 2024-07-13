@@ -64,20 +64,25 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testFetchStuff() {
-        //testFetchArtist(TAYLOR_SWIFT)
-        //testFetchLabel(REPUBLIC_RECORDS)
-        //testFetchLabel(ATLANTIC_RECORDS)
+        testFetchArtist(TAYLOR_SWIFT)
+        testFetchLabel(REPUBLIC_RECORDS)
+        testFetchLabel(ATLANTIC_RECORDS)
         testFetchMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
         testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
         //testFetchMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
-        //testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
-        //testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
+        testFetchRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
+        testFetchRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
     }
 
     private fun testDeleteStuff() {
         lifecycleScope.launch {
+            allDao.deleteResourceAndArtist(TAYLOR_SWIFT)
+            allDao.deleteResourceAndLabel(REPUBLIC_RECORDS)
+            allDao.deleteResourceAndLabel(ATLANTIC_RECORDS)
             allDao.deleteResourceAndMaster(AN_HOUR_BEFORE_ITS_DARK_MASTER)
             allDao.deleteResourceAndMaster(THE_TORTURED_POETS_DEPARTMENT_MASTER)
+            allDao.deleteResourceAndRelease(AN_HOUR_BEFORE_ITS_DARK_RELEASE)
+            allDao.deleteResourceAndRelease(THE_TORTURED_POSTS_DEPARTMENT_THE_ANTHOLOGY)
         }
     }
 

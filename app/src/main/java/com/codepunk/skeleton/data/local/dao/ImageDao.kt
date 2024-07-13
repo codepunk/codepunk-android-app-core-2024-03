@@ -18,7 +18,7 @@ abstract class ImageDao {
     @Insert
     abstract suspend fun insertResourceImageCrossRefs(
         crossRefs: List<LocalResourceImageCrossRef>
-    ): List<Long>
+    )
 
     @Transaction
     @Query("")
@@ -40,7 +40,7 @@ abstract class ImageDao {
                 WHERE image.image_id = resource_image_cross_ref.image_id
          )
     """)
-    abstract suspend fun scrubImages()
+    abstract suspend fun scrubImages(): Int
 
     // endregion Methods
 

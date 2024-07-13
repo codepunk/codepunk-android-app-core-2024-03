@@ -18,17 +18,22 @@ abstract class TrackDao {
     abstract suspend fun insertResourceTrackCrossRefs(
         crossRefs: List<LocalResourceTrackCrossRef>
     ): List<Long>
-    
+
+    /*
+     * Note that when deleting tracks, we should also delete credits
+     * contained within the tracks.
+     */
     @Query("""
-        DELETE 
-          FROM track
-         WHERE NOT EXISTS (
-               SELECT resource_track_cross_ref.track_id
-                 FROM resource_track_cross_ref
-                WHERE track.track_id = resource_track_cross_ref.track_id
-         )
+      DELETE
+      FROM track
+      WHERE EXISTS (
+         SELECT 1
+           FROM resource_track_cross_ref
+          WHERE resource_track_cross_ref.track_id = track.track_id
+            AND resource_track_cross_ref.resource_id = :resourceId
+      )
     """)
-    abstract suspend fun scrubTracks(): Int
+    abstract suspend fun deleteResourceTracks(resourceId: Long): Int
 
     // endregion Methods
 

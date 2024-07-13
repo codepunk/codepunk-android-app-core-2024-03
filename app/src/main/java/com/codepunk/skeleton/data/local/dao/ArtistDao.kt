@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalArtist
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndArtist
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ interface ArtistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtist(artist: LocalArtist): Long
 
+    @Transaction
     @Query("""
         SELECT resource.*
           FROM resource

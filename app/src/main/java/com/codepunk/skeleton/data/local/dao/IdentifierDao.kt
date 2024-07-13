@@ -12,10 +12,8 @@ abstract class IdentifierDao {
     @Insert
     abstract suspend fun insertIdentifiers(identifiers: List<LocalIdentifier>): List<Long>
 
-    suspend fun insertIdentifiers(
-        releaseId: Long,
-        identifiers: List<LocalIdentifier>
-    ): List<Long> = insertIdentifiers(identifiers.map { it.copy(releaseId = releaseId) })
+    suspend fun insertIdentifiers(releaseId: Long,identifiers: List<LocalIdentifier>): List<Long> =
+        insertIdentifiers(identifiers.map { it.copy(releaseId = releaseId) })
 
     // endregion Methods
 

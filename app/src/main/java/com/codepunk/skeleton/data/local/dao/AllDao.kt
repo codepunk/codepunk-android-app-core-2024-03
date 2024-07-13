@@ -35,16 +35,16 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndArtist(artistId: Long): Boolean =
+    suspend fun deleteArtist(artistId: Long): Boolean =
         resourceDao.getResourceByArtistId(artistId)?.apply {
+            imageDao.deleteResourceImages(resourceId)
             resourceDao.deleteResource(this)
-            imageDao.scrubImages()
         } != null
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndArtist(resourceAndArtist: LocalResourceAndArtist): Long {
-        deleteResourceAndArtist(resourceAndArtist.artistWithDetails.artist.artistId)
+    suspend fun insertArtist(resourceAndArtist: LocalResourceAndArtist): Long {
+        deleteArtist(resourceAndArtist.artistWithDetails.artist.artistId)
         val resourceId = resourceDao.insertResource(resourceAndArtist.resource)
         with(resourceAndArtist.artistWithDetails) {
             artistDao.insertArtist(artist.copy(resourceId = resourceId))
@@ -61,16 +61,16 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndLabel(labelId: Long): Boolean =
+    suspend fun deleteLabel(labelId: Long): Boolean =
         resourceDao.getResourceByLabelId(labelId)?.apply {
+            imageDao.deleteResourceImages(resourceId)
             resourceDao.deleteResource(this)
-            imageDao.scrubImages()
         } != null
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndLabel(resourceAndLabel: LocalResourceAndLabel): Long {
-        deleteResourceAndLabel(resourceAndLabel.labelWithDetails.label.labelId)
+    suspend fun insertLabel(resourceAndLabel: LocalResourceAndLabel): Long {
+        deleteLabel(resourceAndLabel.labelWithDetails.label.labelId)
         val resourceId = resourceDao.insertResource(resourceAndLabel.resource)
         with(resourceAndLabel.labelWithDetails) {
             labelDao.insertLabel(label.copy(resourceId = resourceId))
@@ -87,19 +87,20 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndMaster(masterId: Long): Boolean =
+    suspend fun deleteMaster(masterId: Long): Boolean =
         resourceDao.getResourceByMasterId(masterId)?.apply {
+            imageDao.deleteResourceImages(resourceId)
+            creditDao.deleteResourceCredits(resourceId)
+            creditDao.deleteTrackCreditsByResource(resourceId)
+            trackDao.deleteResourceTracks(resourceId)
+            videoDao.deleteResourceVideos(resourceId)
             resourceDao.deleteResource(this)
-            imageDao.scrubImages()
-            trackDao.scrubTracks()
-            creditDao.scrubCredits()
-            videoDao.scrubVideos()
         } != null
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndMaster(resourceAndMaster: LocalResourceAndMaster): Long {
-        deleteResourceAndMaster(resourceAndMaster.masterWithDetails.master.masterId)
+    suspend fun insertMaster(resourceAndMaster: LocalResourceAndMaster): Long {
+        deleteMaster(resourceAndMaster.masterWithDetails.master.masterId)
         val resourceId = resourceDao.insertResource(resourceAndMaster.resource)
         with(resourceAndMaster.masterWithDetails) {
             masterDao.insertMaster(master.copy(resourceId = resourceId))
@@ -118,19 +119,20 @@ class AllDao @Inject constructor(
 
     @Transaction
     @Query("")
-    suspend fun deleteResourceAndRelease(releaseId: Long): Boolean =
+    suspend fun deleteRelease(releaseId: Long): Boolean =
         resourceDao.getResourceByReleaseId(releaseId)?.apply {
+            imageDao.deleteResourceImages(resourceId)
+            creditDao.deleteResourceCredits(resourceId)
+            creditDao.deleteTrackCreditsByResource(resourceId)
+            trackDao.deleteResourceTracks(resourceId)
+            videoDao.deleteResourceVideos(resourceId)
             resourceDao.deleteResource(this)
-            imageDao.scrubImages()
-            trackDao.scrubTracks()
-            creditDao.scrubCredits()
-            videoDao.scrubVideos()
         } != null
 
     @Transaction
     @Query("")
-    suspend fun insertResourceAndRelease(resourceAndRelease: LocalResourceAndRelease): Long {
-        deleteResourceAndRelease(resourceAndRelease.releaseWithDetails.release.releaseId)
+    suspend fun insertRelease(resourceAndRelease: LocalResourceAndRelease): Long {
+        deleteRelease(resourceAndRelease.releaseWithDetails.release.releaseId)
         val resourceId = resourceDao.insertResource(resourceAndRelease.resource)
         with(resourceAndRelease.releaseWithDetails) {
             val releaseId = releaseDao.insertRelease(release.copy(resourceId = resourceId))

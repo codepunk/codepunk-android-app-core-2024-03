@@ -32,15 +32,16 @@ abstract class VideoDao {
     }
 
     @Query("""
-        DELETE 
-          FROM video 
-         WHERE NOT EXISTS (
-               SELECT resource_video_cross_ref.video_id
-                 FROM resource_video_cross_ref
-                WHERE video.video_id = resource_video_cross_ref.video_id
-         )
+      DELETE
+      FROM video
+      WHERE EXISTS (
+         SELECT 1
+           FROM resource_video_cross_ref
+          WHERE resource_video_cross_ref.video_id = video.video_id
+            AND resource_video_cross_ref.resource_id = :resourceId
+      )
     """)
-    abstract suspend fun scrubVideos(): Int
+    abstract suspend fun deleteResourceVideos(resourceId: Long): Int
 
     // endregion Methods
 

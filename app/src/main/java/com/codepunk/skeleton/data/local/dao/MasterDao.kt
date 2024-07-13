@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ interface MasterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMaster(master: LocalMaster): Long
 
+    @Transaction
     @Query("""
         SELECT resource.*
           FROM resource

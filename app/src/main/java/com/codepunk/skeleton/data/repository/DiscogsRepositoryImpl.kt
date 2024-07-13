@@ -47,7 +47,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                allDao.insertResourceAndArtist(it.toLocalResourceAndArtist())
+                allDao.insertArtist(it.toLocalResourceAndArtist())
             }
         )
 
@@ -63,7 +63,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                allDao.insertResourceAndLabel(it.toLocalResourceAndLabel())
+                allDao.insertLabel(it.toLocalResourceAndLabel())
             }
         )
 
@@ -79,7 +79,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                allDao.insertResourceAndMaster(it.toLocalResourceAndMaster())
+                allDao.insertMaster(it.toLocalResourceAndMaster())
             }
         )
 
@@ -95,7 +95,7 @@ class DiscogsRepositoryImpl(
                 )
             },
             saveFetchResult = {
-                allDao.insertResourceAndRelease(it.toLocalResourceAndRelease())
+                allDao.insertRelease(it.toLocalResourceAndRelease())
             }
         )
 

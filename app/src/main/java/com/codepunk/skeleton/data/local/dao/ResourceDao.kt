@@ -21,7 +21,6 @@ abstract class  ResourceDao {
     @Delete
     abstract suspend fun deleteResource(resource: LocalResource): Int
 
-
     @Insert
     abstract suspend fun insertResourceDetails(details: List<LocalResourceDetail>): List<Long>
 

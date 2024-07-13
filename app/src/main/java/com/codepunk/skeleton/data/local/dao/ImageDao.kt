@@ -32,15 +32,16 @@ abstract class ImageDao {
     }
 
     @Query("""
-        DELETE 
-          FROM image 
-         WHERE NOT EXISTS (
-               SELECT resource_image_cross_ref.image_id
-                 FROM resource_image_cross_ref
-                WHERE image.image_id = resource_image_cross_ref.image_id
-         )
+      DELETE
+      FROM image
+      WHERE EXISTS (
+         SELECT 1
+           FROM resource_image_cross_ref
+          WHERE resource_image_cross_ref.image_id = image.image_id
+            AND resource_image_cross_ref.resource_id = :resourceId
+      )
     """)
-    abstract suspend fun scrubImages(): Int
+    abstract suspend fun deleteResourceImages(resourceId: Long): Int
 
     // endregion Methods
 

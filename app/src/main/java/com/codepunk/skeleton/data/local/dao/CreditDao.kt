@@ -53,20 +53,37 @@ abstract class CreditDao {
     }
 
     @Query("""
-        DELETE 
-          FROM credit
-         WHERE NOT EXISTS (
-               SELECT resource_credit_cross_ref.resource_id
-                 FROM resource_credit_cross_ref
-                WHERE credit.credit_id = resource_credit_cross_ref.credit_id
-         )
-         AND NOT EXISTS (
-               SELECT track_credit_cross_ref.track_id
-                 FROM track_credit_cross_ref
-                WHERE credit.credit_id = track_credit_cross_ref.credit_id
-         )
+      DELETE
+      FROM credit
+      WHERE EXISTS (
+         SELECT 1
+           FROM resource_credit_cross_ref
+          WHERE resource_credit_cross_ref.credit_id = credit.credit_id
+            AND resource_credit_cross_ref.resource_id = :resourceId
+      )
     """)
-    abstract suspend fun scrubCredits(): Int
+    abstract suspend fun deleteResourceCredits(resourceId: Long): Int
+
+    @Query("""
+      DELETE 
+      FROM credit
+      WHERE EXISTS (
+          SELECT 1
+          FROM track_credit_cross_ref
+          WHERE track_credit_cross_ref.track_id IN (
+              SELECT track.track_id
+              FROM track
+              WHERE EXISTS (
+                  SELECT 1
+                  FROM resource_track_cross_ref
+                  WHERE resource_track_cross_ref.track_id = track.track_id
+                  AND resource_track_cross_ref.resource_id = :resourceId
+              )
+          )
+          AND track_credit_cross_ref.credit_id = credit.credit_id
+      )
+    """)
+    abstract suspend fun deleteTrackCreditsByResource(resourceId: Long): Int
 
     // endregion Methods
 

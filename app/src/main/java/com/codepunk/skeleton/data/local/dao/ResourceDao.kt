@@ -19,7 +19,7 @@ abstract class  ResourceDao {
 
     @Transaction
     @Delete
-    abstract fun deleteResource(resource: LocalResource): Int
+    abstract suspend fun deleteResource(resource: LocalResource): Int
 
 
     @Insert

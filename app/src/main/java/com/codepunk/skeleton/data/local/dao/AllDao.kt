@@ -9,8 +9,6 @@ import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndRelease
 import com.codepunk.skeleton.data.local.relation.LocalResourceTrackCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalTrackWithDetails
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AllDao @Inject constructor(
@@ -38,12 +36,10 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteResourceAndArtist(artistId: Long): Boolean =
-        withContext(Dispatchers.IO) {
-            resourceDao.getResourceByArtistId(artistId)?.apply {
-                resourceDao.deleteResource(this)
-                imageDao.scrubImages()
-            } != null
-        }
+        resourceDao.getResourceByArtistId(artistId)?.apply {
+            resourceDao.deleteResource(this)
+            imageDao.scrubImages()
+        } != null
 
     @Transaction
     @Query("")
@@ -66,12 +62,10 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteResourceAndLabel(labelId: Long): Boolean =
-        withContext(Dispatchers.IO) {
-            resourceDao.getResourceByLabelId(labelId)?.apply {
-                resourceDao.deleteResource(this)
-                imageDao.scrubImages()
-            } != null
-        }
+        resourceDao.getResourceByLabelId(labelId)?.apply {
+            resourceDao.deleteResource(this)
+            imageDao.scrubImages()
+        } != null
 
     @Transaction
     @Query("")
@@ -94,15 +88,13 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteResourceAndMaster(masterId: Long): Boolean =
-        withContext(Dispatchers.IO) {
-            resourceDao.getResourceByMasterId(masterId)?.apply {
-                resourceDao.deleteResource(this)
-                imageDao.scrubImages()
-                trackDao.scrubTracks()
-                creditDao.scrubCredits()
-                videoDao.scrubVideos()
-            } != null
-        }
+        resourceDao.getResourceByMasterId(masterId)?.apply {
+            resourceDao.deleteResource(this)
+            imageDao.scrubImages()
+            trackDao.scrubTracks()
+            creditDao.scrubCredits()
+            videoDao.scrubVideos()
+        } != null
 
     @Transaction
     @Query("")
@@ -127,15 +119,13 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteResourceAndRelease(releaseId: Long): Boolean =
-        withContext(Dispatchers.IO) {
-            resourceDao.getResourceByReleaseId(releaseId)?.apply {
-                resourceDao.deleteResource(this)
-                imageDao.scrubImages()
-                trackDao.scrubTracks()
-                creditDao.scrubCredits()
-                videoDao.scrubVideos()
-            } != null
-        }
+        resourceDao.getResourceByReleaseId(releaseId)?.apply {
+            resourceDao.deleteResource(this)
+            imageDao.scrubImages()
+            trackDao.scrubTracks()
+            creditDao.scrubCredits()
+            videoDao.scrubVideos()
+        } != null
 
     @Transaction
     @Query("")

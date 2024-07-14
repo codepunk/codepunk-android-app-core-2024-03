@@ -24,7 +24,7 @@ interface MasterDao {
             ON resource.resource_id = master.resource_id
          WHERE master.master_id = :masterId
     """)
-    fun getResourceAndMaster(masterId: Long): Flow<LocalResourceAndMaster?>
+    fun getMaster(masterId: Long): Flow<LocalResourceAndMaster?>
 
     // endregion Methods
 

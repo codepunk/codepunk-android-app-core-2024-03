@@ -25,7 +25,7 @@ data class LocalResourceDetail(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
     @ColumnInfo(name = "detail_type")
-    val detailType: DetailType = DetailType.URL,
+    val type: DetailType = DetailType.URL,
     @ColumnInfo(name = "detail_idx")
     val detailIdx: Int = 0,
     val detail: String = ""

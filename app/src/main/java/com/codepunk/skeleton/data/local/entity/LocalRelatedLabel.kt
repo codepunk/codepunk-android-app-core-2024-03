@@ -24,7 +24,7 @@ data class LocalRelatedLabel(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
     @ColumnInfo(name = "reference_type")
-    val referenceType: RelationType,
+    val type: RelationType = RelationType.LABEL,
     @ColumnInfo(name = "label_id")
     val labelId: Long = 0L,
     val name: String = "",

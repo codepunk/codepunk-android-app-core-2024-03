@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteRelatedLabel(
-    val id: Long = 0L,
+    @SerialName("id")
+    val labelId: Long = 0L,
     val name: String = "",
     @SerialName("resource_url")
     val resourceUrl: String = ""

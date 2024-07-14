@@ -24,7 +24,7 @@ interface LabelDao {
             ON resource.resource_id = label.resource_id
          WHERE label.label_id = :labelId
     """)
-    fun getResourceAndLabel(labelId: Long): Flow<LocalResourceAndLabel?>
+    fun getLabel(labelId: Long): Flow<LocalResourceAndLabel?>
 
     // endregion Methods
 

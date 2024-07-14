@@ -24,7 +24,7 @@ data class LocalRelatedArtist(
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
     @ColumnInfo(name = "reference_type")
-    val relationType: RelationType,
+    val type: RelationType = RelationType.ALIAS,
     @ColumnInfo(name = "artist_id")
     val artistId: Long = 0L,
     val name: String = "",

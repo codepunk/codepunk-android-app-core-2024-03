@@ -1,7 +1,7 @@
 package com.codepunk.skeleton.domain.model
 
 data class Credit(
-    val id: Long = 0L,
+    val artistId: Long = 0L,
     val name: String = "",
     val resourceUrl: String = "",
     val anv: String = "",

@@ -24,7 +24,7 @@ interface ArtistDao {
             ON resource.resource_id = artist.resource_id
          WHERE artist.artist_id = :artistId
     """)
-    fun getResourceAndArtist(artistId: Long): Flow<LocalResourceAndArtist?>
+    fun getArtist(artistId: Long): Flow<LocalResourceAndArtist?>
 
     // endregion Methods
 

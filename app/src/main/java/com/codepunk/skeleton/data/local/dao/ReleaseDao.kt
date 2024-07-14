@@ -24,7 +24,7 @@ interface ReleaseDao {
             ON resource.resource_id = `release`.resource_id
          WHERE `release`.release_id = :releaseId
     """)
-    fun getResourceAndRelease(releaseId: Long): Flow<LocalResourceAndRelease?>
+    fun getRelease(releaseId: Long): Flow<LocalResourceAndRelease?>
 
     // endregion Methods
 

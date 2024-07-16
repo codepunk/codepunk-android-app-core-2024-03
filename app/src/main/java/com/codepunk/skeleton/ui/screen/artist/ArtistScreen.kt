@@ -11,24 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.codepunk.skeleton.core.loginator.Loginator
 
 @Composable
 fun ArtistScreen(
     modifier: Modifier = Modifier,
+    artistId: Long,
     state: ArtistScreenState,
     onEvent: (ArtistScreenEvent) -> Unit
 ) {
-    Loginator.d { "state = $state" }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        // TODO This might not be the cleanest
         LaunchedEffect(Unit) {
-            Loginator.d { "Launched effect!" }
-            onEvent(ArtistScreenEvent.LoadArtist(state.artistId))
+            onEvent(ArtistScreenEvent.LoadArtist(artistId))
         }
 
         Column(

@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 sealed class Route {
 
     @Serializable
-    data object HomeScreen: Route()
+    data object Home: Route()
 
     @Serializable
-    data class ArtistScreen(
+    data class Artist(
         val artistId: Long
     ): Route()
 

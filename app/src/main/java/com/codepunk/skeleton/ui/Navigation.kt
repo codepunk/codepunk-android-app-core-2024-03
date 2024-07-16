@@ -23,31 +23,30 @@ fun Navigation(
 
     NavHost(
         navController = navController,
-        startDestination = Route.HomeScreen
+        startDestination = Route.Home
     ) {
-        composable<Route.HomeScreen> {
+        composable<Route.Home> {
             HomeScreen(
                 onNavigateToMarillion = {
                     navController.navigate(
-                        Route.ArtistScreen(MARILLION)
+                        Route.Artist(MARILLION)
                     )
                 },
                 onNavigateToTaylorSwift = {
                     navController.navigate(
-                        Route.ArtistScreen(TAYLOR_SWIFT)
+                        Route.Artist(TAYLOR_SWIFT)
                     )
                 }
             )
         }
 
-        composable<Route.ArtistScreen> { backStackEntry ->
-            // TODO This might not be the cleanest
-            val route = backStackEntry.toRoute<Route.ArtistScreen>()
-            val artistId = route.artistId
+        composable<Route.Artist> { backStackEntry ->
+            val artist = backStackEntry.toRoute<Route.Artist>()
             val viewModel: ArtistViewModel = hiltViewModel()
             ArtistScreen(
                 modifier = modifier,
-                state = viewModel.state.copy(artistId = artistId)
+                artistId = artist.artistId,
+                state = viewModel.state
             ) { event ->
                 viewModel.onEvent(event)
             }

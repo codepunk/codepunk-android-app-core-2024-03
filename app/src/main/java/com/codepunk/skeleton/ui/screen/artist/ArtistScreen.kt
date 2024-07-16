@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,13 +61,15 @@ fun ArtistScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(ratio = headerImageRatio)
-                    .background(Color.Cyan)
+                    .graphicsLayer {
+                        alpha = 1f - (scrollState.value.toFloat() / scrollState.maxValue)
+                        translationY = 0.5f * scrollState.value
+                    }
+                    .background(Color.Cyan) // TODO
             ) {
                 val primaryImage = artist?.images
                     ?.firstOrNull { it.type == ImageType.PRIMARY }
-                if (primaryImage == null) {
-                    // Nothing (yet)
-                } else {
+                if (primaryImage != null) {
                     AsyncImage(
                         modifier = Modifier.fillMaxSize(),
                         model = ImageRequest.Builder(LocalContext.current)
@@ -92,21 +95,41 @@ fun ArtistScreen(
                 text = artist?.profile ?: "",
                 style = MaterialTheme.typography.bodyMedium
             )
+
+            // TODO Temp for scrolling/parallax test
+            Text(
+                modifier = Modifier.padding(
+                    horizontal = smallPadding,
+                    vertical = tinyPadding
+                ),
+                text = artist?.profile ?: "",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Text(
+                modifier = Modifier.padding(
+                    horizontal = smallPadding,
+                    vertical = tinyPadding
+                ),
+                text = artist?.profile ?: "",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            // TODO End temp
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ArtistScreenPreview() {
-    SkeletonTheme {
+fun ArtistScreenPreviewDark() {
+    SkeletonTheme(darkTheme = true) {
         ArtistScreen(
             artistId = MARILLION,
             state = ArtistScreenState(
                 artistId = MARILLION,
                 artist = Artist(
-                    name = "Marillion",
-                    profile = "This is a band"
+                    name = "Artist Name",
+                    profile = "This is an artist"
                 )
             )
         )

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.MARILLION
@@ -62,8 +63,11 @@ fun ArtistScreen(
                     .fillMaxWidth()
                     .aspectRatio(ratio = headerImageRatio)
                     .graphicsLayer {
+                        // TODO If we can't scroll to the top, image disappears too quickly
+                        // Need to somehow combine it with actual y-pos of
                         alpha = 1f - (scrollState.value.toFloat() / scrollState.maxValue)
                         translationY = 0.5f * scrollState.value
+                        Loginator.d { "translationY = $translationY" }
                     }
                     .background(Color.Cyan) // TODO
             ) {

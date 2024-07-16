@@ -138,6 +138,8 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.kotlinx.datetime)
     implementation(libs.navigation.compose)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 
     // endregion Added by Codepunk
 

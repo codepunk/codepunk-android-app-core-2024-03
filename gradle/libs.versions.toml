@@ -20,7 +20,7 @@ composeCompiler = "1.5.11"
 composeNavigation = "2.8.0-beta05"
 kgp = "1.9.23"
 hilt = "2.51.1"
-hiltNavigationCompose = "1.0.0"
+hiltNavigationCompose = "1.2.0"
 retrofit = "2.11.0"
 serializationPlugin = "1.9.23"
 serializationJson = "1.6.3"
@@ -31,6 +31,7 @@ arrow = "1.2.4"
 room = "2.6.1"
 ksp = "1.9.0-1.0.13"
 kotlinxDatetime = "0.6.0"
+coil = "2.6.0"
 
 [libraries]
 ##### Added by Android Studio
@@ -68,6 +69,8 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [plugins]
 ##### Added by Android Studio

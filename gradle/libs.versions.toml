@@ -17,8 +17,10 @@ targetSdk = "34"
 versionCode = "1"
 versionName = "1.0"
 composeCompiler = "1.5.11"
+composeNavigation = "2.8.0-beta05"
 kgp = "1.9.23"
 hilt = "2.51.1"
+hiltNavigationCompose = "1.0.0"
 retrofit = "2.11.0"
 serializationPlugin = "1.9.23"
 serializationJson = "1.6.3"
@@ -28,7 +30,7 @@ javapoet = "1.13.0"
 arrow = "1.2.4"
 room = "2.6.1"
 ksp = "1.9.0-1.0.13"
-kotlinx-datetime = "0.6.0"
+kotlinxDatetime = "0.6.0"
 
 [libraries]
 ##### Added by Android Studio
@@ -53,7 +55,7 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationJson" }
 kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "serializationConverter" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
@@ -64,6 +66,8 @@ arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", ver
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 [plugins]
 ##### Added by Android Studio
@@ -75,4 +79,3 @@ kapt = { id = "kapt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 serialization = { id = "plugin.serialization", version.ref = "serializationPlugin" }
-

@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.VariantDimension
-
 plugins {
     id(libs.plugins.androidApplication.get().pluginId)
     id(libs.plugins.jetbrainsKotlinAndroid.get().pluginId)
@@ -127,6 +125,7 @@ dependencies {
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.converter)
@@ -138,6 +137,7 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.navigation.compose)
 
     // endregion Added by Codepunk
 

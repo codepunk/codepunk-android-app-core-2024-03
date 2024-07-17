@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Skeleton</string>
+
+    <string name="artist">Artist</string>
     <string name="artist_image">Image of %s</string>
+
+    <string name="go_back">Go back</string>
 </resources>

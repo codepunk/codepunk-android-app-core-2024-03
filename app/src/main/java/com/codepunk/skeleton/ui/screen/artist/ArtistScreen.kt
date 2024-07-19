@@ -83,7 +83,7 @@ fun ArtistScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-    ) { innerPaddingggg ->
+    ) { innerPadding ->
         val collapsedLines = integerResource(id = R.integer.artist_profile_collapsed_lines)
         var expanded by remember {mutableStateOf(false)}
         var textWidth by remember { mutableStateOf(0) }
@@ -95,7 +95,7 @@ fun ArtistScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPaddingggg)
+                .padding(innerPadding)
         ) {
             Column(
                 modifier = Modifier

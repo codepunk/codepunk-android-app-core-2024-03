@@ -1,7 +1,6 @@
 package com.codepunk.skeleton.ui.screen.artist
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -148,7 +147,7 @@ fun ArtistAppBar(
     val expandedHeight = dimensionResource(id = R.dimen.collapsing_toolbar_max_height)
     val heightOffsetDp = (scrollBehavior.state.heightOffset / LocalDensity.current.density).dp
 
-    PreviewableAsyncImage(
+    ImageWithGradient(
         modifier = modifier
             .fillMaxWidth()
             .height(expandedHeight + heightOffsetDp),
@@ -178,9 +177,8 @@ fun ArtistAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("SpellCheckingInspection")
 @Composable
-fun PreviewableAsyncImage(
+fun ImageWithGradient(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     artist: Artist?
@@ -191,28 +189,19 @@ fun PreviewableAsyncImage(
     ) {
         val artistName = artist?.name.orEmpty()
         val primaryImage = artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
-        if (LocalInspectionMode.current) {
-            // We are in preview mode
-            Image(
-                modifier = modifier
-                    .fillMaxWidth(),
-                painter = painterResource(id = R.mipmap.img_preview_landscape),
-                contentDescription = stringResource(R.string.artist_image, artistName),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            // We are in "live" mode
-            AsyncImage(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(primaryImage?.uri ?: "")
-                    .build(),
-                contentDescription = stringResource(R.string.artist_image, artistName),
-                contentScale = ContentScale.Crop
-            )
-        }
+
+        AsyncImage(
+            modifier = modifier
+                .fillMaxWidth()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(primaryImage?.uri ?: "")
+                .build(),
+            placeholder = if (LocalInspectionMode.current)
+                painterResource(id = R.mipmap.img_preview_landscape) else null,
+            contentDescription = stringResource(R.string.artist_image, artistName),
+            contentScale = ContentScale.Crop
+        )
 
         Box(
             modifier = Modifier

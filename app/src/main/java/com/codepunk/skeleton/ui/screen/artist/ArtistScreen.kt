@@ -3,6 +3,7 @@ package com.codepunk.skeleton.ui.screen.artist
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -53,6 +56,8 @@ import com.codepunk.skeleton.R
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
+import com.codepunk.skeleton.ui.theme.largePadding
+import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +84,7 @@ fun ArtistScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-    ) { innerPadding ->
+    ) { innerPaddingggg ->
         val collapsedLines = integerResource(id = R.integer.artist_profile_collapsed_lines)
         var expanded by remember {mutableStateOf(false)}
         var textWidth by remember { mutableStateOf(0) }
@@ -91,12 +96,15 @@ fun ArtistScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(smallPadding)
+                .padding(innerPaddingggg)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(
+                        horizontal = largePadding,
+                        vertical = mediumPadding
+                    )
                     .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(smallPadding)
             ) {
@@ -155,12 +163,10 @@ fun ArtistAppBar(
         fraction = scrollBehavior.state.collapsedFraction
     )
 
-    // TODO Gradient so text shows up better
-
     LargeTopAppBar(
         modifier = modifier,
         title = {
-            Text(text = state.artist?.name ?: "[Unknown Artist]")
+            Text(text = state.artist?.name.orEmpty())
         },
         expandedHeight = expandedHeight,
         colors = TopAppBarDefaults.topAppBarColors(
@@ -180,34 +186,44 @@ fun PreviewableAsyncImage(
     scrollBehavior: TopAppBarScrollBehavior,
     artist: Artist?
 ) {
-    val artistName = artist?.name.orEmpty()
-    val primaryImage = artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
-    if (LocalInspectionMode.current) {
-        // We are in preview mode
-        Image(
-            modifier = modifier
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        val artistName = artist?.name.orEmpty()
+        val primaryImage = artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
+        if (LocalInspectionMode.current) {
+            // We are in preview mode
+            Image(
+                modifier = modifier
+                    .fillMaxWidth(),
+                painter = painterResource(id = R.mipmap.img_preview_landscape),
+                contentDescription = stringResource(R.string.artist_image, artistName),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            // We are in "live" mode
+            AsyncImage(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(primaryImage?.uri ?: "")
+                    .build(),
+                contentDescription = stringResource(R.string.artist_image, artistName),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
-                .graphicsLayer {
-                    //translationY = scrollBehavior.state.heightOffset
-                },
-            painter = painterResource(id = R.mipmap.img_preview_landscape),
-            contentDescription = stringResource(R.string.artist_image, artistName),
-            contentScale = ContentScale.Crop
-        )
-    } else {
-        // We are in "live" mode
-        AsyncImage(
-            modifier = modifier
-                .fillMaxWidth()
-                .graphicsLayer {
-                    //translationY = scrollBehavior.state.heightOffset
-                }
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(primaryImage?.uri ?: "")
-                .build(),
-            contentDescription = stringResource(R.string.artist_image, artistName),
-            contentScale = ContentScale.Crop
+                .height(144.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f))
+                    )
+                )
         )
     }
 }

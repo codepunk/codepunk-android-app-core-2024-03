@@ -4,5 +4,6 @@
     <string name="artist">Artist</string>
     <string name="artist_image">Image of %s</string>
 
-    <string name="go_back">Go back</string>
+    <string name="show_less">Show less</string>
+    <string name="show_more">Show more</string>
 </resources>

@@ -1,9 +1,12 @@
 package com.codepunk.skeleton.ui.screen.artist
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,23 +18,34 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -66,15 +80,52 @@ fun ArtistScreen(
             )
         }
     ) { innerPadding ->
-        Column(
+        val collapsedLines = integerResource(id = R.integer.artist_profile_collapsed_lines)
+        var expanded by remember {mutableStateOf(false)}
+        var textWidth by remember { mutableStateOf(0) }
+        val textMeasurer = rememberTextMeasurer()
+        var expandable by remember { mutableStateOf(false) }
+
+        val profile = state.artist?.profile.orEmpty()
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(smallPadding)
+                .padding(smallPadding)
         ) {
-            repeat(10) {
-                Text(text = state.artist?.profile.orEmpty())
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(smallPadding)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .animateContentSize()
+                        .onGloballyPositioned { text ->
+                            textWidth = text.size.width
+                            val expandedLines = textMeasurer.measure(
+                                text = profile,
+                                constraints = Constraints(maxWidth = textWidth)
+                            ).lineCount
+                            expandable = (expandedLines > collapsedLines)
+                        },
+                    text = profile,
+                    maxLines = if (expanded) Int.MAX_VALUE else collapsedLines
+                )
+                if (expandable) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = { expanded = !expanded }
+                        ) {
+                            Text(text = if (expanded) "Show less" else "Show more")
+                        }
+                    }
+                }
             }
         }
     }
@@ -111,7 +162,7 @@ fun ArtistAppBar(
         title = {
             Text(text = state.artist?.name ?: "[Unknown Artist]")
         },
-        expandedHeight = 300.dp,
+        expandedHeight = expandedHeight,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = color,
             titleContentColor = MaterialTheme.colorScheme.primary,
@@ -129,7 +180,7 @@ fun PreviewableAsyncImage(
     scrollBehavior: TopAppBarScrollBehavior,
     artist: Artist?
 ) {
-    val artistName = artist?.name ?: "Artist Name"
+    val artistName = artist?.name.orEmpty()
     val primaryImage = artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
     if (LocalInspectionMode.current) {
         // We are in preview mode
@@ -161,17 +212,22 @@ fun PreviewableAsyncImage(
     }
 }
 
-@Preview(showSystemUi = true)
+
+@Preview(
+    showSystemUi = true
+)
 @Composable
-fun ArtistScreenPreviewDark() {
+fun ArtistScreenPreviewDark(
+    @PreviewParameter(LoremIpsum::class) artistProfile: String
+) {
     SkeletonTheme(darkTheme = true) {
         ArtistScreen(
             artistId = 1,
             state = ArtistScreenState(
                 artistId = 1,
                 artist = Artist(
-                    name = "Artist Name",
-                    profile = "This is an artist"
+                    name = "Lorem Ipsum",
+                    profile = artistProfile
                 )
             )
         )

@@ -51,6 +51,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -158,10 +159,8 @@ fun ArtistScreen(
 
                 if (artist.urls.isNotEmpty()) {
                     Text(
-                        text = stringResource(
-                            id = R.string.string_with_colon,
-                            stringResource(id = R.string.links)
-                        )
+                        text = stringResource(id = R.string.links),
+                        style = MaterialTheme.typography.titleLarge
                     )
 
                     val context = LocalContext.current

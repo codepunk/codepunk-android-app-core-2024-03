@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -53,7 +54,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
@@ -190,25 +190,6 @@ fun ArtistAppBar(
     )
 }
 
-@SuppressLint("DiscouragedApi")
-@Composable
-fun getResourceId(resourceStr: String): Int {
-    val context = LocalContext.current
-    return remember(resourceStr) {
-        Uri.parse(resourceStr).run {
-            when {
-                scheme != "android.resource" -> 0
-                host != context.packageName -> 0
-                else -> context.resources.getIdentifier(
-                    pathSegments[1],
-                    pathSegments[0],
-                    context.packageName
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun ImageWithGradient(
     modifier: Modifier = Modifier,
@@ -221,21 +202,11 @@ fun ImageWithGradient(
         val artistName = state.artist?.name.orEmpty()
         val primaryImage = state.artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
 
-        /*
-         * NOTE: This is a proof of concept to allow turning resource Uri to resource Id,
-         * for showing resource image in compose preview based on string
-         */
-        val placeHolderResId = getResourceId(resourceStr = primaryImage?.uri.orEmpty())
-        val placeholder = if (LocalInspectionMode.current) {
-            Loginator.d { "placeHolderResId=$placeHolderResId"}
-            if (placeHolderResId > 0) {
-                painterResource(id = placeHolderResId)
-            } else {
-                null
-            }
-        } else {
-            null
-        }
+        // When in Local Inspection (i.e. preview) mode, allow Uri to be
+        // int value of a drawable resource
+        val placeholder: Painter? = if (LocalInspectionMode.current) {
+            primaryImage?.uri?.toIntOrNull()?.let { painterResource(id = it) }
+        } else null
 
         AsyncImage(
             modifier = modifier

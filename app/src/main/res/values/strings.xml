@@ -1,9 +1,26 @@
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
+
     <string name="app_name">Skeleton</string>
 
     <string name="artist">Artist</string>
     <string name="artist_image">Image of %s</string>
+    <string name="links">Links</string>
+    <string name="string_with_colon">%s:</string>
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>
+
+    <string tools:ignore="typos" name="url_bandcamp">Bandcamp</string>
+    <string name="url_facebook">Facebook</string>
+    <string name="url_instagram">Instagram</string>
+    <string name="url_pinterest">Pinterest</string>
+    <string name="url_soundcloud">Soundcloud</string>
+    <string name="url_threads">Threads</string>
+    <string name="url_tumblr">Tumblr</string>
+    <string name="url_x">X</string>
+    <string name="url_wikipedia">Wikipedia</string>
+    <string name="url_youtube">YouTube</string>
+    <string name="url_other">Other</string>
+
 </resources>

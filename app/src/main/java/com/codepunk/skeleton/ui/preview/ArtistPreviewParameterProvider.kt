@@ -21,12 +21,23 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             name = "Artist One",
             profile = loremIpsum,
             releasesUrl = "",
-            urls = listOf(),
+            urls = listOf(
+                "https://www.taylorswift.com/",
+                "https://www.facebook.com/TaylorSwift",
+                "https://www.instagram.com/taylorswift/",
+                "https://www.pinterest.com/taylornation13/",
+                "https://taylorswift.tumblr.com/",
+                "https://twitter.com/taylorswift13",
+                "https://twitter.com/taylornation13",
+                "https://en.wikipedia.org/wiki/Taylor_Swift",
+                "https://www.youtube.com/user/taylorswift",
+                "https://soundcloud.com/taylorswiftofficial"
+            ),
             realName = "Artist Number One",
-            nameVariations = listOf(),
-            aliases = listOf(),
-            members = listOf(),
-            groups = listOf()
+            nameVariations = emptyList(),
+            aliases = emptyList(),
+            members = emptyList(),
+            groups = emptyList()
         ),
         Artist(
             id = 0,
@@ -39,12 +50,12 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             name = "Artist Two",
             profile = loremIpsum,
             releasesUrl = "",
-            urls = listOf(),
+            urls = emptyList(),
             realName = "",
-            nameVariations = listOf(),
-            aliases = listOf(),
-            members = listOf(),
-            groups = listOf()
+            nameVariations = emptyList(),
+            aliases = emptyList(),
+            members = emptyList(),
+            groups = emptyList()
         ),
         Artist(
             id = 0,
@@ -57,12 +68,12 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             name = "Artist Three",
             profile = loremIpsum,
             releasesUrl = "",
-            urls = listOf(),
+            urls = emptyList(),
             realName = "Artist Number Three",
-            nameVariations = listOf(),
-            aliases = listOf(),
-            members = listOf(),
-            groups = listOf()
+            nameVariations = emptyList(),
+            aliases = emptyList(),
+            members = emptyList(),
+            groups = emptyList()
         ),
     )
 }

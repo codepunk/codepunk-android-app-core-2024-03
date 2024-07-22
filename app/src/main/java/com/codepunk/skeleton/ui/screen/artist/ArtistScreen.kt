@@ -1,21 +1,25 @@
 package com.codepunk.skeleton.ui.screen.artist
 
-import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,6 +46,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
@@ -55,14 +60,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
 import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.largePadding
 import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
+import com.codepunk.skeleton.util.url.UrlInfo
+import com.codepunk.skeleton.util.url.UrlInfo.Domain
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ArtistScreen(
     modifier: Modifier = Modifier,
@@ -93,7 +101,7 @@ fun ArtistScreen(
         val textMeasurer = rememberTextMeasurer()
         var expandable by remember { mutableStateOf(false) }
 
-        val profile = state.artist?.profile.orEmpty()
+        val artist = state.artist.orEmpty()
 
         Box(
             modifier = Modifier
@@ -110,18 +118,21 @@ fun ArtistScreen(
                     .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(smallPadding)
             ) {
+
+                // Profile
+
                 Text(
                     modifier = Modifier
                         .animateContentSize()
                         .onGloballyPositioned { text ->
                             textWidth = text.size.width
                             val expandedLines = textMeasurer.measure(
-                                text = profile,
+                                text = artist.profile,
                                 constraints = Constraints(maxWidth = textWidth)
                             ).lineCount
                             expandable = (expandedLines > collapsedLines)
                         },
-                    text = profile,
+                    text = artist.profile,
                     maxLines = if (expanded) Int.MAX_VALUE else collapsedLines
                 )
                 if (expandable) {
@@ -132,7 +143,44 @@ fun ArtistScreen(
                         TextButton(
                             onClick = { expanded = !expanded }
                         ) {
-                            Text(text = if (expanded) "Show less" else "Show more")
+                            Text(
+                                text = if (expanded) {
+                                    stringResource(id = R.string.show_less)
+                                } else {
+                                    stringResource(id = R.string.show_more)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Urls
+
+                if (artist.urls.isNotEmpty()) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.string_with_colon,
+                            stringResource(id = R.string.links)
+                        )
+                    )
+
+                    val context = LocalContext.current
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(smallPadding)
+                    ) {
+                        val urlInfos = artist.urls.map { UrlInfo(context, it) }
+                        val countMap = urlInfos
+                            .map { it.domain }
+                            .filter { it != Domain.OTHER }
+                            .groupingBy { it }
+                            .eachCount()
+                        urlInfos.forEach { urlInfo ->
+                            val count = countMap.getOrElse(urlInfo.domain) { 1 }
+                            LinkChip(
+                                urlInfo = urlInfo,
+                                count = count
+                            )
                         }
                     }
                 }
@@ -199,8 +247,8 @@ fun ImageWithGradient(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        val artistName = state.artist?.name.orEmpty()
-        val primaryImage = state.artist?.images?.firstOrNull { it.type == ImageType.PRIMARY }
+        val artist = state.artist.orEmpty()
+        val primaryImage = artist.images.firstOrNull { it.type == ImageType.PRIMARY }
 
         // When in Local Inspection (i.e. preview) mode, allow Uri to be
         // int value of a drawable resource
@@ -215,7 +263,7 @@ fun ImageWithGradient(
                 .data(primaryImage?.uri ?: "")
                 .build(),
             placeholder = placeholder,
-            contentDescription = stringResource(R.string.artist_image, artistName),
+            contentDescription = stringResource(R.string.artist_image, artist.name),
             contentScale = ContentScale.Crop
         )
 
@@ -235,6 +283,34 @@ fun ImageWithGradient(
     }
 }
 
+@Composable
+fun LinkChip(
+    urlInfo: UrlInfo,
+    count: Int
+) {
+    val uriHandler = LocalUriHandler.current
+    val urlName = stringResource(id = urlInfo.domain.nameRef)
+    val label = buildString {
+        append(urlInfo.domainString)
+        if (count > 1 && urlInfo.lastPathSegment.isNotEmpty()) {
+            if (isNotEmpty()) append (" ")
+            append (" (")
+            append (urlInfo.lastPathSegment)
+            append (")")
+        }
+    }
+    AssistChip(
+        onClick = { uriHandler.openUri(urlInfo.urlString) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = urlInfo.domain.iconRef),
+                contentDescription = urlName,
+                modifier = Modifier.size(AssistChipDefaults.IconSize)
+            )
+        },
+        label = { Text(text = label) }
+    )
+}
 
 @Preview(
     showSystemUi = true

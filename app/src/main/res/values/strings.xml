@@ -6,7 +6,7 @@
     <string name="artist">Artist</string>
     <string name="artist_image">Image of %s</string>
     <string name="links">Links</string>
-    <string name="string_with_colon">%s:</string>
+    <string name="images">Images</string>
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>

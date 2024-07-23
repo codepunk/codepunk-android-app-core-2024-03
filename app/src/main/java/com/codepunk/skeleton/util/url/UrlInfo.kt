@@ -6,34 +6,32 @@ import com.codepunk.skeleton.R
 
 data class UrlInfo(
     val urlString: String,
-    val domain: Domain,
-    val domainString: String,
-    val lastPathSegment: String
+    val domain: Domain
 ) {
+    private var _domainString: String? = null
+    private var _lastPathSegment: String? = null
+    val lastPathSegment: String
+        get() = _lastPathSegment
+            ?: urlString.getLastPathSegment().apply {
+                _lastPathSegment = this
+            }
 
     constructor(
-        context: Context,
-        urlString: String,
-        domain: Domain
-    ) : this(
-        urlString,
-        domain,
-        if (domain == Domain.OTHER) {
-            urlString.toDomainString()
-        } else {
-            context.getString(domain.nameRef)
-        },
-        urlString.lastPathSegment()
-    )
-
-    constructor(
-        context: Context,
         urlString: String
     ) : this(
-        context,
         urlString,
         Domain.fromUrlString(urlString)
     )
+
+    fun getDomainString(context: Context): String =
+        _domainString
+            ?: if (domain == Domain.OTHER) {
+                urlString.toDomainString()
+            } else {
+                context.getString(domain.nameRef)
+            }.apply {
+                _domainString = this
+            }
 
     @Suppress("SpellCheckingInspection")
     enum class Domain(
@@ -100,7 +98,7 @@ data class UrlInfo(
         companion object {
             fun fromUrlString(urlString: String): Domain {
                 val rootDomain = urlString.toRootDomain()
-                return entries.find {  it.domains.contains(rootDomain) } ?: OTHER
+                return entries.find { it.domains.contains(rootDomain) } ?: OTHER
             }
 
         }
@@ -118,7 +116,9 @@ data class UrlInfo(
 
         private fun String.toRootDomain(): String = try {
             Uri.parse(this).host.orEmpty().split(DOT).rootDomain()
-        } catch (e: NullPointerException) { "" }
+        } catch (e: NullPointerException) {
+            ""
+        }
 
         private fun String.toDomainString(): String = try {
             Uri.parse(this).run {
@@ -129,11 +129,15 @@ data class UrlInfo(
                     append(hostSegments.topLevelDomain())
                 }
             }
-        } catch (e: NullPointerException) { "" }
+        } catch (e: NullPointerException) {
+            ""
+        }
 
-        private fun String.lastPathSegment(): String = try {
+        private fun String.getLastPathSegment(): String = try {
             Uri.parse(this).lastPathSegment.orEmpty()
-        } catch (e: NullPointerException) { "" }
+        } catch (e: NullPointerException) {
+            ""
+        }
     }
 
 }

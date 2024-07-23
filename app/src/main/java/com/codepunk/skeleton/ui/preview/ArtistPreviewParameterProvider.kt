@@ -14,9 +14,7 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             id = 0,
             resourceUrl = "",
             uri = "",
-            images = listOf(
-                imagePreviewProvider.values.elementAtOrElse(0) { Image() },
-            ),
+            images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist One",
             profile = loremIpsum,
@@ -43,9 +41,7 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             id = 0,
             resourceUrl = "",
             uri = "",
-            images = listOf(
-                imagePreviewProvider.values.elementAtOrElse(1) { Image() },
-            ),
+            images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist Two",
             profile = loremIpsum,
@@ -61,9 +57,7 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             id = 0,
             resourceUrl = "",
             uri = "",
-            images = listOf(
-                imagePreviewProvider.values.elementAtOrElse(2) { Image() },
-            ),
+            images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist Three",
             profile = loremIpsum,

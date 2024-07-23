@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -163,12 +166,10 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    val context = LocalContext.current
-
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(smallPadding)
                     ) {
-                        val urlInfos = artist.urls.map { UrlInfo(context, it) }
+                        val urlInfos = artist.urls.map { UrlInfo(it) }
                         val countMap = urlInfos
                             .map { it.domain }
                             .filter { it != Domain.OTHER }
@@ -183,6 +184,45 @@ fun ArtistScreen(
                         }
                     }
                 }
+
+                // Images
+
+                if (artist.images.isNotEmpty()) {
+                    HorizontalDivider()
+                    Text(
+                        text = stringResource(id = R.string.images),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier.height(96.dp),
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding)
+                    ) {
+                        items(
+                            items = artist.images,
+                            itemContent = { image ->
+                                val placeholder: Painter? = if (LocalInspectionMode.current) {
+                                    image.uri.toIntOrNull()?.let { painterResource(id = it) }
+                                } else null
+
+                                AsyncImage(
+                                    modifier = modifier
+                                        .fillMaxSize(),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(image.uri ?: "")
+                                        .build(),
+                                    placeholder = placeholder,
+                                    contentDescription = stringResource(R.string.artist_image, artist.name),
+                                    contentScale = ContentScale.Inside
+                                )
+                            }
+                        )
+                    }
+                }
+
+                // Releases
+
+
+
             }
         }
     }
@@ -290,9 +330,8 @@ fun LinkChip(
     val uriHandler = LocalUriHandler.current
     val urlName = stringResource(id = urlInfo.domain.nameRef)
     val label = buildString {
-        append(urlInfo.domainString)
+        append(urlInfo.getDomainString(LocalContext.current))
         if (count > 1 && urlInfo.lastPathSegment.isNotEmpty()) {
-            if (isNotEmpty()) append (" ")
             append (" (")
             append (urlInfo.lastPathSegment)
             append (")")

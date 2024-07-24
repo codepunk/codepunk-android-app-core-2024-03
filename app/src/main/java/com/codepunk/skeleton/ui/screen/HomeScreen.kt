@@ -22,7 +22,8 @@ import com.codepunk.skeleton.ui.theme.SkeletonTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToMarillion: () -> Unit = {},
-    onNavigateToTaylorSwift: () -> Unit = {}
+    onNavigateToTaylorSwift: () -> Unit = {},
+    onTryPaging: () -> Unit = {}
 ) {
     // A surface container using the 'background' color from the theme
     Surface(
@@ -57,6 +58,15 @@ fun HomeScreen(
                     .align(alignment = Alignment.CenterHorizontally)
             ) {
                 Text("Taylor Swift")
+            }
+            Button(
+                onClick = {
+                    onTryPaging()
+                },
+                modifier = modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("Paging")
             }
         }
     }

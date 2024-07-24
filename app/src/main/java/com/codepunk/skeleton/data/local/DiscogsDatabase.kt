@@ -12,6 +12,7 @@ import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedArtistDao
 import com.codepunk.skeleton.data.local.dao.RelatedLabelDao
+import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.local.dao.ResourceDao
 import com.codepunk.skeleton.data.local.dao.TrackDao
@@ -26,6 +27,7 @@ import com.codepunk.skeleton.data.local.entity.LocalImage
 import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalMaster
+import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
@@ -44,14 +46,15 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
     version = 1,
     entities = [
         LocalArtist::class,
-        LocalRelatedArtist::class,
         LocalCredit::class,
         LocalFormat::class,
         LocalFormatDetail::class,
         LocalIdentifier::class,
         LocalImage::class,
         LocalLabel::class,
+        LocalRelatedArtist::class,
         LocalRelatedLabel::class,
+        LocalRelatedRelease::class,
         LocalMaster::class,
         LocalRelease::class,
         LocalResource::class,
@@ -93,6 +96,8 @@ abstract class DiscogsDatabase: RoomDatabase() {
     abstract fun relatedArtistDao(): RelatedArtistDao
 
     abstract fun relatedLabelDao(): RelatedLabelDao
+
+    abstract fun relatedReleaseDao(): RelatedReleaseDao
 
     abstract fun releaseDao(): ReleaseDao
 

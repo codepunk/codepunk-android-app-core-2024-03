@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "11183447c34922e62f8af4f684cf1254",
+    "identityHash": "7e50e08a2622b1503f04a56c87d9d3d7",
     "entities": [
       {
         "tableName": "artist",
@@ -62,80 +62,6 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_artist_resource_id` ON `${TABLE_NAME}` (`resource_id`)"
           }
         ],
-        "foreignKeys": [
-          {
-            "table": "resource",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "resource_id"
-            ],
-            "referencedColumns": [
-              "resource_id"
-            ]
-          }
-        ]
-      },
-      {
-        "tableName": "related_artist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_artist_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "relatedArtistId",
-            "columnName": "related_artist_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "resourceId",
-            "columnName": "resource_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "relationType",
-            "columnName": "reference_type",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "artistId",
-            "columnName": "artist_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "resourceUrl",
-            "columnName": "resource_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "active",
-            "columnName": "active",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "thumbnailUrl",
-            "columnName": "thumbnail_url",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "related_artist_id"
-          ]
-        },
-        "indices": [],
         "foreignKeys": [
           {
             "table": "resource",
@@ -533,6 +459,80 @@
         ]
       },
       {
+        "tableName": "related_artist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_artist_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `artist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, `active` INTEGER, `thumbnail_url` TEXT, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "relatedArtistId",
+            "columnName": "related_artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourceId",
+            "columnName": "resource_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "reference_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourceUrl",
+            "columnName": "resource_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnail_url",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "related_artist_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "resource",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "resource_id"
+            ],
+            "referencedColumns": [
+              "resource_id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "related_label",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_label_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `reference_type` TEXT NOT NULL, `label_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `resource_url` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
@@ -549,7 +549,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "referenceType",
+            "fieldPath": "type",
             "columnName": "reference_type",
             "affinity": "TEXT",
             "notNull": true
@@ -577,6 +577,104 @@
           "autoGenerate": true,
           "columnNames": [
             "related_label_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "resource",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "resource_id"
+            ],
+            "referencedColumns": [
+              "resource_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "related_release",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `resource_url` TEXT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `format` TEXT NOT NULL, `label` TEXT NOT NULL, `title` TEXT NOT NULL, `role` TEXT NOT NULL, `artist` TEXT NOT NULL, `year` INTEGER NOT NULL, `thumb` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "relatedReleaseId",
+            "columnName": "related_release_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourceId",
+            "columnName": "resource_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourceUrl",
+            "columnName": "resource_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "format",
+            "columnName": "format",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artist",
+            "columnName": "artist",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumb",
+            "columnName": "thumb",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "related_release_id"
           ]
         },
         "indices": [],
@@ -958,7 +1056,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "detailType",
+            "fieldPath": "type",
             "columnName": "detail_type",
             "affinity": "TEXT",
             "notNull": true
@@ -1385,7 +1483,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '11183447c34922e62f8af4f684cf1254')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e50e08a2622b1503f04a56c87d9d3d7')"
     ]
   }
 }

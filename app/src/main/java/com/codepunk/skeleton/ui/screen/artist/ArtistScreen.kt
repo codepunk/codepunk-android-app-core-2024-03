@@ -63,9 +63,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
+import com.codepunk.skeleton.ui.TEMP_ARTIST
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.largePadding
@@ -83,7 +85,12 @@ fun ArtistScreen(
     onEvent: (ArtistScreenEvent) -> Unit = {}
 ) {
     LaunchedEffect(Unit) {
-        onEvent(ArtistScreenEvent.LoadArtist(artistId))
+        if (artistId == TEMP_ARTIST) {
+            // TODO TEMP
+            onEvent(ArtistScreenEvent.TryPaging)
+        } else {
+            onEvent(ArtistScreenEvent.LoadArtist(artistId))
+        }
     }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -106,6 +113,10 @@ fun ArtistScreen(
         var expandable by remember { mutableStateOf(false) }
 
         val artist = state.artist.orEmpty()
+
+        // TODO I have some actual paging data happening here
+        val paging = state.releases
+        Loginator.d { "paging=$paging" }
 
         Box(
             modifier = Modifier

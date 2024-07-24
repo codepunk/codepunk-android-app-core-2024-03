@@ -11,6 +11,7 @@ import com.codepunk.skeleton.ui.screen.artist.ArtistScreen
 import com.codepunk.skeleton.ui.screen.HomeScreen
 import com.codepunk.skeleton.ui.screen.artist.ArtistViewModel
 
+const val TEMP_ARTIST = -1L
 @Suppress("SpellCheckingInspection")
 const val MARILLION = 218108L
 const val TAYLOR_SWIFT = 1124645L
@@ -35,6 +36,11 @@ fun Navigation(
                 onNavigateToTaylorSwift = {
                     navController.navigate(
                         Route.Artist(TAYLOR_SWIFT)
+                    )
+                },
+                onTryPaging = {
+                    navController.navigate(
+                        Route.Artist(TEMP_ARTIST) // TODO TEMP
                     )
                 }
             )

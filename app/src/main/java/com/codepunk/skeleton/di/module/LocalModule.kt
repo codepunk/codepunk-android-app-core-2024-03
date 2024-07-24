@@ -12,6 +12,7 @@ import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedArtistDao
 import com.codepunk.skeleton.data.local.dao.RelatedLabelDao
+import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.local.dao.ResourceDao
 import com.codepunk.skeleton.data.local.dao.TrackDao
@@ -75,6 +76,11 @@ object LocalModule {
     @Singleton
     fun provideRelatedLabelDao(database: DiscogsDatabase): RelatedLabelDao =
         database.relatedLabelDao()
+
+    @Provides
+    @Singleton
+    fun provideRelatedReleaseDao(database: DiscogsDatabase): RelatedReleaseDao =
+        database.relatedReleaseDao()
 
     @Provides
     @Singleton

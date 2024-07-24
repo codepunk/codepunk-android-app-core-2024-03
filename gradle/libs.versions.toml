@@ -33,6 +33,7 @@ ksp = "1.9.0-1.0.13"
 kotlinxDatetime = "0.6.0"
 coil = "2.6.0"
 material3 = "1.3.0-beta04"
+paging = "3.3.0"
 
 [libraries]
 ##### Added by Android Studio
@@ -72,6 +73,9 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 
 [plugins]
 ##### Added by Android Studio

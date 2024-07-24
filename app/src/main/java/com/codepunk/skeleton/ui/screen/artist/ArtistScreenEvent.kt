@@ -6,4 +6,6 @@ sealed class ArtistScreenEvent {
 
     data object RefreshArtist : ArtistScreenEvent()
 
+    data object TryPaging : ArtistScreenEvent()
+
 }

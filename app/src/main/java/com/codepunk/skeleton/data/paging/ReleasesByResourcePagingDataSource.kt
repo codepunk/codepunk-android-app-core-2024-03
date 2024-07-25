@@ -37,7 +37,7 @@ class ReleasesByResourcePagingDataSource(
                 }
 
                 LoadResult.Page(
-                    data = result.releases,
+                    data = result.relatedReleases,
                     prevKey = null,
                     nextKey = nextPageNum
               )

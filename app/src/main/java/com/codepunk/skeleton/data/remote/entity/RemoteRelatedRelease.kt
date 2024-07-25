@@ -1,7 +1,9 @@
 package com.codepunk.skeleton.data.remote.entity
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class RemoteRelatedRelease(
     @SerialName("id")
     val releaseId: Long = 0L,

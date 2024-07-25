@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7e50e08a2622b1503f04a56c87d9d3d7",
+    "identityHash": "c5aa59b88b1604911f4161b115497b08",
     "entities": [
       {
         "tableName": "artist",
@@ -596,7 +596,7 @@
       },
       {
         "tableName": "related_release",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `resource_url` TEXT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `format` TEXT NOT NULL, `label` TEXT NOT NULL, `title` TEXT NOT NULL, `role` TEXT NOT NULL, `artist` TEXT NOT NULL, `year` INTEGER NOT NULL, `thumb` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_id` INTEGER NOT NULL, `release_id` INTEGER NOT NULL, `resource_url` TEXT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `format` TEXT NOT NULL, `label` TEXT NOT NULL, `title` TEXT NOT NULL, `role` TEXT NOT NULL, `artist` TEXT NOT NULL, `year` INTEGER NOT NULL, `thumb` TEXT NOT NULL, FOREIGN KEY(`resource_id`) REFERENCES `resource`(`resource_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "relatedReleaseId",
@@ -607,6 +607,12 @@
           {
             "fieldPath": "resourceId",
             "columnName": "resource_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId",
+            "columnName": "release_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -790,6 +796,92 @@
             ],
             "referencedColumns": [
               "resource_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "related_release_pagination",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER NOT NULL, `page` INTEGER NOT NULL, `pages` INTEGER NOT NULL, `per_page` INTEGER NOT NULL, `items` INTEGER NOT NULL, `firstKey` INTEGER, `lastKey` INTEGER, `prevKey` INTEGER, `nextKey` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`related_release_id`), FOREIGN KEY(`related_release_id`) REFERENCES `related_release`(`related_release_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "relatedReleaseId",
+            "columnName": "related_release_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "page",
+            "columnName": "page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pages",
+            "columnName": "pages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "perPage",
+            "columnName": "per_page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "items",
+            "columnName": "items",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstKey",
+            "columnName": "firstKey",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastKey",
+            "columnName": "lastKey",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prevKey",
+            "columnName": "prevKey",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nextKey",
+            "columnName": "nextKey",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "related_release_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "related_release",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "related_release_id"
+            ],
+            "referencedColumns": [
+              "related_release_id"
             ]
           }
         ]
@@ -1483,7 +1575,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e50e08a2622b1503f04a56c87d9d3d7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c5aa59b88b1604911f4161b115497b08')"
     ]
   }
 }

@@ -142,6 +142,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.paging)
     implementation(libs.room.paging)
+    implementation(libs.paging.compose)
 
     // endregion Added by Codepunk
 

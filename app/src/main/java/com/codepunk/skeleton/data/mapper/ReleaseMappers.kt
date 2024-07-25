@@ -2,12 +2,15 @@ package com.codepunk.skeleton.data.mapper
 
 import com.codepunk.skeleton.data.local.entity.LocalCredit.CreditType
 import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel.RelationType
+import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail.DetailType
 import com.codepunk.skeleton.data.local.relation.LocalReleaseWithDetails
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndRelease
+import com.codepunk.skeleton.data.remote.entity.RemoteRelatedRelease
 import com.codepunk.skeleton.data.remote.entity.RemoteRelease
+import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.model.Release
 
 fun RemoteRelease.toLocalRelease(
@@ -121,3 +124,37 @@ fun LocalResourceAndRelease.toDomain(): Release =
         }.map { it.toDomain() },
         thumb = releaseWithDetails.release.thumb
     )
+
+fun RemoteRelatedRelease.toLocal(
+    relatedReleaseId: Long = 0L,
+    resourceId: Long = 0L
+): LocalRelatedRelease = LocalRelatedRelease(
+    relatedReleaseId = relatedReleaseId,
+    resourceId = resourceId,
+    releaseId = releaseId,
+    resourceUrl = resourceUrl,
+    status = status,
+    type = type,
+    format = format,
+    label = label,
+    title = title,
+    role = role,
+    artist = artist,
+    year = year,
+    thumb = thumb
+)
+
+fun LocalRelatedRelease.toDomain(): RelatedRelease = RelatedRelease(
+    releaseId = releaseId,
+    resourceUrl = resourceUrl,
+    status = status,
+    type = type,
+    format = format,
+    label = label,
+    title = title,
+    role = role,
+    artist = artist,
+    year = year,
+    thumb = thumb
+
+)

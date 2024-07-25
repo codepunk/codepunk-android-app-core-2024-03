@@ -4,9 +4,17 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
+import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
+import com.codepunk.skeleton.data.local.dao.RelatedReleasePaginationDao
+import com.codepunk.skeleton.data.local.dao.ResourceDao
+import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
+import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePagination
+import com.codepunk.skeleton.data.mapper.toLocal
+import com.codepunk.skeleton.data.mapper.toLocalRelatedReleasePagination
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
-import com.codepunk.skeleton.domain.model.RelatedRelease
+import com.codepunk.skeleton.util.toThrowable
 
 @OptIn(ExperimentalPagingApi::class)
 class ReleasesByResourceRemoteMediator(
@@ -14,67 +22,107 @@ class ReleasesByResourceRemoteMediator(
     private val sort: String,
     private val ascending: Boolean,
     private val perPage: Int,
+    private val webservice: DiscogsWebservice,
+    private val discogsDatabase: DiscogsDatabase,
     private val relatedReleaseDao: RelatedReleaseDao,
-    private val webservice: DiscogsWebservice
-) : RemoteMediator<Int, RelatedRelease>() {
+    private val relatedReleasePaginationDao: RelatedReleasePaginationDao,
+    private val resourceDao: ResourceDao
+) : RemoteMediator<Int, LocalRelatedRelease>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, RelatedRelease>
+        state: PagingState<Int, LocalRelatedRelease>
     ): MediatorResult {
-        TODO("Not yet implemented")
-        /*
-        return try {
-            /*
-            // The network load method takes an optional after=<user.id>
-            // parameter. For every page after the first, pass the last user
-            // ID to let it continue from where it left off. For REFRESH,
-            // pass null to load the first page.
-            val page = when (loadType) {
-                LoadType.REFRESH -> 1
-                // In this example, you never need to prepend, since REFRESH
-                // will always load the first page in the list. Immediately
-                // return, reporting end of pagination.
-                LoadType.PREPEND ->
-                    return MediatorResult.Success(endOfPaginationReached = true)
-                LoadType.APPEND -> {
-                    val lastItem = state.
 
-                    // You must explicitly check if the last item is null when
-                    // appending, since passing null to networkService is only
-                    // valid for initial load. If lastItem is null it means no
-                    // items were loaded after the initial REFRESH and there are
-                    // no more items to load.
-                    if (lastItem == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
+        val page = when (loadType) {
+            LoadType.REFRESH -> {
+                val pagination = getPaginationClosestToCurrentPosition(state)
+                pagination?.nextKey?.minus(1) ?: 1
+            }
+            LoadType.PREPEND -> {
+                val pagination = getPaginationForFirstItem(state)
+                val prevKey = pagination?.prevKey
+                prevKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = pagination != null
+                )
+            }
+            LoadType.APPEND -> {
+                val pagination = getPaginationForLastItem(state)
+                val nextKey = pagination?.nextKey
+                nextKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = pagination != null
+                )
+            }
+        }
+
+        val response = webservice.getReleasesByArtist(
+            artistId = artistId,
+            sort = sort,
+            sortOrder = if (ascending) "asc" else "desc",
+            perPage = perPage,
+            page = page
+        )
+
+        return response.fold(
+            ifLeft = {
+                MediatorResult.Error(it.toThrowable())
+            },
+            ifRight = { releasesByArtist ->
+                val endOfPaginationReached = releasesByArtist.relatedReleases.isEmpty()
+
+                discogsDatabase.withTransaction {
+                    val resourceId = resourceDao.getResourceByArtistId(artistId)?.resourceId ?:
+                        return@withTransaction MediatorResult.Error(
+                            IllegalStateException("No resource found for artist ID $artistId")
                         )
+
+                    if (loadType == LoadType.REFRESH) {
+                        relatedReleaseDao.clearRelatedReleases(resourceId)
                     }
 
-                    lastItem.releaseId.toInt() // TODO Need to return a page!
+                    // First, I need to insert related releases so I have a list of IDs,
+                    // then map them to local pagination instances
+                    val localPaginations = relatedReleaseDao.insertRelatedReleases(
+                        releasesByArtist.relatedReleases.map { relatedRelease ->
+                            relatedRelease.toLocal(resourceId = resourceId)
+                        }
+                    ).zip(
+                        releasesByArtist.relatedReleases
+                    ).map { (relatedReleaseId, remoteRelatedRelease) ->
+                        releasesByArtist.pagination.toLocalRelatedReleasePagination(
+                            relatedReleaseId = relatedReleaseId
+                        )
+                    }
+                    relatedReleasePaginationDao.insertPaginations(localPaginations)
                 }
+
+                MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
             }
-
-            // Suspending network load via Retrofit. This doesn't need to be
-            // wrapped in a withContext(Dispatcher.IO) { ... } block since
-            // Retrofit's Coroutine CallAdapter dispatches on a worker
-            // thread.
-            val response = webservice.getReleasesByArtist(
-                artistId = artistId,
-                sort = sort,
-                sortOrder = if (ascending) "ASC" else "DESC",
-                perPage = perPage,
-                page = page
-            )
-
-             */
-
-            TODO()
-        } catch (e: IOException) {
-            TODO()
-        } catch (e: HttpException) {
-            TODO()
-        }
-         */
+        )
     }
+
+    private suspend fun getPaginationClosestToCurrentPosition(
+        state: PagingState<Int, LocalRelatedRelease>
+    ): LocalRelatedReleasePagination? = state.anchorPosition?.let { position ->
+        state.closestItemToPosition(position)?.let { localRelatedRelease ->
+            relatedReleasePaginationDao.getPagination(localRelatedRelease.relatedReleaseId)
+        }
+    }
+
+    private suspend fun getPaginationForFirstItem(
+        state: PagingState<Int, LocalRelatedRelease>
+    ): LocalRelatedReleasePagination? = state.pages.firstOrNull {
+        it.data.isNotEmpty()
+    }?.data?.firstOrNull()?.let { localRelatedRelease ->
+        relatedReleasePaginationDao.getPagination(localRelatedRelease.relatedReleaseId)
+    }
+
+    private suspend fun getPaginationForLastItem(
+        state: PagingState<Int, LocalRelatedRelease>
+    ): LocalRelatedReleasePagination? = state.pages.lastOrNull {
+        it.data.isNotEmpty()
+    }?.data?.lastOrNull()?.let { localRelatedRelease ->
+        relatedReleasePaginationDao.getPagination(localRelatedRelease.relatedReleaseId)
+    }
+
 }

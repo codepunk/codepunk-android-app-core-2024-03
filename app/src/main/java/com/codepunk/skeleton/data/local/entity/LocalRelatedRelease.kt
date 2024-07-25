@@ -23,6 +23,8 @@ data class LocalRelatedRelease(
     val relatedReleaseId: Long = 0L,
     @ColumnInfo(name = "resource_id")
     val resourceId: Long = 0L,
+    @ColumnInfo(name = "release_id")
+    val releaseId: Long = 0L,
     @ColumnInfo(name = "resource_url")
     val resourceUrl: String = "",
     val status: String = "",

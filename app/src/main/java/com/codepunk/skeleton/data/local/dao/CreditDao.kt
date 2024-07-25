@@ -57,9 +57,9 @@ abstract class CreditDao {
       FROM credit
       WHERE EXISTS (
          SELECT 1
-           FROM resource_credit_cross_ref
-          WHERE resource_credit_cross_ref.credit_id = credit.credit_id
-            AND resource_credit_cross_ref.resource_id = :resourceId
+         FROM resource_credit_cross_ref
+         WHERE resource_credit_cross_ref.credit_id = credit.credit_id
+         AND resource_credit_cross_ref.resource_id = :resourceId
       )
     """)
     abstract suspend fun deleteResourceCredits(resourceId: Long): Int

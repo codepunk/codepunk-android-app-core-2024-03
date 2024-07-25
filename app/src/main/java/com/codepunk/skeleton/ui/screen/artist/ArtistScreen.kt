@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -54,17 +57,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.TEMP_ARTIST
@@ -75,6 +79,7 @@ import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
 import com.codepunk.skeleton.util.url.UrlInfo
 import com.codepunk.skeleton.util.url.UrlInfo.Domain
+import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -113,10 +118,11 @@ fun ArtistScreen(
         var expandable by remember { mutableStateOf(false) }
 
         val artist = state.artist.orEmpty()
-
-        // TODO I have some actual paging data happening here
-        val paging = state.releases
-        Loginator.d { "paging=$paging" }
+        val releases = remember(state.releases) {
+            flow {
+                emit(state.releases)
+            }
+        }.collectAsLazyPagingItems()
 
         Box(
             modifier = Modifier
@@ -209,31 +215,53 @@ fun ArtistScreen(
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding)
                     ) {
                         items(
-                            items = artist.images,
-                            itemContent = { image ->
-                                val placeholder: Painter? = if (LocalInspectionMode.current) {
-                                    image.uri.toIntOrNull()?.let { painterResource(id = it) }
-                                } else null
+                            items = artist.images
+                        ) { image ->
+                            val placeholder: Painter? = if (LocalInspectionMode.current) {
+                                image.uri.toIntOrNull()?.let { painterResource(id = it) }
+                            } else null
 
-                                AsyncImage(
-                                    modifier = modifier
-                                        .fillMaxSize(),
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(image.uri ?: "")
-                                        .build(),
-                                    placeholder = placeholder,
-                                    contentDescription = stringResource(R.string.artist_image, artist.name),
-                                    contentScale = ContentScale.Inside
-                                )
-                            }
-                        )
+                            AsyncImage(
+                                modifier = modifier
+                                    .fillMaxSize(),
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(image.uri ?: "")
+                                    .build(),
+                                placeholder = placeholder,
+                                contentDescription = stringResource(R.string.artist_image, artist.name),
+                                contentScale = ContentScale.Inside
+                            )
+                        }
                     }
                 }
 
                 // Releases
 
-
-
+                // How to check for none?
+                if (releases.itemCount > 0) {
+                    HorizontalDivider()
+                    Text(
+                        text = stringResource(id = R.string.releases),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier.height(144.dp),
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding)
+                    ) {
+                        items(
+                            count = releases.itemCount,
+                            key = releases.itemKey { it.releaseId }
+                        ) { index ->
+                            releases[index]?.also { release ->
+                                RelatedRelease(
+                                    modifier = Modifier.fillMaxHeight()
+                                        .width(96.dp),
+                                    relatedRelease = release
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -359,6 +387,38 @@ fun LinkChip(
         },
         label = { Text(text = label) }
     )
+}
+
+@Composable
+fun RelatedRelease(
+    modifier: Modifier = Modifier,
+    relatedRelease: RelatedRelease
+) {
+    // When in Local Inspection (i.e. preview) mode, allow Uri to be
+    // int value of a drawable resource
+    val placeholder: Painter? = if (LocalInspectionMode.current) {
+        relatedRelease.thumb.toIntOrNull()?.let { painterResource(id = it) }
+    } else null
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(relatedRelease.thumb)
+                .build(),
+            placeholder = placeholder,
+            contentDescription = stringResource(R.string.artist_image, relatedRelease.title),
+            contentScale = ContentScale.Crop
+        )
+        Text(
+            maxLines = 2,
+            text = relatedRelease.title.take(10)
+        )
+    }
 }
 
 @Preview(

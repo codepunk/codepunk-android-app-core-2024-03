@@ -3,7 +3,6 @@ package com.codepunk.skeleton.ui.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.codepunk.skeleton.domain.model.Artist
-import com.codepunk.skeleton.domain.model.Image
 
 class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
     private val loremIpsum = LoremIpsum().values.first()
@@ -20,16 +19,16 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             profile = loremIpsum,
             releasesUrl = "",
             urls = listOf(
-                "https://www.taylorswift.com/",
-                "https://www.facebook.com/TaylorSwift",
-                "https://www.instagram.com/taylorswift/",
-                "https://www.pinterest.com/taylornation13/",
-                "https://taylorswift.tumblr.com/",
-                "https://twitter.com/taylorswift13",
-                "https://twitter.com/taylornation13",
-                "https://en.wikipedia.org/wiki/Taylor_Swift",
-                "https://www.youtube.com/user/taylorswift",
-                "https://soundcloud.com/taylorswiftofficial"
+                "https://www.artist1.com/",
+                "https://www.facebook.com/artist1",
+                "https://www.instagram.com/artist1/",
+                "https://www.pinterest.com/artist1/",
+                "https://artist1.tumblr.com/",
+                "https://twitter.com/artist1",
+                "https://twitter.com/artist1fans",
+                "https://en.wikipedia.org/wiki/Artist_One",
+                "https://www.youtube.com/user/artist1",
+                "https://soundcloud.com/artist1"
             ),
             realName = "Artist Number One",
             nameVariations = emptyList(),

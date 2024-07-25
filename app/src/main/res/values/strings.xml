@@ -7,6 +7,7 @@
     <string name="artist_image">Image of %s</string>
     <string name="links">Links</string>
     <string name="images">Images</string>
+    <string name="releases">Releases</string>
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>

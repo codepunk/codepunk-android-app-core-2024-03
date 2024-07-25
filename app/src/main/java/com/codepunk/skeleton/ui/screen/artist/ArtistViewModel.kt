@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +25,22 @@ class ArtistViewModel @Inject constructor(
             artistId = artistId,
             isLoading = true
         )
+
+        /* TODO Use flow.combine somehow?
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchArtist(artistId).combine(
+                repository.fetchArtistReleases(
+                    artistId = artistId,
+                    pageSize = 20,
+                    sort = "year",
+                    ascending = false
+                )
+            ) { artist, pagingData ->
+
+            }
+        }
+         */
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchArtist(artistId).collect { result ->
                 // Also try this

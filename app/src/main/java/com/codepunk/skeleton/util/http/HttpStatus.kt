@@ -6,7 +6,7 @@ import androidx.collection.getOrElse
 /**
  * A convenience class for categorizing, working with and looking up HTTP status codes.
  */
-data class HttpStatus private constructor(
+class HttpStatus private constructor(
 
     /**
      * The integer value of the HTTP status code.
@@ -25,6 +25,7 @@ data class HttpStatus private constructor(
     /**
      * The HTTP status code category (i.e. Information, Success, Server Error, etc.).
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     val responseCategory: ResponseCategory = when (code) {
         in 100 until 200 -> ResponseCategory.INFORMATION
         in 200 until 300 -> ResponseCategory.SUCCESS
@@ -49,9 +50,29 @@ data class HttpStatus private constructor(
 
     // region Methods
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
+        other as HttpStatus
 
-    // endregion Mmethods
+        if (code != other.code) return false
+        if (reasonPhrase != other.reasonPhrase) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = code
+        result = 31 * result + reasonPhrase.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "HttpStatus(code=$code, reasonPhrase='$reasonPhrase')"
+    }
+
+    // endregion Methods
 
     // region Classes
 
@@ -120,9 +141,16 @@ data class HttpStatus private constructor(
 
     // region Companion object
 
+    @Suppress("unused")
     companion object {
 
         // region Properties
+
+        /**
+         * A [SparseArrayCompat] of HTTP status codes for speedy lookup.
+         */
+        @JvmStatic
+        private val lookupArray = SparseArrayCompat<HttpStatus>()
 
         /**
          * The server has received the request headers and the client should proceed to send the
@@ -292,6 +320,7 @@ data class HttpStatus private constructor(
          * of some form of digital cash or micropayment scheme but that has not yet happened, and
          * this code is not usually used.
          */
+        @Suppress("SpellCheckingInspection")
         @JvmStatic
         val PAYMENT_REQUIRED = HttpStatus(
             code = 402,
@@ -514,12 +543,6 @@ data class HttpStatus private constructor(
             code = 505,
             reasonPhrase = "HTTP Version Not Supported"
         ).apply { lookupArray.append(code, this) }
-
-        /**
-         * A [SparseArrayCompat] of HTTP status codes for speedy lookup.
-         */
-        @JvmStatic
-        private val lookupArray = SparseArrayCompat<HttpStatus>()
 
         // endregion Properties
 

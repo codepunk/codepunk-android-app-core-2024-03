@@ -5,20 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import androidx.paging.map
-import com.codepunk.skeleton.data.local.DiscogsDatabase
-import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
-import com.codepunk.skeleton.data.local.dao.RelatedReleasePaginationDao
-import com.codepunk.skeleton.data.local.dao.ResourceDao
-import com.codepunk.skeleton.data.mapper.toDomain
-import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediator
-import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
-import com.codepunk.skeleton.ui.TAYLOR_SWIFT
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,11 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
-    private val webservice: DiscogsWebservice, // TODO TEMP
-    private val database: DiscogsDatabase, // TODO TEMP
-    private val relatedReleaseDao: RelatedReleaseDao, // TODO TEMP
-    private val relatedReleasePaginationDao: RelatedReleasePaginationDao, // TODO TEMP
-    private val resourceDao: ResourceDao, // TODO TEMP
     private val repository: DiscogsRepository
 ): ViewModel() {
 
@@ -54,7 +36,16 @@ class ArtistViewModel @Inject constructor(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            tryPaging(artistId, "year", false)
+            repository.fetchArtistReleases(
+                artistId = artistId,
+                pageSize = 20,
+                sort = "year",
+                ascending = false
+            ).collect {
+                state = state.copy(
+                    releases = it
+                )
+            }
         }
     }
 
@@ -62,6 +53,7 @@ class ArtistViewModel @Inject constructor(
         fetchArtist(state.artistId)
     }
 
+    /*
     // TODO Try with RemoteMediator after this works
     @OptIn(ExperimentalPagingApi::class)
     private suspend fun tryPaging(
@@ -91,10 +83,7 @@ class ArtistViewModel @Inject constructor(
                     ascending = ascending,
                     perPage = 10,
                     webservice = webservice,
-                    discogsDatabase = database,
-                    relatedReleaseDao = relatedReleaseDao,
-                    relatedReleasePaginationDao = relatedReleasePaginationDao,
-                    resourceDao = resourceDao
+                    database = database
                 )
             ).flow.cachedIn(viewModelScope).collect { releases ->
                 state = state.copy(
@@ -105,6 +94,7 @@ class ArtistViewModel @Inject constructor(
             }
         //}
     }
+     */
 
     fun onEvent(event: ArtistScreenEvent) {
         when (event) {

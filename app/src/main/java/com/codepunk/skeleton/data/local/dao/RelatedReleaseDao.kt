@@ -47,31 +47,9 @@ abstract class RelatedReleaseDao {
         query: SupportSQLiteQuery
     ): PagingSource<Int, LocalRelatedRelease>
 
-    @Query("")
-    fun getReleasesByResource(
-        resourceId: Long,
-        sort: String,
-        ascending: Boolean
-    ): PagingSource<Int, LocalRelatedRelease> {
-        val query = SimpleSQLiteQuery(
-            """
-                SELECT *
-                FROM related_release
-                WHERE resource_id = $resourceId
-                ORDER BY $sort ${if (ascending) " ASC" else " DESC"}
-            """ //.trimIndent()
-        )
-        return getReleasesByResource(query)
-    }
-
-    val q = """
-        SELECT resource.*
-        FROM resource
-        LEFT OUTER JOIN artist
-        ON resource.resource_id = artist.resource_id
-        WHERE artist.artist_id = :artistId
-    """
-
+    /*
+     * TODO PAGING This needs the incorporate the concept of page somehow
+     */
     @Query("")
     fun getReleasesByArtist(
         artistId: Long,
@@ -86,7 +64,7 @@ abstract class RelatedReleaseDao {
                 ON related_release.resource_id = artist.resource_id
                 WHERE artist.artist_id = $artistId
                 ORDER BY $sort ${if (ascending) " ASC" else " DESC"}
-            """ //.trimIndent()
+            """
         )
         return getReleasesByResource(query)
     }

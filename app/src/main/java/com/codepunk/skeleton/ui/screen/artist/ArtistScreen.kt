@@ -67,6 +67,7 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.orEmpty
@@ -238,6 +239,8 @@ fun ArtistScreen(
                 // Releases
 
                 // How to check for none?
+                Loginator.d { "releases.loadState=${releases.loadState}" }
+
                 if (releases.itemCount > 0) {
                     HorizontalDivider()
                     Text(

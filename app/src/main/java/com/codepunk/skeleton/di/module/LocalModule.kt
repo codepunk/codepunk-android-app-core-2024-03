@@ -13,7 +13,7 @@ import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedArtistDao
 import com.codepunk.skeleton.data.local.dao.RelatedLabelDao
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
-import com.codepunk.skeleton.data.local.dao.RelatedReleasePaginationDao
+import com.codepunk.skeleton.data.local.dao.RelatedReleasePageKeyDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.local.dao.ResourceDao
 import com.codepunk.skeleton.data.local.dao.TrackDao
@@ -87,7 +87,7 @@ object LocalModule {
     @Singleton
     fun provideRelatedReleasePaginationDao(
         database: DiscogsDatabase
-    ): RelatedReleasePaginationDao = database.relatedReleasePaginationDao()
+    ): RelatedReleasePageKeyDao = database.relatedReleasePageKeyDao()
 
     @Provides
     @Singleton

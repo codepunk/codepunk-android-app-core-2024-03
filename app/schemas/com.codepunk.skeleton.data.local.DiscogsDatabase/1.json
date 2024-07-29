@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c5aa59b88b1604911f4161b115497b08",
+    "identityHash": "e36e45739265fff268d79549dba8fff7",
     "entities": [
       {
         "tableName": "artist",
@@ -801,8 +801,8 @@
         ]
       },
       {
-        "tableName": "related_release_pagination",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER NOT NULL, `page` INTEGER NOT NULL, `pages` INTEGER NOT NULL, `per_page` INTEGER NOT NULL, `items` INTEGER NOT NULL, `firstKey` INTEGER, `lastKey` INTEGER, `prevKey` INTEGER, `nextKey` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`related_release_id`), FOREIGN KEY(`related_release_id`) REFERENCES `related_release`(`related_release_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "related_release_page_keys",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`related_release_id` INTEGER NOT NULL, `prevKey` INTEGER, `currentPage` INTEGER NOT NULL, `nextKey` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`related_release_id`), FOREIGN KEY(`related_release_id`) REFERENCES `related_release`(`related_release_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "relatedReleaseId",
@@ -811,46 +811,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "page",
-            "columnName": "page",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "pages",
-            "columnName": "pages",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "perPage",
-            "columnName": "per_page",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "items",
-            "columnName": "items",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "firstKey",
-            "columnName": "firstKey",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "lastKey",
-            "columnName": "lastKey",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "prevKey",
             "columnName": "prevKey",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "currentPage",
+            "columnName": "currentPage",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "nextKey",
@@ -1575,7 +1545,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c5aa59b88b1604911f4161b115497b08')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e36e45739265fff268d79549dba8fff7')"
     ]
   }
 }

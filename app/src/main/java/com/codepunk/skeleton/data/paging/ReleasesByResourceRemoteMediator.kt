@@ -5,11 +5,13 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.DiscogsDatabase
+import com.codepunk.skeleton.data.local.dao.RelatedReleasePageKeyDao
 import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
-import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePagination
+import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePageKeys
 import com.codepunk.skeleton.data.mapper.toLocal
-import com.codepunk.skeleton.data.mapper.toLocalRelatedReleasePagination
+import com.codepunk.skeleton.data.mapper.toLocalRelatedReleasePageKeys
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.util.toThrowable
 
@@ -28,98 +30,96 @@ class ReleasesByResourceRemoteMediator(
         state: PagingState<Int, LocalRelatedRelease>
     ): MediatorResult {
 
-        val page = when (loadType) {
+        val relatedReleaseDao = database.relatedReleaseDao()
+        val relatedReleasePageKeyDao = database.relatedReleasePageKeyDao()
+
+        val page: Int = when (loadType) {
             LoadType.REFRESH -> {
-                val pagination = getPaginationClosestToCurrentPosition(state)
-                pagination?.nextKey?.minus(1) ?: 1
+                val keys = relatedReleasePageKeyDao.getPageKeyClosestToCurrentPosition(state)
+                keys?.nextKey?.minus(1) ?: 1
             }
             LoadType.PREPEND -> {
-                val pagination = getPaginationForFirstItem(state)
-                val prevKey = pagination?.prevKey
-                prevKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = pagination != null
-                )
+                val keys = relatedReleasePageKeyDao.getPageKeyForFirstItem(state)
+                val prevKey = keys?.prevKey
+                prevKey ?: return MediatorResult.Success(endOfPaginationReached = (keys != null))
             }
             LoadType.APPEND -> {
-                val pagination = getPaginationForLastItem(state)
-                val nextKey = pagination?.nextKey
-                nextKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = pagination != null
-                )
+                val keys = relatedReleasePageKeyDao.getPageKeyForLastItem(state)
+                val nextKey = keys?.nextKey
+                nextKey ?: return MediatorResult.Success(endOfPaginationReached = (keys != null))
             }
         }
 
+        val sortOrder = if (ascending) "asc" else "desc"
         val response = webservice.getReleasesByArtist(
             artistId = artistId,
             sort = sort,
-            sortOrder = if (ascending) "asc" else "desc",
+            sortOrder = sortOrder,
             perPage = perPage,
             page = page
         )
 
-        return response.fold(
-            ifLeft = {
-                MediatorResult.Error(it.toThrowable())
-            },
-            ifRight = { releasesByArtist ->
-                val endOfPaginationReached = releasesByArtist.relatedReleases.isEmpty()
-
+        val result = response.fold(
+            ifLeft = { callError -> MediatorResult.Error(callError.toThrowable()) },
+            ifRight = { (remotePagination, remoteRelatedReleases) ->
+                Loginator.d { "Page ${remotePagination.page}: Fetched ${remoteRelatedReleases.size} more releases" }
+                val endOfPaginationReached = remoteRelatedReleases.isEmpty()
+                val prevKey = if (page > 1) page - 1 else null
+                val nextKey = if (endOfPaginationReached) null else page + 1
                 database.withTransaction {
-                    val resourceId = database.resourceDao().getResourceByArtistId(artistId)?.resourceId ?:
-                        return@withTransaction MediatorResult.Error(
-                            IllegalStateException("No resource found for artist ID $artistId")
-                        )
+                    val resourceId =
+                        database.resourceDao().getResourceByArtistId(artistId)?.resourceId
+                            ?: return@withTransaction MediatorResult.Error(
+                                IllegalStateException("No resource found for artist ID $artistId")
+                            )
 
                     if (loadType == LoadType.REFRESH) {
-                        database.relatedReleaseDao().clearRelatedReleases(resourceId)
+                        relatedReleaseDao.clearRelatedReleases(resourceId)
                     }
-
-                    // First, I need to insert related releases so I have a list of IDs,
-                    // then map them to local pagination instances
-                    val localPaginations = database.relatedReleaseDao().insertRelatedReleases(
-                        releasesByArtist.relatedReleases.map { relatedRelease ->
-                            relatedRelease.toLocal(resourceId = resourceId)
+                    val localRelatedReleases =
+                        remoteRelatedReleases.map { remoteRelatedRelease ->
+                            remoteRelatedRelease.toLocal(resourceId = resourceId)
                         }
-                    ).zip(
-                        releasesByArtist.relatedReleases
-                    ).map { (relatedReleaseId, remoteRelatedRelease) ->
-                        releasesByArtist.pagination.toLocalRelatedReleasePagination(
-                            relatedReleaseId = relatedReleaseId
+                    val localPageKeys = relatedReleaseDao.insertRelatedReleases(
+                        localRelatedReleases
+                    ).map { relatedReleaseId ->
+                        remotePagination.toLocalRelatedReleasePageKeys(
+                            relatedReleaseId = relatedReleaseId,
+                            prevKey = prevKey,
+                            nextKey = nextKey
                         )
                     }
-                    database.relatedReleasePaginationDao().insertPaginations(localPaginations)
+                    relatedReleasePageKeyDao.insertPageKeys(localPageKeys)
                 }
-
                 MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
             }
         )
+
+        return result
     }
 
-    private suspend fun getPaginationClosestToCurrentPosition(
+    private suspend fun RelatedReleasePageKeyDao.getPageKeyClosestToCurrentPosition(
         state: PagingState<Int, LocalRelatedRelease>
-    ): LocalRelatedReleasePagination? = state.anchorPosition?.let { position ->
-        state.closestItemToPosition(position)?.let { localRelatedRelease ->
-            database.relatedReleasePaginationDao()
-                .getPagination(localRelatedRelease.relatedReleaseId)
+    ): LocalRelatedReleasePageKeys? = state.anchorPosition?.let { position ->
+        state.closestItemToPosition(position)?.relatedReleaseId?.let { relatedReleaseId ->
+            getPageKeys(relatedReleaseId)
         }
     }
 
-    private suspend fun getPaginationForFirstItem(
+    private suspend fun RelatedReleasePageKeyDao.getPageKeyForFirstItem(
         state: PagingState<Int, LocalRelatedRelease>
-    ): LocalRelatedReleasePagination? = state.pages.firstOrNull {
-        it.data.isNotEmpty()
+    ): LocalRelatedReleasePageKeys? = state.pages.firstOrNull { page ->
+        page.data.isNotEmpty()
     }?.data?.firstOrNull()?.let { localRelatedRelease ->
-        database.relatedReleasePaginationDao()
-            .getPagination(localRelatedRelease.relatedReleaseId)
+        getPageKeys(localRelatedRelease.relatedReleaseId)
     }
 
-    private suspend fun getPaginationForLastItem(
+    private suspend fun RelatedReleasePageKeyDao.getPageKeyForLastItem(
         state: PagingState<Int, LocalRelatedRelease>
-    ): LocalRelatedReleasePagination? = state.pages.lastOrNull {
-        it.data.isNotEmpty()
+    ): LocalRelatedReleasePageKeys? = state.pages.lastOrNull { page ->
+        page.data.isNotEmpty()
     }?.data?.lastOrNull()?.let { localRelatedRelease ->
-        database.relatedReleasePaginationDao()
-            .getPagination(localRelatedRelease.relatedReleaseId)
+        getPageKeys(localRelatedRelease.relatedReleaseId)
     }
 
 }

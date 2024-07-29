@@ -55,7 +55,7 @@ class ArtistViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchArtistReleases(
                 artistId = artistId,
-                pageSize = 20,
+                pageSize = 5,
                 sort = "year",
                 ascending = false
             ).collect {

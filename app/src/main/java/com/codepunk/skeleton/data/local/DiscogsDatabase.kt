@@ -13,7 +13,7 @@ import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedArtistDao
 import com.codepunk.skeleton.data.local.dao.RelatedLabelDao
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
-import com.codepunk.skeleton.data.local.dao.RelatedReleasePaginationDao
+import com.codepunk.skeleton.data.local.dao.RelatedReleasePageKeyDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
 import com.codepunk.skeleton.data.local.dao.ResourceDao
 import com.codepunk.skeleton.data.local.dao.TrackDao
@@ -29,7 +29,7 @@ import com.codepunk.skeleton.data.local.entity.LocalLabel
 import com.codepunk.skeleton.data.local.entity.LocalRelatedLabel
 import com.codepunk.skeleton.data.local.entity.LocalMaster
 import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
-import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePagination
+import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePageKeys
 import com.codepunk.skeleton.data.local.entity.LocalRelease
 import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
@@ -58,7 +58,7 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
         LocalRelatedLabel::class,
         LocalRelatedRelease::class,
         LocalMaster::class,
-        LocalRelatedReleasePagination::class,
+        LocalRelatedReleasePageKeys::class,
         LocalRelease::class,
         LocalResource::class,
         LocalResourceCreditCrossRef::class,
@@ -102,7 +102,7 @@ abstract class DiscogsDatabase: RoomDatabase() {
 
     abstract fun relatedReleaseDao(): RelatedReleaseDao
 
-    abstract fun relatedReleasePaginationDao(): RelatedReleasePaginationDao
+    abstract fun relatedReleasePageKeyDao(): RelatedReleasePageKeyDao
 
     abstract fun releaseDao(): ReleaseDao
 

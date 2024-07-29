@@ -238,9 +238,6 @@ fun ArtistScreen(
 
                 // Releases
 
-                // How to check for none?
-                Loginator.d { "releases.loadState=${releases.loadState}" }
-
                 if (releases.itemCount > 0) {
                     HorizontalDivider()
                     Text(

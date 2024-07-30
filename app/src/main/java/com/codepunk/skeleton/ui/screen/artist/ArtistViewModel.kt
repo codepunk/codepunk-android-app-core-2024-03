@@ -58,9 +58,9 @@ class ArtistViewModel @Inject constructor(
                 pageSize = PAGE_SIZE,
                 sort = SORT,
                 ascending = IS_ASCENDING
-            ).collect {
+            ).collect { pagingData ->
                 state = state.copy(
-                    releases = it
+                    releases = pagingData
                 )
             }
         }

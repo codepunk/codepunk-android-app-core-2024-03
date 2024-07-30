@@ -73,23 +73,24 @@ class ReleasesByResourceRemoteMediator(
                                 IllegalStateException("No resource found for artist ID $artistId")
                             )
 
+                    Loginator.d { "loadType=$loadType" }
                     if (loadType == LoadType.REFRESH) {
+                        Loginator.d { "Clearing related releases for resourceId $resourceId..." }
                         relatedReleaseDao.clearRelatedReleases(resourceId)
                     }
-                    val localRelatedReleases =
-                        remoteRelatedReleases.map { remoteRelatedRelease ->
-                            remoteRelatedRelease.toLocal(resourceId = resourceId)
-                        }
-                    val localPageKeys = relatedReleaseDao.insertRelatedReleases(
-                        localRelatedReleases
-                    ).map { relatedReleaseId ->
+                    remoteRelatedReleases.map { remoteRelatedRelease ->
+                        remoteRelatedRelease.toLocal(resourceId = resourceId)
+                    }.let { relatedReleases ->
+                        relatedReleaseDao.insertRelatedReleases(relatedReleases)
+                    }.map { relatedReleaseId ->
                         remotePagination.toLocalRelatedReleasePageKeys(
                             relatedReleaseId = relatedReleaseId,
                             prevKey = prevKey,
                             nextKey = nextKey
                         )
+                    }.let { pageKeys ->
+                        relatedReleasePageKeyDao.insertPageKeys(pageKeys)
                     }
-                    relatedReleasePageKeyDao.insertPageKeys(localPageKeys)
                 }
                 MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
             }

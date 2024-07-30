@@ -29,20 +29,6 @@ abstract class RelatedReleaseDao {
     @Query("DELETE FROM related_release WHERE resource_id = :resourceId")
     abstract suspend fun clearRelatedReleases(resourceId: Long)
 
-    /* TODO Might not need this
-    @Query("""
-        DELETE
-        FROM related_release
-        WHERE EXISTS (
-           SELECT 1
-           FROM artist
-           WHERE artist.resource_id = related_release.resource_id
-           AND artist.artist_id = :artistId
-      )
-    """)
-    abstract suspend fun clearRelatedReleasesByArtist(artistId: Long)
-     */
-
     @RawQuery(observedEntities = [LocalRelatedRelease::class])
     abstract fun getReleasesByResource(
         query: SupportSQLiteQuery

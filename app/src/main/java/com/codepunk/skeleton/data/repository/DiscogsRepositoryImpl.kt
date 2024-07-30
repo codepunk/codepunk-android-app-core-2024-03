@@ -4,20 +4,17 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import androidx.paging.map
 import arrow.core.Ior
-import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.AllDao
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
-import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
 import com.codepunk.skeleton.data.mapper.toDomain
 import com.codepunk.skeleton.data.mapper.toLocal
-import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediator
+import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediatorFactory
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.Label
@@ -31,14 +28,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DiscogsRepositoryImpl(
-    private val discogsDatabase: DiscogsDatabase,
     private val artistDao: ArtistDao,
     private val labelDao: LabelDao,
     private val masterDao: MasterDao,
     private val relatedReleaseDao: RelatedReleaseDao,
     private val releaseDao: ReleaseDao,
     private val allDao: AllDao,
-    private val discogsWebService: DiscogsWebservice
+    private val discogsWebService: DiscogsWebservice,
+    private val factory: ReleasesByResourceRemoteMediatorFactory
 ) : DiscogsRepository {
 
     // region Methods
@@ -69,13 +66,11 @@ class DiscogsRepositoryImpl(
         config = PagingConfig(
             pageSize = pageSize,
         ),
-        remoteMediator = ReleasesByResourceRemoteMediator(
+        remoteMediator = factory.create(
             artistId = artistId,
             pageSize = pageSize,
             sort = sort,
-            ascending = ascending,
-            webservice = discogsWebService,
-            database = discogsDatabase
+            ascending = ascending
         ),
         pagingSourceFactory = {
             relatedReleaseDao.getReleasesByArtist(

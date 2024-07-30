@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,12 +27,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -60,6 +64,7 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
@@ -75,6 +80,7 @@ import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
 import com.codepunk.skeleton.ui.TEMP_ARTIST
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
+import com.codepunk.skeleton.ui.preview.RelatedReleasePreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.largePadding
 import com.codepunk.skeleton.ui.theme.mediumPadding
@@ -115,10 +121,9 @@ fun ArtistScreen(
         }
     ) { innerPadding ->
         val collapsedLines = integerResource(id = R.integer.artist_profile_collapsed_lines)
-        var expanded by remember {mutableStateOf(false)}
+        var expanded by remember { mutableStateOf(false) }
         var textWidth by remember { mutableIntStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
-        var expandable by remember { mutableStateOf(false) }
 
         val artist = state.artist.orEmpty()
         val releases = remember(state.releases) {
@@ -144,6 +149,8 @@ fun ArtistScreen(
             ) {
 
                 // Profile
+
+                var expandable by remember { mutableStateOf(false) }
 
                 Text(
                     modifier = Modifier
@@ -231,7 +238,10 @@ fun ArtistScreen(
                                     .data(image.uri ?: "")
                                     .build(),
                                 placeholder = placeholder,
-                                contentDescription = stringResource(R.string.artist_image, artist.name),
+                                contentDescription = stringResource(
+                                    R.string.artist_image,
+                                    artist.name
+                                ),
                                 contentScale = ContentScale.Inside
                             )
                         }
@@ -247,7 +257,9 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(
-                        modifier = Modifier.height(144.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = lazyListState
                     ) {
@@ -257,10 +269,27 @@ fun ArtistScreen(
                         ) { index ->
                             releases[index]?.also { release ->
                                 RelatedRelease(
-                                    modifier = Modifier.fillMaxHeight()
-                                        .width(96.dp),
+                                    modifier = Modifier
+                                        .width(108.dp),
                                     relatedRelease = release
                                 )
+                            }
+                        }
+                        if (!releases.loadState.isIdle) {
+                            item {
+                                Box(
+                                    // TODO Can't get this to center vertically
+                                    modifier = Modifier
+                                        .height(108.dp)
+                                        .width(48.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .aspectRatio(1f)
+                                            .padding(mediumPadding)
+                                            .align(Alignment.Center)
+                                    )
+                                }
                             }
                         }
                     }
@@ -374,9 +403,9 @@ fun LinkChip(
     val label = buildString {
         append(urlInfo.getDomainString(LocalContext.current))
         if (count > 1 && urlInfo.lastPathSegment.isNotEmpty()) {
-            append (" (")
-            append (urlInfo.lastPathSegment)
-            append (")")
+            append(" (")
+            append(urlInfo.lastPathSegment)
+            append(")")
         }
     }
     AssistChip(
@@ -404,29 +433,40 @@ fun RelatedRelease(
     } else null
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
+                .padding(bottom = smallPadding)
+                .align(alignment = Alignment.CenterHorizontally),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(relatedRelease.thumb)
                 .build(),
             placeholder = placeholder,
             contentDescription = stringResource(R.string.artist_image, relatedRelease.title),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Fit
         )
         Text(
+            modifier = Modifier.fillMaxWidth(),
             maxLines = 2,
-            text = relatedRelease.title.take(10)
+            style = MaterialTheme.typography.bodyMedium,
+            text = relatedRelease.title,
+            overflow = TextOverflow.Ellipsis
         )
+        if (relatedRelease.year > 0) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 1,
+                style = MaterialTheme.typography.bodyMedium,
+                text = relatedRelease.year.toString()
+            )
+        }
     }
 }
 
-@Preview(
-    showSystemUi = true
-)
+@Preview(showSystemUi = true)
 @Composable
 fun ArtistScreenPreviewDark(
     @PreviewParameter(ArtistPreviewParameterProvider::class) artist: Artist
@@ -439,5 +479,22 @@ fun ArtistScreenPreviewDark(
                 artist = artist
             )
         )
+    }
+}
+
+@Preview(showSystemUi = false)
+@Composable
+fun RelatedReleasePreviewDark(
+    @PreviewParameter(
+        RelatedReleasePreviewParameterProvider::class
+    ) relatedRelease: RelatedRelease
+) {
+    SkeletonTheme(darkTheme = true) {
+        Surface {
+            RelatedRelease(
+                modifier = Modifier.width(108.dp),
+                relatedRelease = relatedRelease
+            )
+        }
     }
 }

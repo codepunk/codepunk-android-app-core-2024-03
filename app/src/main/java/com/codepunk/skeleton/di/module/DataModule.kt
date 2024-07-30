@@ -7,6 +7,7 @@ import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
+import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediatorFactory
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.data.repository.DiscogsRepositoryImpl
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
@@ -23,23 +24,23 @@ class DataModule {
     @Singleton
     @Provides
     fun provideDiscogsRepository(
-        discogsDatabase: DiscogsDatabase,
         artistDao: ArtistDao,
         labelDao: LabelDao,
         masterDao: MasterDao,
         relatedReleaseDao: RelatedReleaseDao,
         releaseDao: ReleaseDao,
         allDao: AllDao,
-        discogsWebService: DiscogsWebservice
+        discogsWebService: DiscogsWebservice,
+        factory: ReleasesByResourceRemoteMediatorFactory
     ) : DiscogsRepository = DiscogsRepositoryImpl(
-        discogsDatabase = discogsDatabase,
         artistDao = artistDao,
         labelDao = labelDao,
         masterDao = masterDao,
         relatedReleaseDao = relatedReleaseDao,
         releaseDao = releaseDao,
         allDao = allDao,
-        discogsWebService = discogsWebService
+        discogsWebService = discogsWebService,
+        factory = factory
     )
 
 }

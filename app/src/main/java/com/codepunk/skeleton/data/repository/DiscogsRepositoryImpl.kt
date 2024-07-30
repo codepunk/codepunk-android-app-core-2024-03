@@ -4,6 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import androidx.paging.map
 import arrow.core.Ior
 import com.codepunk.skeleton.data.local.DiscogsDatabase
@@ -13,6 +14,7 @@ import com.codepunk.skeleton.data.local.dao.LabelDao
 import com.codepunk.skeleton.data.local.dao.MasterDao
 import com.codepunk.skeleton.data.local.dao.RelatedReleaseDao
 import com.codepunk.skeleton.data.local.dao.ReleaseDao
+import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
 import com.codepunk.skeleton.data.mapper.toDomain
 import com.codepunk.skeleton.data.mapper.toLocal
 import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediator
@@ -64,17 +66,18 @@ class DiscogsRepositoryImpl(
         sort: String,
         ascending: Boolean
     ): Flow<PagingData<RelatedRelease>> = Pager(
-        config = PagingConfig(pageSize = pageSize),
+        config = PagingConfig(
+            pageSize = pageSize,
+        ),
         remoteMediator = ReleasesByResourceRemoteMediator(
             artistId = artistId,
+            pageSize = pageSize,
             sort = sort,
             ascending = ascending,
-            perPage = 10,
             webservice = discogsWebService,
             database = discogsDatabase
         ),
         pagingSourceFactory = {
-            // TODO PAGING This needs the incorporate the concept of page somehow
             relatedReleaseDao.getReleasesByArtist(
                 artistId = artistId,
                 sort = sort,

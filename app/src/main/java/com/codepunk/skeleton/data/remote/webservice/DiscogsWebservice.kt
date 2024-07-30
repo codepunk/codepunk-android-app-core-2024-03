@@ -33,7 +33,7 @@ interface DiscogsWebservice {
         @Path("artistId") artistId: Long,
         @Query("sort") sort: String,
         @Query("sort_order") sortOrder: String,
-        @Query("per_page") perPage: Int,
+        @Query("per_page") pageSize: Int,
         @Query("page") page: Int
     ): Either<CallError, RemoteReleasesByArtist>
 

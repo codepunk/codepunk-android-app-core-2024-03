@@ -18,9 +18,9 @@ import com.codepunk.skeleton.util.toThrowable
 @OptIn(ExperimentalPagingApi::class)
 class ReleasesByResourceRemoteMediator(
     private val artistId: Long,
+    private val pageSize: Int,
     private val sort: String,
     private val ascending: Boolean,
-    private val perPage: Int,
     private val webservice: DiscogsWebservice,
     private val database: DiscogsDatabase,
 ) : RemoteMediator<Int, LocalRelatedRelease>() {
@@ -55,7 +55,7 @@ class ReleasesByResourceRemoteMediator(
             artistId = artistId,
             sort = sort,
             sortOrder = sortOrder,
-            perPage = perPage,
+            pageSize = pageSize,
             page = page
         )
 

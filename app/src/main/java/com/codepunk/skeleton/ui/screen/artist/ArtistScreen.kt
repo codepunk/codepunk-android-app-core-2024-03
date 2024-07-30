@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
@@ -67,7 +69,6 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.orEmpty
@@ -101,6 +102,7 @@ fun ArtistScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollState: ScrollState = rememberScrollState()
+    val lazyListState: LazyListState = rememberLazyListState()
 
     Scaffold(
         modifier = modifier
@@ -246,7 +248,8 @@ fun ArtistScreen(
                     )
                     LazyRow(
                         modifier = Modifier.height(144.dp),
-                        horizontalArrangement = Arrangement.spacedBy(mediumPadding)
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding),
+                        state = lazyListState
                     ) {
                         items(
                             count = releases.itemCount,

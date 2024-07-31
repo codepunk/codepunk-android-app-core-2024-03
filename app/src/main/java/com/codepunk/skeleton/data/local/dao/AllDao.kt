@@ -36,7 +36,7 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteArtist(artistId: Long): Boolean =
-        resourceDao.getResourceByArtistId(artistId)?.apply {
+        resourceDao.getResourceByArtist(artistId)?.apply {
             imageDao.deleteResourceImages(resourceId)
             resourceDao.deleteResource(this)
         } != null
@@ -62,7 +62,7 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteLabel(labelId: Long): Boolean =
-        resourceDao.getResourceByLabelId(labelId)?.apply {
+        resourceDao.getResourceByLabel(labelId)?.apply {
             imageDao.deleteResourceImages(resourceId)
             resourceDao.deleteResource(this)
         } != null
@@ -88,7 +88,7 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteMaster(masterId: Long): Boolean =
-        resourceDao.getResourceByMasterId(masterId)?.apply {
+        resourceDao.getResourceByMaster(masterId)?.apply {
             imageDao.deleteResourceImages(resourceId)
             creditDao.deleteResourceCredits(resourceId)
             creditDao.deleteTrackCreditsByResource(resourceId)
@@ -120,7 +120,7 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun deleteRelease(releaseId: Long): Boolean =
-        resourceDao.getResourceByReleaseId(releaseId)?.apply {
+        resourceDao.getResourceByRelease(releaseId)?.apply {
             imageDao.deleteResourceImages(resourceId)
             creditDao.deleteResourceCredits(resourceId)
             creditDao.deleteTrackCreditsByResource(resourceId)

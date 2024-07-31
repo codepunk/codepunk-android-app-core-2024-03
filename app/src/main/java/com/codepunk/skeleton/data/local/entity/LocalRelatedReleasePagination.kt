@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "related_release_page_keys",
+    tableName = "related_release_pagination",
     foreignKeys = [
         ForeignKey(
             entity = LocalRelatedRelease::class,
@@ -17,13 +17,23 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class LocalRelatedReleasePageKeys(
+data class LocalRelatedReleasePagination(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "related_release_id")
     val relatedReleaseId: Long = 0L,
-    val prevKey: Int? = null,
-    val currentPage: Int = 0,
-    val nextKey: Int? = null,
+    val page: Int = 0,
+    val pages: Int = 0,
+    @ColumnInfo(name = "per_page")
+    val perPage: Int = 0,
+    val items: Int = 0,
+    @ColumnInfo(name = "first_page")
+    val firstPage: Int? = null,
+    @ColumnInfo(name = "last_page")
+    val lastPage: Int? = null,
+    @ColumnInfo(name = "prev_page")
+    val prevPage: Int? = null,
+    @ColumnInfo(name = "next_page")
+    val nextPage: Int? = null,
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

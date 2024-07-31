@@ -78,7 +78,6 @@ import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
-import com.codepunk.skeleton.ui.TEMP_ARTIST
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
 import com.codepunk.skeleton.ui.preview.RelatedReleasePreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
@@ -254,7 +253,7 @@ fun ArtistScreen(
                     LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentHeight(),
+                            .wrapContentHeight(), // TODO Probably best if this isn't "wrap"
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = lazyListState
                     ) {

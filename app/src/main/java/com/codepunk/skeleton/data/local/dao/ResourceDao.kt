@@ -36,7 +36,7 @@ abstract class  ResourceDao {
             ON resource.resource_id = artist.resource_id
          WHERE artist.artist_id = :artistId
     """)
-    abstract suspend fun getResourceByArtistId(artistId: Long): LocalResource?
+    abstract suspend fun getResourceByArtist(artistId: Long): LocalResource?
 
     @Query(
         """
@@ -47,7 +47,7 @@ abstract class  ResourceDao {
          WHERE label.label_id = :labelId
     """
     )
-    abstract suspend fun getResourceByLabelId(labelId: Long): LocalResource?
+    abstract suspend fun getResourceByLabel(labelId: Long): LocalResource?
 
     @Query(
         """
@@ -58,7 +58,7 @@ abstract class  ResourceDao {
          WHERE master.master_id = :masterId
     """
     )
-    abstract suspend fun getResourceByMasterId(masterId: Long): LocalResource?
+    abstract suspend fun getResourceByMaster(masterId: Long): LocalResource?
 
     @Query(
         """
@@ -69,7 +69,7 @@ abstract class  ResourceDao {
          WHERE `release`.release_id = :releaseId
     """
     )
-    abstract suspend fun getResourceByReleaseId(releaseId: Long): LocalResource?
+    abstract suspend fun getResourceByRelease(releaseId: Long): LocalResource?
 
     // Delete detail should be cascaded when deleting Resource
 

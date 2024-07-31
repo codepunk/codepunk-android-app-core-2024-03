@@ -27,7 +27,7 @@ abstract class RelatedReleaseDao {
     ): List<Long> = insertRelatedReleases(relatedReleases.map { it.copy(resourceId = resourceId) })
 
     @Query("DELETE FROM related_release WHERE resource_id = :resourceId")
-    abstract suspend fun clearRelatedReleases(resourceId: Long)
+    abstract suspend fun deleteRelatedReleasesByResource(resourceId: Long)
 
     @RawQuery(observedEntities = [LocalRelatedRelease::class])
     abstract fun getReleasesByResource(
@@ -39,9 +39,7 @@ abstract class RelatedReleaseDao {
      */
     @Query("")
     fun getReleasesByArtist(
-        artistId: Long,
-        sort: String,
-        ascending: Boolean
+        artistId: Long
     ): PagingSource<Int, LocalRelatedRelease> {
         val query = SimpleSQLiteQuery(
             """
@@ -50,7 +48,6 @@ abstract class RelatedReleaseDao {
                 LEFT OUTER JOIN artist
                 ON related_release.resource_id = artist.resource_id
                 WHERE artist.artist_id = $artistId
-                ORDER BY $sort ${if (ascending) " ASC" else " DESC"}
             """
         )
         return getReleasesByResource(query)

@@ -7,8 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 class ReleasesByResourceRemoteMediatorFactory @Inject constructor(
-    private val webservice: DiscogsWebservice,
-    private val database: DiscogsDatabase
+    private val database: DiscogsDatabase,
+    private val webservice: DiscogsWebservice
 ) {
 
     // region Methods
@@ -23,8 +23,8 @@ class ReleasesByResourceRemoteMediatorFactory @Inject constructor(
         pageSize = pageSize,
         sort = sort,
         ascending = ascending,
-        webservice = webservice,
-        database = database
+        database = database,
+        webservice = webservice
     )
 
     // endregion Methods

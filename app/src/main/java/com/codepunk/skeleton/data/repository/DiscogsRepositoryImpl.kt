@@ -64,7 +64,7 @@ class DiscogsRepositoryImpl(
         ascending: Boolean
     ): Flow<PagingData<RelatedRelease>> = Pager(
         config = PagingConfig(
-            pageSize = pageSize,
+            pageSize = pageSize
         ),
         remoteMediator = factory.create(
             artistId = artistId,
@@ -73,11 +73,7 @@ class DiscogsRepositoryImpl(
             ascending = ascending
         ),
         pagingSourceFactory = {
-            relatedReleaseDao.getReleasesByArtist(
-                artistId = artistId,
-                sort = sort,
-                ascending = ascending
-            )
+            relatedReleaseDao.getReleasesByArtist(artistId = artistId)
         }
     ).flow.map { pagingData ->
         pagingData.map { it.toDomain() }

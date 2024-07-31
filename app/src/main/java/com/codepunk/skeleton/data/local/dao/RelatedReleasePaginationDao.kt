@@ -4,24 +4,25 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePageKeys
+import com.codepunk.skeleton.data.local.entity.LocalRelatedReleasePagination
 
 @Dao
-interface RelatedReleasePageKeyDao {
+interface RelatedReleasePaginationDao {
 
+    @Suppress("SpellCheckingInspection")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPageKeys(pageKeys: List<LocalRelatedReleasePageKeys>)
+    suspend fun insertPaginations(paginationList: List<LocalRelatedReleasePagination>)
 
     @Query("""
         SELECT * 
-        FROM related_release_page_keys 
+        FROM related_release_pagination 
         WHERE related_release_id = :relatedReleaseId
     """)
-    suspend fun getPageKeys(relatedReleaseId: Long): LocalRelatedReleasePageKeys?
+    suspend fun getPagination(relatedReleaseId: Long): LocalRelatedReleasePagination?
 
     @Query("""
         SELECT created_at 
-        FROM related_release_page_keys 
+        FROM related_release_pagination 
         ORDER BY created_at DESC 
         LIMIT 1
     """)

@@ -37,11 +37,6 @@ fun Navigation(
                     navController.navigate(
                         Route.Artist(TAYLOR_SWIFT)
                     )
-                },
-                onTryPaging = {
-                    navController.navigate(
-                        Route.Artist(TEMP_ARTIST) // TODO TEMP
-                    )
                 }
             )
         }

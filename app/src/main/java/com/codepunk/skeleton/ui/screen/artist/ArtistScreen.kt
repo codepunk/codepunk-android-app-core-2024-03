@@ -98,12 +98,7 @@ fun ArtistScreen(
     onEvent: (ArtistScreenEvent) -> Unit = {}
 ) {
     LaunchedEffect(Unit) {
-        if (artistId == TEMP_ARTIST) {
-            // TODO TEMP
-            onEvent(ArtistScreenEvent.TryPaging)
-        } else {
-            onEvent(ArtistScreenEvent.LoadArtist(artistId))
-        }
+        onEvent(ArtistScreenEvent.LoadArtist(artistId))
     }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

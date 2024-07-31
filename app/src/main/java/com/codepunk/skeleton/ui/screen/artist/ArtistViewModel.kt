@@ -74,7 +74,6 @@ class ArtistViewModel @Inject constructor(
         when (event) {
             is ArtistScreenEvent.LoadArtist -> fetchArtist(event.artistId)
             is ArtistScreenEvent.RefreshArtist -> refreshArtist()
-            is ArtistScreenEvent.TryPaging -> { /* No op */ }
         }
     }
 

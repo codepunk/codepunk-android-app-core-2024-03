@@ -8,6 +8,9 @@
     <string name="links">Links</string>
     <string name="images">Images</string>
     <string name="releases">Releases</string>
+    <string name="aliases">Aliases</string>
+    <string name="members">Members</string>
+    <string name="groups">Groups</string>
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>

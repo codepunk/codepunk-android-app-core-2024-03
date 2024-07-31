@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,12 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -48,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -75,6 +75,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
 import com.codepunk.skeleton.domain.model.Artist
+import com.codepunk.skeleton.domain.model.RelatedArtist
 import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.orEmpty
 import com.codepunk.skeleton.domain.type.ImageType
@@ -101,8 +102,7 @@ fun ArtistScreen(
     }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val scrollState: ScrollState = rememberScrollState()
-    val lazyListState: LazyListState = rememberLazyListState()
+    val columnScrollState: ScrollState = rememberScrollState()
 
     Scaffold(
         modifier = modifier
@@ -138,7 +138,7 @@ fun ArtistScreen(
                         horizontal = largePadding,
                         vertical = mediumPadding
                     )
-                    .verticalScroll(scrollState),
+                    .verticalScroll(columnScrollState),
                 verticalArrangement = Arrangement.spacedBy(smallPadding)
             ) {
 
@@ -244,6 +244,8 @@ fun ArtistScreen(
 
                 // Releases
 
+                val releasesLazyListState: LazyListState = rememberLazyListState()
+
                 if (releases.itemCount > 0) {
                     HorizontalDivider()
                     Text(
@@ -255,7 +257,7 @@ fun ArtistScreen(
                             .fillMaxWidth()
                             .wrapContentHeight(), // TODO Probably best if this isn't "wrap"
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
-                        state = lazyListState
+                        state = releasesLazyListState
                     ) {
                         items(
                             count = releases.itemCount,
@@ -278,7 +280,8 @@ fun ArtistScreen(
                                         .width(48.dp)
                                 ) {
                                     CircularProgressIndicator(
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier
+                                            .fillMaxWidth()
                                             .aspectRatio(1f)
                                             .padding(mediumPadding)
                                             .align(Alignment.Center)
@@ -288,6 +291,99 @@ fun ArtistScreen(
                         }
                     }
                 }
+
+                // Related artists - Aliases
+
+                val aliasesLazyListState = rememberLazyListState()
+
+                if (artist.aliases.isNotEmpty()) {
+                    HorizontalDivider()
+                    Text(
+                        text = stringResource(id = R.string.aliases),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(), // TODO Probably best if this isn't "wrap"
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding),
+                        state = aliasesLazyListState
+                    ) {
+                        items(
+                            items = artist.aliases,
+                            key = { it.artistId }
+                        ) {
+                            RelatedArtist(
+                                modifier = Modifier
+                                    .width(108.dp),
+                                relatedArtist = it
+                            )
+                        }
+                    }
+                }
+
+
+                // Related artists - Members
+
+                val membersLazyListState = rememberLazyListState()
+
+                if (artist.members.isNotEmpty()) {
+                    HorizontalDivider()
+                    Text(
+                        text = stringResource(id = R.string.members),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(), // TODO Probably best if this isn't "wrap"
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding),
+                        state = membersLazyListState
+                    ) {
+                        items(
+                            items = artist.members,
+                            key = { it.artistId }
+                        ) {
+                            RelatedArtist(
+                                modifier = Modifier
+                                    .width(108.dp),
+                                relatedArtist = it
+                            )
+                        }
+                    }
+                }
+
+                // Related artists - Groups
+
+                val groupsLazyListState = rememberLazyListState()
+
+                if (artist.groups.isNotEmpty()) {
+                    HorizontalDivider()
+                    Text(
+                        text = stringResource(id = R.string.groups),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(), // TODO Probably best if this isn't "wrap"
+                        horizontalArrangement = Arrangement.spacedBy(mediumPadding),
+                        state = groupsLazyListState
+                    ) {
+                        items(
+                            items = artist.groups,
+                            key = { it.artistId }
+                        ) {
+                            RelatedArtist(
+                                modifier = Modifier
+                                    .width(108.dp),
+                                relatedArtist = it
+                            )
+                        }
+                    }
+                }
+
+
             }
         }
     }
@@ -457,6 +553,47 @@ fun RelatedRelease(
                 text = relatedRelease.year.toString()
             )
         }
+    }
+}
+
+@Composable
+fun RelatedArtist(
+    modifier: Modifier = Modifier,
+    relatedArtist: RelatedArtist
+) {
+    // When in Local Inspection (i.e. preview) mode, allow Uri to be
+    // int value of a drawable resource
+    val painter = painterResource(id = R.drawable.placeholder_artist)
+    val placeholder: Painter? = if (LocalInspectionMode.current) {
+        relatedArtist.thumbnailUrl?.toIntOrNull()?.let { painterResource(id = it) }
+    } else painter
+
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(bottom = smallPadding)
+                .align(alignment = Alignment.CenterHorizontally)
+                .clip(CircleShape),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(relatedArtist.thumbnailUrl)
+                .build(),
+            placeholder = placeholder,
+            error = painter,
+            contentDescription = stringResource(R.string.artist_image, relatedArtist.name),
+            contentScale = ContentScale.Crop,
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 2,
+            maxLines = 2,
+            style = MaterialTheme.typography.bodyMedium,
+            text = relatedArtist.name,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

@@ -29,7 +29,7 @@ class ReleasesByResourceRemoteMediator(
     override suspend fun initialize(): InitializeAction {
         val retVal = super.initialize()
         Loginator.d { "retVal=$retVal" }
-        return retVal // TODO
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
     override suspend fun load(
@@ -67,15 +67,17 @@ class ReleasesByResourceRemoteMediator(
             ifLeft = { callError -> MediatorResult.Error(callError.toThrowable()) },
             ifRight = { (remotePagination, remoteRelatedReleases) ->
                 val endOfPaginationReached = !remotePagination.urls.hasNext() //remoteRelatedReleases.isEmpty()
-                database.withTransaction {
-                    val resourceId =
-                        database.resourceDao().getResourceByArtist(artistId)?.resourceId
-                            ?: return@withTransaction MediatorResult.Error(
-                                IllegalStateException("No resource found for artist ID $artistId")
-                            ).apply {
-                                Loginator.e(throwable = this.throwable) { this.throwable.message }
-                            }
 
+                val resourceId =
+                    // TODO This is crashing on first REFRESH sometimes
+                    database.resourceDao().getResourceByArtist(artistId)?.resourceId
+                        ?: return MediatorResult.Error(
+                            IllegalStateException("No resource found for artist ID $artistId")
+                        ).apply {
+                            Loginator.e(throwable = this.throwable) { this.throwable.message }
+                        }
+
+                database.withTransaction {
                     if (loadType == LoadType.REFRESH) {
                         relatedReleaseDao.deleteRelatedReleasesByResource(resourceId)
                     }

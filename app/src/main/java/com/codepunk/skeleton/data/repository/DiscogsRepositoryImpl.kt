@@ -42,7 +42,7 @@ class DiscogsRepositoryImpl(
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
         networkBoundResource(
             query = {
-                artistDao.getArtist(artistId).map { it?.toDomain() }
+                artistDao.getArtist(artistId).map { it?.toDomain().apply { val x = this } }
             },
             fetch = {
                 discogsWebService.getArtist(artistId).fold(

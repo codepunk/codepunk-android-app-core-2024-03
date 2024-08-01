@@ -245,9 +245,7 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(192.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = releasesLazyListState
                     ) {
@@ -257,7 +255,7 @@ fun ArtistScreen(
                         ) { index ->
                             releases[index]?.also { release ->
                                 RelatedReleaseView(
-                                    modifier = Modifier.fillMaxHeight(),
+                                    modifier = Modifier.width(96.dp),
                                     relatedRelease = release
                                 )
                             }
@@ -293,9 +291,7 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = aliasesLazyListState
                     ) {
@@ -304,7 +300,7 @@ fun ArtistScreen(
                             key = { it.artistId }
                         ) {
                             RelatedArtistView(
-                                modifier = Modifier.fillMaxHeight(),
+                                modifier = Modifier.width(96.dp),
                                 relatedArtist = it
                             )
                         }
@@ -323,9 +319,7 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = membersLazyListState
                     ) {
@@ -334,7 +328,7 @@ fun ArtistScreen(
                             key = { it.artistId }
                         ) {
                             RelatedArtistView(
-                                modifier = Modifier.fillMaxHeight(),
+                                modifier = Modifier.width(96.dp),
                                 relatedArtist = it
                             )
                         }
@@ -352,9 +346,7 @@ fun ArtistScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(mediumPadding),
                         state = groupsLazyListState
                     ) {
@@ -363,7 +355,7 @@ fun ArtistScreen(
                             key = { it.artistId }
                         ) {
                             RelatedArtistView(
-                                modifier = Modifier.fillMaxHeight(),
+                                modifier = Modifier.width(96.dp),
                                 relatedArtist = it
                             )
                         }

@@ -2,9 +2,9 @@ package com.codepunk.skeleton.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -12,17 +12,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -41,15 +37,8 @@ fun RelatedArtistView(
     modifier: Modifier = Modifier,
     relatedArtist: RelatedArtist
 ) {
-    val density = LocalContext.current.resources.displayMetrics.density
-
-    var imageWidthDp by remember {
-        mutableStateOf(0.dp)
-    }
-
     Box(
         modifier = modifier
-            .height(intrinsicSize = IntrinsicSize.Min)
     ) {
         Column {
             val artistPlaceholderPainter = painterResource(id = R.drawable.placeholder_artist)
@@ -59,10 +48,9 @@ fun RelatedArtistView(
 
             AsyncImage(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .aspectRatio(1f)
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .onSizeChanged { size -> imageWidthDp = (size.width / density).dp },
+                    .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(relatedArtist.thumbnailUrl)
                     .build(),
@@ -75,10 +63,11 @@ fun RelatedArtistView(
             Spacer(modifier = Modifier.height(smallPadding))
 
             Text(
-                modifier = Modifier.width(imageWidthDp),
+                modifier = Modifier.fillMaxWidth(),
                 minLines = 2,
                 maxLines = 2,
                 style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
                 text = relatedArtist.name,
                 overflow = TextOverflow.Ellipsis
             )
@@ -96,7 +85,7 @@ fun RelatedArtistViewPreviewDark(
     SkeletonTheme(darkTheme = true) {
         Surface {
             RelatedArtistView(
-                modifier = Modifier.height(224.dp),
+                modifier = Modifier.width(192.dp),
                 relatedArtist = relatedArtist
             )
         }

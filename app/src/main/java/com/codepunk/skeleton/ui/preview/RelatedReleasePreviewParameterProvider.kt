@@ -34,7 +34,7 @@ class RelatedReleasePreviewParameterProvider : PreviewParameterProvider<RelatedR
             type = "release",
             format = "",
             label = "Artist Label",
-            title = "Artist Release Number Three",
+            title = "Artist Rel 3",
             role = "Main",
             artist = "Artist 1",
             year = 2022,

@@ -13,4 +13,9 @@ sealed class Route {
         val artistId: Long
     ): Route()
 
+    @Serializable
+    data class Label(
+        val labelId: Long
+    ): Route()
+
 }

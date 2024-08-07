@@ -69,6 +69,11 @@ data class UrlInfo(
             R.drawable.ic_url_threads_24,
             R.string.url_threads
         ),
+        TIKTOK(
+            listOf("tiktok"),
+            R.drawable.ic_url_tiktok_24,
+            R.string.url_tiktok
+        ),
         TUMBLR(
             listOf("tumblr"),
             R.drawable.ic_url_tumblr_24,

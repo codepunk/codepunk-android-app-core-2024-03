@@ -15,14 +15,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.codepunk.skeleton.ui.ATLANTIC_RECORDS
+import com.codepunk.skeleton.ui.MARILLION
+import com.codepunk.skeleton.ui.REPUBLIC_RECORDS
+import com.codepunk.skeleton.ui.TAYLOR_SWIFT
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 
 @Suppress("SpellCheckingInspection")
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToMarillion: () -> Unit = {},
-    onNavigateToTaylorSwift: () -> Unit = {}
+    onNavigateToArtist: (Long) -> Unit = {},
+    onNavigateToLabel: (Long) -> Unit = {}
 ) {
     // A surface container using the 'background' color from the theme
     Surface(
@@ -35,28 +39,33 @@ fun HomeScreen(
         ) {
             Text(
                 text = "Hello Codepunk!",
-                modifier = modifier
-                    .align(alignment = Alignment.CenterHorizontally)
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
             )
             Spacer(modifier = modifier.height(8.dp))
             Button(
-                onClick = {
-                    onNavigateToMarillion()
-                },
-                modifier = modifier
-                    .align(alignment = Alignment.CenterHorizontally)
+                onClick = { onNavigateToArtist(MARILLION) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
             ) {
                 @Suppress("SpellCheckingInspection")
                 Text("Marillion")
             }
             Button(
-                onClick = {
-                    onNavigateToTaylorSwift()
-                },
-                modifier = modifier
-                    .align(alignment = Alignment.CenterHorizontally)
+                onClick = { onNavigateToArtist(TAYLOR_SWIFT) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
             ) {
                 Text("Taylor Swift")
+            }
+            Button(
+                onClick = { onNavigateToLabel(ATLANTIC_RECORDS) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("Atlantic")
+            }
+            Button(
+                onClick = { onNavigateToLabel(REPUBLIC_RECORDS) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("Republic")
             }
         }
     }

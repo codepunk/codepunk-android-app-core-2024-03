@@ -10,11 +10,15 @@ import androidx.navigation.toRoute
 import com.codepunk.skeleton.ui.screen.artist.ArtistScreen
 import com.codepunk.skeleton.ui.screen.HomeScreen
 import com.codepunk.skeleton.ui.screen.artist.ArtistViewModel
+import com.codepunk.skeleton.ui.screen.label.LabelScreen
+import com.codepunk.skeleton.ui.screen.label.LabelViewModel
 
 const val TEMP_ARTIST = -1L
 @Suppress("SpellCheckingInspection")
 const val MARILLION = 218108L
 const val TAYLOR_SWIFT = 1124645L
+const val ATLANTIC_RECORDS = 681L
+const val REPUBLIC_RECORDS = 38017L
 
 @Composable
 fun Navigation(
@@ -28,14 +32,14 @@ fun Navigation(
     ) {
         composable<Route.Home> {
             HomeScreen(
-                onNavigateToMarillion = {
+                onNavigateToArtist = { artistId ->
                     navController.navigate(
-                        Route.Artist(MARILLION)
+                        Route.Artist(artistId)
                     )
                 },
-                onNavigateToTaylorSwift = {
+                onNavigateToLabel = { labelId ->
                     navController.navigate(
-                        Route.Artist(TAYLOR_SWIFT)
+                        Route.Label(labelId)
                     )
                 }
             )
@@ -52,5 +56,18 @@ fun Navigation(
                 viewModel.onEvent(event)
             }
         }
+
+        composable<Route.Label> { backStackEntry ->
+            val label = backStackEntry.toRoute<Route.Label>()
+            val viewModel: LabelViewModel = hiltViewModel()
+            LabelScreen(
+                modifier = modifier,
+                labelId = label.labelId,
+                state = viewModel.state
+            ) { event ->
+                viewModel.onEvent(event)
+            }
+        }
     }
+
 }

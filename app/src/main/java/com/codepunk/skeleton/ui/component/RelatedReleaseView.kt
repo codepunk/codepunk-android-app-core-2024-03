@@ -1,6 +1,5 @@
 package com.codepunk.skeleton.ui.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,14 +11,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -36,6 +41,10 @@ fun RelatedReleaseView(
     thumbnailSize: Dp,
     relatedRelease: RelatedRelease
 ) {
+    val textMeasurer = rememberTextMeasurer()
+    var textWidth by remember { mutableIntStateOf(0) }
+    var titleLineCount by remember { mutableIntStateOf(0) }
+
     Box(modifier = Modifier.fillMaxHeight()) {
         Column {
             AsyncImage(
@@ -46,23 +55,24 @@ fun RelatedReleaseView(
                     .data(relatedRelease.thumb)
                     .build(),
                 placeholder = previewPainter(value = relatedRelease.thumb),
-                contentDescription = stringResource(R.string.artist_image, relatedRelease.title),
+                contentDescription = stringResource(R.string.image_of, relatedRelease.title),
                 contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(smallPadding))
 
             Box {
-                // TODO Look into Sub-compose Layout here
-                //  instead of this invisible text field
-                Text(
-                    modifier = Modifier.alpha(0f),
-                    text = "",
-                    minLines = 3
-                )
                 Column {
                     Text(
-                        modifier = Modifier.width(thumbnailSize),
+                        modifier = Modifier
+                            .width(thumbnailSize)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                textWidth = layoutCoordinates.size.width
+                                titleLineCount = textMeasurer.measure(
+                                    text = relatedRelease.title,
+                                    constraints = Constraints(maxWidth = textWidth)
+                                ).lineCount.coerceIn(1, 2)
+                            },
                         style = MaterialTheme.typography.bodyMedium,
                         text = relatedRelease.title,
                         maxLines = 2,
@@ -70,11 +80,13 @@ fun RelatedReleaseView(
                     )
 
                     if (relatedRelease.year > 0) {
+                        val yearLineCount = 3 - titleLineCount
                         Text(
                             modifier = Modifier.width(thumbnailSize),
                             style = MaterialTheme.typography.bodyMedium,
                             text = relatedRelease.year.toString(),
-                            maxLines = 1
+                            minLines = yearLineCount,
+                            maxLines = yearLineCount
                         )
                     }
                 }

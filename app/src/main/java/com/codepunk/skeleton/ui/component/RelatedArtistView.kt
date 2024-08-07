@@ -54,7 +54,7 @@ fun RelatedArtistView(
                     .build(),
                 placeholder = placeholder,
                 error = artistPlaceholderPainter,
-                contentDescription = stringResource(R.string.artist_image, relatedArtist.name),
+                contentDescription = stringResource(R.string.image_of, relatedArtist.name),
                 contentScale = ContentScale.Crop
             )
 

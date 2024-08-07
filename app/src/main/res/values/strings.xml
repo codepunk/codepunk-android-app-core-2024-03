@@ -4,7 +4,8 @@
     <string name="app_name">Skeleton</string>
 
     <string name="artist">Artist</string>
-    <string name="artist_image">Image of %s</string>
+    <string name="image_of">Image of %s</string>
+    <string name="label">Label</string>
     <string name="links">Links</string>
     <string name="images">Images</string>
     <string name="releases">Releases</string>
@@ -21,6 +22,7 @@
     <string name="url_pinterest">Pinterest</string>
     <string name="url_soundcloud">Soundcloud</string>
     <string name="url_threads">Threads</string>
+    <string name="url_tiktok">TikTok</string>
     <string name="url_tumblr">Tumblr</string>
     <string name="url_x">X</string>
     <string name="url_wikipedia">Wikipedia</string>

@@ -7,6 +7,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.kefirsf.bb.BBProcessorFactory
+import org.kefirsf.bb.TextProcessor
 import javax.inject.Singleton
 
 @Module
@@ -19,5 +21,9 @@ class AppModule {
         val appId = BuildConfig.APPLICATION_ID
         return Handleinator(Formatinator(appId))
     }
+
+    @Singleton
+    @Provides
+    fun provideTextProcessor(): TextProcessor = BBProcessorFactory.getInstance().create()
 
 }

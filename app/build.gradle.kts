@@ -143,6 +143,7 @@ dependencies {
     implementation(libs.paging)
     implementation(libs.room.paging)
     implementation(libs.paging.compose)
+    implementation(libs.kefir.bb)
 
     // endregion Added by Codepunk
 

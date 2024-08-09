@@ -6,14 +6,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
+import com.codepunk.skeleton.ui.util.updateLinks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.kefirsf.bb.TextProcessor
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
-    private val repository: DiscogsRepository
+    private val repository: DiscogsRepository,
+    private val textProcessor: TextProcessor
 ): ViewModel() {
 
     var state by mutableStateOf(ArtistScreenState())
@@ -42,11 +45,14 @@ class ArtistViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchArtist(artistId).collect { result ->
-                // Also try this
+                val artist = result.getOrNull()
                 state = state.copy(
                     artistId = artistId,
                     isLoading = false,
-                    artist = result.getOrNull(),
+                    artist = artist,
+                    profileHtml = artist?.run {
+                        textProcessor.process(profile.updateLinks())
+                    },
                     throwable = result.leftOrNull()
                 )
             }

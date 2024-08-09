@@ -74,13 +74,12 @@ fun LabelScreen(
                     var hasContent = false
 
                     val hasProfile = profile.isNotEmpty()
-                    ProfileSection(entity = state.label)
+                    ProfileSection(profileHtml = state.profileHtml.orEmpty())
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()
                     UrlsSection(entity = state.label)
                     hasContent = hasContent || hasUrls
-
 
                     val hasImages = images.isNotEmpty()
                     if (hasContent && hasImages) {
@@ -88,6 +87,15 @@ fun LabelScreen(
                     }
                     ImagesSection(entity = state.label)
                     hasContent = hasContent || hasImages
+
+                    val hasParentLabel = parentLabel != null
+                    // TODO Parent Label
+                    hasContent = hasContent || hasParentLabel
+
+                    val hasSubLabels = subLabels.isNotEmpty()
+                    // TODO Sub Labels
+                    // hasContent = hasContent || hasSubLabels
+
                 }
             }
         }

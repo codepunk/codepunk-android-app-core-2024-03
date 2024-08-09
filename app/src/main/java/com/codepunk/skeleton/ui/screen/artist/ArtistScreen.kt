@@ -4,7 +4,6 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,7 +51,7 @@ import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
 import kotlinx.coroutines.flow.flow
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistScreen(
     modifier: Modifier = Modifier,
@@ -113,20 +112,19 @@ fun ArtistScreen(
                     var hasContent = false
 
                     val hasProfile = profile.isNotEmpty()
-                    ProfileSection(entity = state.artist)
+                    ProfileSection(profileHtml = state.profileHtml.orEmpty())
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()
                     UrlsSection(entity = state.artist)
                     hasContent = hasContent || hasUrls
 
-
                     val hasImages = images.isNotEmpty()
                     if (hasContent && hasImages) {
                         HorizontalDivider()
                     }
                     ImagesSection(entity = state.artist)
-                    hasContent = hasContent || hasImages
+                    // hasContent = hasContent || hasImages
 
                     // Releases
 

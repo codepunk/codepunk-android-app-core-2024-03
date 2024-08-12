@@ -5,7 +5,6 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.DiscogsDatabase
 import com.codepunk.skeleton.data.local.dao.RelatedReleasePaginationDao
 import com.codepunk.skeleton.data.local.entity.LocalRelatedRelease
@@ -28,7 +27,6 @@ class ReleasesByResourceRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val retVal = super.initialize()
-        Loginator.d { "retVal=$retVal" }
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
@@ -73,9 +71,7 @@ class ReleasesByResourceRemoteMediator(
                     database.resourceDao().getResourceByArtist(artistId)?.resourceId
                         ?: return MediatorResult.Error(
                             IllegalStateException("No resource found for artist ID $artistId")
-                        ).apply {
-                            Loginator.e(throwable = this.throwable) { this.throwable.message }
-                        }
+                        )
 
                 database.withTransaction {
                     if (loadType == LoadType.REFRESH) {

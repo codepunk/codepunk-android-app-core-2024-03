@@ -11,6 +11,7 @@ import com.codepunk.skeleton.data.paging.ReleasesByResourceRemoteMediatorFactory
 import com.codepunk.skeleton.data.remote.webservice.DiscogsWebservice
 import com.codepunk.skeleton.data.repository.DiscogsRepositoryImpl
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
+import com.codepunk.skeleton.ui.util.BBCodeProcessor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +32,8 @@ class DataModule {
         releaseDao: ReleaseDao,
         allDao: AllDao,
         discogsWebService: DiscogsWebservice,
-        factory: ReleasesByResourceRemoteMediatorFactory
+        factory: ReleasesByResourceRemoteMediatorFactory,
+        bbCodeProcessor: BBCodeProcessor
     ) : DiscogsRepository = DiscogsRepositoryImpl(
         artistDao = artistDao,
         labelDao = labelDao,
@@ -40,7 +42,8 @@ class DataModule {
         releaseDao = releaseDao,
         allDao = allDao,
         discogsWebService = discogsWebService,
-        factory = factory
+        factory = factory,
+        bbCodeProcessor = bbCodeProcessor
     )
 
 }

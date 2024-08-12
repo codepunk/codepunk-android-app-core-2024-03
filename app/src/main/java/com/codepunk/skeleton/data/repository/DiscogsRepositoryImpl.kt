@@ -6,6 +6,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import arrow.core.Ior
+import arrow.core.bothIor
+import arrow.core.rightIor
+import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.dao.AllDao
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.LabelDao
@@ -21,7 +24,9 @@ import com.codepunk.skeleton.domain.model.Label
 import com.codepunk.skeleton.domain.model.Master
 import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.model.Release
+import com.codepunk.skeleton.domain.model.ResourceType
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
+import com.codepunk.skeleton.ui.util.BBCodeProcessor
 import com.codepunk.skeleton.util.networkBoundResource
 import com.codepunk.skeleton.util.toThrowable
 import kotlinx.coroutines.flow.Flow
@@ -35,10 +40,12 @@ class DiscogsRepositoryImpl(
     private val releaseDao: ReleaseDao,
     private val allDao: AllDao,
     private val discogsWebService: DiscogsWebservice,
-    private val factory: ReleasesByResourceRemoteMediatorFactory
+    private val factory: ReleasesByResourceRemoteMediatorFactory,
+    private val bbCodeProcessor: BBCodeProcessor
 ) : DiscogsRepository {
 
-    // region Methods
+    // region Implemented methods
+
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
         networkBoundResource(
             query = {
@@ -47,7 +54,21 @@ class DiscogsRepositoryImpl(
             fetch = {
                 discogsWebService.getArtist(artistId).fold(
                     ifLeft = { throw it.toThrowable() },
-                    ifRight = { it }
+                    ifRight = { remoteArtist ->
+                        val profileHtml = bbCodeProcessor.process(
+                            remoteArtist.profile
+                        ) { resourceType, value ->
+                            value.fold(
+                                ifLeft = { id ->
+                                    Pair(id, getTitle(resourceType, id)).bothIor()
+                                },
+                                ifRight = { title ->
+                                    title.rightIor()
+                                }
+                            )
+                        }
+                        remoteArtist.copy(profile = profileHtml)
+                    }
                 )
             },
             saveFetchResult = {
@@ -87,7 +108,19 @@ class DiscogsRepositoryImpl(
             fetch = {
                 discogsWebService.getLabel(labelId).fold(
                     ifLeft = { throw it.toThrowable() },
-                    ifRight = { it }
+                    ifRight = { remoteLabel ->
+                        val profileHtml = bbCodeProcessor.process(remoteLabel.profile) { resourceType, value ->
+                            value.fold(
+                                ifLeft = { id ->
+                                    Pair(id, getTitle(resourceType, id)).bothIor()
+                                },
+                                ifRight = { title ->
+                                    title.rightIor()
+                                }
+                            )
+                        }
+                        remoteLabel.copy(profile = profileHtml)
+                    }
                 )
             },
             saveFetchResult = {
@@ -127,6 +160,47 @@ class DiscogsRepositoryImpl(
             }
         )
 
+    // endregion Implemented methods
+
+    // region Methods
+
+    private suspend fun getTitle(resourceType: ResourceType, id: Long): String =
+        when (resourceType) {
+            ResourceType.ARTIST -> {
+                discogsWebService.getArtist(id).fold(
+                    ifLeft = { UNKNOWN_TITLE },
+                    ifRight = { it.name }
+                )
+            }
+            ResourceType.LABEL -> {
+                discogsWebService.getLabel(id).fold(
+                    ifLeft = { UNKNOWN_TITLE },
+                    ifRight = { it.name }
+                )
+            }
+            ResourceType.MASTER -> {
+                discogsWebService.getMaster(id).fold(
+                    ifLeft = { UNKNOWN_TITLE },
+                    ifRight = { it.title }
+                )
+            }
+            ResourceType.RELEASE -> {
+                discogsWebService.getRelease(id).fold(
+                    ifLeft = { UNKNOWN_TITLE },
+                    ifRight = { it.title }
+                )
+            }
+        }
+
     // endregion Methods
+
+    // region Companion object
+
+    companion object {
+        private const val UNKNOWN_ID = -1L
+        private const val UNKNOWN_TITLE = "???"
+    }
+
+    // endregion Companion object
 
 }

@@ -29,9 +29,9 @@ import com.codepunk.skeleton.R
 @Composable
 fun ProfileSection(
     modifier: Modifier = Modifier,
-    profileHtml: String
+    profile: String
 ) {
-    if (profileHtml.isNotEmpty()) {
+    if (profile.isNotEmpty()) {
         val colorScheme = MaterialTheme.colorScheme
         val collapsedLines = integerResource(id = R.integer.profile_collapsed_lines)
         var expandable by remember { mutableStateOf(false) }
@@ -39,9 +39,9 @@ fun ProfileSection(
         var textWidth by remember { mutableIntStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
 
-        val annotatedProfile = remember(profileHtml) {
+        val annotatedProfile = remember(profile) {
             AnnotatedString.Companion.fromHtml(
-                htmlString = profileHtml,
+                htmlString = profile,
                 linkStyles = TextLinkStyles(
                     style = SpanStyle(
                         color = colorScheme.primary,

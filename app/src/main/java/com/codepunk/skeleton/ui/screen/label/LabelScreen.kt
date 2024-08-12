@@ -74,7 +74,7 @@ fun LabelScreen(
                     var hasContent = false
 
                     val hasProfile = profile.isNotEmpty()
-                    ProfileSection(profileHtml = state.profileHtml.orEmpty())
+                    ProfileSection(profile = state.label.profile)
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()

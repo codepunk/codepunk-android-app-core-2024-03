@@ -6,7 +6,6 @@ data class LabelScreenState(
     val labelId: Long = -1L, // TODO Does this make sense? I put it here so I could do "refresh"
     val isLoading: Boolean = false,
     val label: Label? = null,
-    val profileHtml: String? = null,
     /*
     val releases: PagingData<RelatedRelease> = PagingData.empty(), // TODO
      */

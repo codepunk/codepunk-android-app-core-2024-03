@@ -112,7 +112,7 @@ fun ArtistScreen(
                     var hasContent = false
 
                     val hasProfile = profile.isNotEmpty()
-                    ProfileSection(profileHtml = state.profileHtml.orEmpty())
+                    ProfileSection(profile = state.artist.profile)
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()

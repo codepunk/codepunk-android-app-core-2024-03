@@ -1,11 +1,15 @@
 package com.codepunk.skeleton.ui.preview
 
+import android.text.Html
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.codepunk.skeleton.domain.model.Artist
 
 class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
-    private val loremIpsum = LoremIpsum().values.first()
+    private val loremIpsumHtml = Html.fromHtml(
+        LoremIpsum().values.first(),
+        Html.FROM_HTML_MODE_COMPACT
+    ).toString()
     private val imagePreviewProvider = ImagePreviewParameterProvider()
 
     override val values: Sequence<Artist> = sequenceOf(
@@ -16,10 +20,11 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist One",
-            profile = loremIpsum,
+            profile = loremIpsumHtml,
             releasesUrl = "",
             urls = listOf(
                 "https://www.artist1.com/",
+                "https://www.artist1.co.uk/",
                 "https://www.facebook.com/artist1",
                 "https://www.instagram.com/artist1/",
                 "https://www.pinterest.com/artist1/",
@@ -43,7 +48,7 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist Two",
-            profile = loremIpsum,
+            profile = loremIpsumHtml,
             releasesUrl = "",
             urls = emptyList(),
             realName = "",
@@ -59,7 +64,7 @@ class ArtistPreviewParameterProvider : PreviewParameterProvider<Artist> {
             images = imagePreviewProvider.values.toList(),
             dataQuality = "",
             name = "Artist Three",
-            profile = loremIpsum,
+            profile = loremIpsumHtml,
             releasesUrl = "",
             urls = emptyList(),
             realName = "Artist Number Three",

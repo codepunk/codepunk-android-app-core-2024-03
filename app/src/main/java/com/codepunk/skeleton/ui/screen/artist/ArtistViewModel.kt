@@ -6,17 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
-import com.codepunk.skeleton.ui.util.updateLinks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.kefirsf.bb.TextProcessor
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
-    private val repository: DiscogsRepository,
-    private val textProcessor: TextProcessor
+    private val repository: DiscogsRepository
 ): ViewModel() {
 
     var state by mutableStateOf(ArtistScreenState())
@@ -50,9 +47,6 @@ class ArtistViewModel @Inject constructor(
                     artistId = artistId,
                     isLoading = false,
                     artist = artist,
-                    profileHtml = artist?.run {
-                        textProcessor.process(profile.updateLinks())
-                    },
                     throwable = result.leftOrNull()
                 )
             }

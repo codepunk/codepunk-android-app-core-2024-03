@@ -10,6 +10,8 @@
     <string name="images">Images</string>
     <string name="releases">Releases</string>
     <string name="aliases">Aliases</string>
+    <string name="parent_label">Parent Label</string>
+    <string tools:ignore="typos" name="sub_labels">Sublabels</string>
     <string name="members">Members</string>
     <string name="groups">Groups</string>
 

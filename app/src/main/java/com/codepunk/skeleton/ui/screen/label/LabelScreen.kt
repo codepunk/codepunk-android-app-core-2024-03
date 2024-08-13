@@ -5,7 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,10 +24,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.codepunk.skeleton.R
 import com.codepunk.skeleton.ui.component.EntityAppBar
 import com.codepunk.skeleton.ui.component.ImagesSection
 import com.codepunk.skeleton.ui.component.ProfileSection
+import com.codepunk.skeleton.ui.component.RelatedLabel
 import com.codepunk.skeleton.ui.component.UrlsSection
 import com.codepunk.skeleton.ui.theme.largePadding
 import com.codepunk.skeleton.ui.theme.mediumPadding
@@ -89,11 +96,49 @@ fun LabelScreen(
                     hasContent = hasContent || hasImages
 
                     val hasParentLabel = parentLabel != null
+                    if (hasContent && hasParentLabel) {
+                        HorizontalDivider()
+                    }
+                    parentLabel?.apply {
+                        Text(
+                            text = stringResource(id = R.string.parent_label),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        RelatedLabel(
+                            iconSize = 72.dp,
+                            relatedLabel = this
+                        )
+                    }
                     // TODO Parent Label
                     hasContent = hasContent || hasParentLabel
 
+                    val subLabelsLazyListState = rememberLazyListState()
+
                     val hasSubLabels = subLabels.isNotEmpty()
-                    // TODO Sub Labels
+                    if (hasContent && hasSubLabels) {
+                        HorizontalDivider()
+                    }
+                    Text(
+                        text = stringResource(id = R.string.sub_labels),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(176.dp),
+                        horizontalArrangement = Arrangement.spacedBy(largePadding),
+                        state = subLabelsLazyListState
+                    ) {
+                        items(
+                            items = state.label.subLabels,
+                            key = { it.labelId }
+                        ) {
+                            RelatedLabel(
+                                iconSize = 72.dp,
+                                relatedLabel = it
+                            )
+                        }
+                    }
                     // hasContent = hasContent || hasSubLabels
 
                 }

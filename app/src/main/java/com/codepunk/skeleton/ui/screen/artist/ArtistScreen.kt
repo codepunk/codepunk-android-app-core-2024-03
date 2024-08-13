@@ -41,8 +41,8 @@ import com.codepunk.skeleton.domain.model.Artist
 import com.codepunk.skeleton.ui.component.EntityAppBar
 import com.codepunk.skeleton.ui.component.ImagesSection
 import com.codepunk.skeleton.ui.component.ProfileSection
-import com.codepunk.skeleton.ui.component.RelatedArtistView
-import com.codepunk.skeleton.ui.component.RelatedReleaseView
+import com.codepunk.skeleton.ui.component.RelatedArtist
+import com.codepunk.skeleton.ui.component.RelatedRelease
 import com.codepunk.skeleton.ui.component.UrlsSection
 import com.codepunk.skeleton.ui.preview.ArtistPreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
@@ -148,7 +148,7 @@ fun ArtistScreen(
                                 key = releases.itemKey { it.releaseId }
                             ) { index ->
                                 releases[index]?.also { release ->
-                                    RelatedReleaseView(
+                                    RelatedRelease(
                                         thumbnailSize = 96.dp,
                                         relatedRelease = release
                                     )
@@ -195,7 +195,7 @@ fun ArtistScreen(
                                 items = state.artist.aliases,
                                 key = { it.artistId }
                             ) {
-                                RelatedArtistView(
+                                RelatedArtist(
                                     thumbnailSize = 96.dp,
                                     relatedArtist = it
                                 )
@@ -225,7 +225,7 @@ fun ArtistScreen(
                                 items = state.artist.members,
                                 key = { it.artistId }
                             ) {
-                                RelatedArtistView(
+                                RelatedArtist(
                                     thumbnailSize = 96.dp,
                                     relatedArtist = it
                                 )
@@ -254,7 +254,7 @@ fun ArtistScreen(
                                 items = state.artist.groups,
                                 key = { it.artistId }
                             ) {
-                                RelatedArtistView(
+                                RelatedArtist(
                                     thumbnailSize = 96.dp,
                                     relatedArtist = it
                                 )

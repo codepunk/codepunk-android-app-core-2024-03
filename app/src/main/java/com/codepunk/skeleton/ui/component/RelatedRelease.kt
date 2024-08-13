@@ -37,7 +37,7 @@ import com.codepunk.skeleton.ui.theme.smallPadding
 import com.codepunk.skeleton.ui.util.previewPainter
 
 @Composable
-fun RelatedReleaseView(
+fun RelatedRelease(
     thumbnailSize: Dp,
     relatedRelease: RelatedRelease
 ) {
@@ -98,7 +98,7 @@ fun RelatedReleaseView(
 
 @Preview(showSystemUi = false)
 @Composable
-fun RelatedReleaseViewPreviewDark(
+fun RelatedReleasePreviewDark(
     @PreviewParameter(
         RelatedReleasePreviewParameterProvider::class
     ) relatedRelease: RelatedRelease
@@ -107,7 +107,7 @@ fun RelatedReleaseViewPreviewDark(
         Surface(
             modifier = Modifier.height(200.dp)
         ) {
-            RelatedReleaseView(
+            RelatedRelease(
                 thumbnailSize = 128.dp,
                 relatedRelease = relatedRelease
             )

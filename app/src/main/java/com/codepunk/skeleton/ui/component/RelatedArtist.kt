@@ -33,7 +33,7 @@ import com.codepunk.skeleton.ui.theme.smallPadding
 import com.codepunk.skeleton.ui.util.previewPainter
 
 @Composable
-fun RelatedArtistView(
+fun RelatedArtist(
     thumbnailSize: Dp,
     relatedArtist: RelatedArtist
 ) {
@@ -75,14 +75,14 @@ fun RelatedArtistView(
 
 @Preview(showSystemUi = false)
 @Composable
-fun RelatedArtistViewPreviewDark(
+fun RelatedArtistPreviewDark(
     @PreviewParameter(
         RelatedArtistPreviewParameterProvider::class
     ) relatedArtist: RelatedArtist
 ) {
     SkeletonTheme(darkTheme = true) {
         Surface {
-            RelatedArtistView(
+            RelatedArtist(
                 thumbnailSize = 128.dp,
                 relatedArtist = relatedArtist
             )

@@ -7,10 +7,10 @@ import java.time.format.DateTimeParseException
 class LocalDateTypeConverter {
 
     @TypeConverter
-    fun instantToString(input: LocalDate?): String = input?.toString() ?: ""
+    fun localDateToString(input: LocalDate?): String = input?.toString() ?: ""
 
     @TypeConverter
-    fun stringToInstant(input: String?): LocalDate =
+    fun stringToLocalDate(input: String?): LocalDate =
         input?.let {
             try {
                 LocalDate.parse(it)

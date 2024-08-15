@@ -15,10 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.codepunk.skeleton.ui.AN_HOUR_BEFORE_MASTER
 import com.codepunk.skeleton.ui.ATLANTIC_RECORDS
 import com.codepunk.skeleton.ui.MARILLION
 import com.codepunk.skeleton.ui.REPUBLIC_RECORDS
 import com.codepunk.skeleton.ui.TAYLOR_SWIFT
+import com.codepunk.skeleton.ui.TORTURED_POETS_MASTER
+import com.codepunk.skeleton.ui.UNION_RELEASE
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 
 @Suppress("SpellCheckingInspection")
@@ -26,7 +29,9 @@ import com.codepunk.skeleton.ui.theme.SkeletonTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToArtist: (Long) -> Unit = {},
-    onNavigateToLabel: (Long) -> Unit = {}
+    onNavigateToLabel: (Long) -> Unit = {},
+    onNavigateToMaster: (Long) -> Unit = {},
+    onNavigateToRelease: (Long) -> Unit = {}
 ) {
     // A surface container using the 'background' color from the theme
     Surface(
@@ -66,6 +71,24 @@ fun HomeScreen(
                 modifier = modifier.align(alignment = Alignment.CenterHorizontally)
             ) {
                 Text("Republic")
+            }
+            Button(
+                onClick = { onNavigateToMaster(TORTURED_POETS_MASTER) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("Tortured Poets… (Master)")
+            }
+            Button(
+                onClick = { onNavigateToMaster(AN_HOUR_BEFORE_MASTER) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("An Hour Before… (Master)")
+            }
+            Button(
+                onClick = { onNavigateToRelease(UNION_RELEASE) },
+                modifier = modifier.align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text("Union (Release)")
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.codepunk.skeleton.data.remote.entity
 
 import com.codepunk.skeleton.data.remote.serializer.BigDecimalSerializer
+import com.codepunk.skeleton.data.remote.serializer.LocalDateSerializer
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
@@ -48,6 +49,7 @@ data class RemoteRelease(
     @SerialName("master_url")
     val masterUrl: String = "",
     val country: String = "",
+    @Serializable(with = LocalDateSerializer::class)
     val released: LocalDate = LocalDate.fromEpochDays(0),
     val notes: String = "",
     @SerialName("released_formatted")

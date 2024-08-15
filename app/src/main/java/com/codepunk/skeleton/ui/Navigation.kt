@@ -12,6 +12,10 @@ import com.codepunk.skeleton.ui.screen.HomeScreen
 import com.codepunk.skeleton.ui.screen.artist.ArtistViewModel
 import com.codepunk.skeleton.ui.screen.label.LabelScreen
 import com.codepunk.skeleton.ui.screen.label.LabelViewModel
+import com.codepunk.skeleton.ui.screen.product.master.MasterScreen
+import com.codepunk.skeleton.ui.screen.product.master.MasterViewModel
+import com.codepunk.skeleton.ui.screen.product.release.ReleaseScreen
+import com.codepunk.skeleton.ui.screen.product.release.ReleaseViewModel
 
 const val TEMP_ARTIST = -1L
 @Suppress("SpellCheckingInspection")
@@ -19,6 +23,9 @@ const val MARILLION = 218108L
 const val TAYLOR_SWIFT = 1124645L
 const val ATLANTIC_RECORDS = 681L
 const val REPUBLIC_RECORDS = 38017L
+const val TORTURED_POETS_MASTER = 3461018L
+const val AN_HOUR_BEFORE_MASTER = 2531977L
+const val UNION_RELEASE = 1913040L
 
 @Composable
 fun Navigation(
@@ -40,6 +47,16 @@ fun Navigation(
                 onNavigateToLabel = { labelId ->
                     navController.navigate(
                         Route.Label(labelId)
+                    )
+                },
+                onNavigateToMaster = { masterId ->
+                    navController.navigate(
+                        Route.Master(masterId)
+                    )
+                },
+                onNavigateToRelease = { releaseId ->
+                    navController.navigate(
+                        Route.Release(releaseId)
                     )
                 }
             )
@@ -63,6 +80,30 @@ fun Navigation(
             LabelScreen(
                 modifier = modifier,
                 labelId = label.labelId,
+                state = viewModel.state
+            ) { event ->
+                viewModel.onEvent(event)
+            }
+        }
+
+        composable<Route.Master> { backStackEntry ->
+            val master = backStackEntry.toRoute<Route.Master>()
+            val viewModel: MasterViewModel = hiltViewModel()
+            MasterScreen(
+                modifier = modifier,
+                masterId = master.masterId,
+                state = viewModel.state
+            ) { event ->
+                viewModel.onEvent(event)
+            }
+        }
+
+        composable<Route.Release> { backStackEntry ->
+            val release = backStackEntry.toRoute<Route.Release>()
+            val viewModel: ReleaseViewModel = hiltViewModel()
+            ReleaseScreen(
+                modifier = modifier,
+                releaseId = release.releaseId,
                 state = viewModel.state
             ) { event ->
                 viewModel.onEvent(event)

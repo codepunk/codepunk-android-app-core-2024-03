@@ -18,4 +18,14 @@ sealed class Route {
         val labelId: Long
     ): Route()
 
+    @Serializable
+    data class Master(
+        val masterId: Long
+    ): Route()
+
+    @Serializable
+    data class Release(
+        val releaseId: Long
+    ): Route()
+
 }

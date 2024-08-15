@@ -3,8 +3,10 @@
 
     <string name="app_name">Skeleton</string>
 
-    <string name="artist">Artist</string>
     <string name="image_of">Image of %s</string>
+
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
     <string name="label">Label</string>
     <string name="links">Links</string>
     <string name="images">Images</string>

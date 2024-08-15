@@ -16,6 +16,8 @@
     <string tools:ignore="typos" name="sub_labels">Sublabels</string>
     <string name="members">Members</string>
     <string name="groups">Groups</string>
+    <string name="genres">Genres</string>
+    <string name="styles">Styles</string>
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>

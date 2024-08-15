@@ -2,4 +2,5 @@
 <resources>
     <integer name="profile_collapsed_lines">6</integer>
     <integer name="urls_collapsed_lines">5</integer>
+    <integer name="details_collapsed_lines">5</integer>
 </resources>

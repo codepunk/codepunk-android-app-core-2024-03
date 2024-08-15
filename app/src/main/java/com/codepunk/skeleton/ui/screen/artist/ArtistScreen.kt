@@ -123,7 +123,7 @@ fun ArtistScreen(
                     if (hasContent && hasImages) {
                         HorizontalDivider()
                     }
-                    ImagesSection(entity = state.artist)
+                    ImagesSection(resource = state.artist)
                     // hasContent = hasContent || hasImages
 
                     // Releases

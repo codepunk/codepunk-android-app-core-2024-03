@@ -16,7 +16,7 @@ import com.codepunk.skeleton.util.url.UrlInfo
 @Composable
 fun LinkChip(
     urlInfo: UrlInfo,
-    count: Int
+    count: Int = 0
 ) {
     val uriHandler = LocalUriHandler.current
     val urlName = stringResource(id = urlInfo.domain.nameRef)

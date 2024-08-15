@@ -20,14 +20,16 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.R
 import com.codepunk.skeleton.domain.model.Entity
+import com.codepunk.skeleton.domain.model.Product
+import com.codepunk.skeleton.domain.model.Resource
 import com.codepunk.skeleton.ui.theme.mediumPadding
 
 @Composable
 fun ImagesSection(
     modifier: Modifier = Modifier,
-    entity: Entity
+    resource: Resource
 ) {
-    if (entity.images.isNotEmpty()) {
+    if (resource.images.isNotEmpty()) {
         Text(
             text = stringResource(id = R.string.images),
             style = MaterialTheme.typography.titleLarge
@@ -39,7 +41,7 @@ fun ImagesSection(
             horizontalArrangement = Arrangement.spacedBy(mediumPadding)
         ) {
             items(
-                items = entity.images
+                items = resource.images
             ) { image ->
                 val placeholder: Painter? = if (LocalInspectionMode.current) {
                     image.uri.toIntOrNull()?.let { painterResource(id = it) }
@@ -53,7 +55,7 @@ fun ImagesSection(
                     placeholder = placeholder,
                     contentDescription = stringResource(
                         R.string.image_of,
-                        entity.name
+                        resource.nameOrTitle
                     ),
                     contentScale = ContentScale.Inside
                 )
@@ -61,3 +63,9 @@ fun ImagesSection(
         }
     }
 }
+
+private val Resource.nameOrTitle: String
+    get() = when (this) {
+        is Entity -> name
+        is Product -> title
+    }

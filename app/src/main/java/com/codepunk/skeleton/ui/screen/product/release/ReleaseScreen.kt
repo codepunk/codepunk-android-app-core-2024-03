@@ -1,9 +1,15 @@
 package com.codepunk.skeleton.ui.screen.product.release
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -12,7 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
+import com.codepunk.skeleton.R
+import com.codepunk.skeleton.ui.component.DetailsSection
+import com.codepunk.skeleton.ui.component.ImagesSection
 import com.codepunk.skeleton.ui.component.ProductAppBar
+import com.codepunk.skeleton.ui.theme.largePadding
+import com.codepunk.skeleton.ui.theme.mediumPadding
+import com.codepunk.skeleton.ui.theme.smallPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +60,63 @@ fun ReleaseScreen(
         }
     ) { innerPadding ->
         state.release?.run {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = largePadding, vertical = mediumPadding)
+                        .verticalScroll(columnScrollState),
+                    verticalArrangement = Arrangement.spacedBy(smallPadding)
+                ) {
+                    var hasContent = false
+                    if (images.isNotEmpty()) {
+                        /*
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                         */
+                        ImagesSection(resource = this@run)
+                        hasContent = true
+                    }
 
+                    if (genres.isNotEmpty()) {
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                        DetailsSection(
+                            title = stringResource(id = R.string.genres),
+                            details = genres
+                        ) { _ ->
+                            // onClick
+                        }
+                        hasContent = true
+                    }
+
+                    if (styles.isNotEmpty()) {
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                        DetailsSection(
+                            title = stringResource(id = R.string.styles),
+                            details = styles
+                        ) { _ ->
+                            // onClick
+                        }
+                        hasContent = true
+                    }
+
+                    if (trackList.isNotEmpty()) {
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                        // TODO Tracklist
+                    }
+                }
+            }
         }
     }
 }

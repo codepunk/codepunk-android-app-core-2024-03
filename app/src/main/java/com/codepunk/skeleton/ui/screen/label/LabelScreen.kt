@@ -92,7 +92,7 @@ fun LabelScreen(
                     if (hasContent && hasImages) {
                         HorizontalDivider()
                     }
-                    ImagesSection(entity = state.label)
+                    ImagesSection(resource = state.label)
                     hasContent = hasContent || hasImages
 
                     val hasParentLabel = parentLabel != null

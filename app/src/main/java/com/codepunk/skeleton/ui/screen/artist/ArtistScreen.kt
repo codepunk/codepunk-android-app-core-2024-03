@@ -203,7 +203,6 @@ fun ArtistScreen(
                         }
                     }
 
-
                     // Related artists - Members
 
                     val membersLazyListState = rememberLazyListState()

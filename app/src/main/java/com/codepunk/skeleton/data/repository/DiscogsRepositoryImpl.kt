@@ -8,7 +8,6 @@ import androidx.paging.map
 import arrow.core.Ior
 import arrow.core.bothIor
 import arrow.core.rightIor
-import com.codepunk.skeleton.core.loginator.Loginator
 import com.codepunk.skeleton.data.local.dao.AllDao
 import com.codepunk.skeleton.data.local.dao.ArtistDao
 import com.codepunk.skeleton.data.local.dao.LabelDao
@@ -49,7 +48,7 @@ class DiscogsRepositoryImpl(
     override fun fetchArtist(artistId: Long): Flow<Ior<Throwable, Artist?>> =
         networkBoundResource(
             query = {
-                artistDao.getArtist(artistId).map { it?.toDomain().apply { val x = this } }
+                artistDao.getArtist(artistId).map { it?.toDomain() }
             },
             fetch = {
                 discogsWebService.getArtist(artistId).fold(

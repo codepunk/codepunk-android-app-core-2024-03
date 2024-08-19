@@ -20,9 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.codepunk.skeleton.R
+import com.codepunk.skeleton.ui.component.CreditsSection
 import com.codepunk.skeleton.ui.component.DetailsSection
 import com.codepunk.skeleton.ui.component.ImagesSection
 import com.codepunk.skeleton.ui.component.ProductAppBar
+import com.codepunk.skeleton.ui.component.TrackListSection
+import com.codepunk.skeleton.ui.component.VideoSection
 import com.codepunk.skeleton.ui.theme.largePadding
 import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
@@ -113,7 +116,24 @@ fun ReleaseScreen(
                         if (hasContent) {
                             HorizontalDivider()
                         }
-                        // TODO Tracklist
+                        TrackListSection(trackList = trackList)
+                        hasContent = true
+                    }
+
+
+                    if (artists.isNotEmpty()) {
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                        CreditsSection(credits = artists)
+                        hasContent = true
+                    }
+
+                    if (videos.isNotEmpty()) {
+                        if (hasContent) {
+                            HorizontalDivider()
+                        }
+                        VideoSection(product = this@run)
                     }
                 }
             }

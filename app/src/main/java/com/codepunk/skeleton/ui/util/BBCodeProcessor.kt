@@ -4,7 +4,9 @@ import android.net.Uri
 import arrow.core.Either
 import arrow.core.Ior
 import arrow.core.left
+import arrow.core.leftIor
 import arrow.core.right
+import arrow.core.rightIor
 import com.codepunk.skeleton.domain.model.ResourceType
 import com.codepunk.skeleton.domain.model.ResourceType.ARTIST
 import com.codepunk.skeleton.domain.model.ResourceType.LABEL
@@ -28,7 +30,9 @@ class BBCodeProcessor @Inject constructor(
 
     suspend fun process(
         bbCodeString: String,
-        lookup: suspend (ResourceType, Either<Long, String>) -> Ior<Long, String>
+        lookup: suspend (ResourceType, Either<Long, String>) -> Ior<Long, String> = { _, value ->
+            value.toIor()
+        }
     ): String {
         val updatedUrls = bbCodeTagRegex.replaceSuspend(bbCodeString) { matchResult ->
             val substring = bbCodeString.substring(matchResult.range)

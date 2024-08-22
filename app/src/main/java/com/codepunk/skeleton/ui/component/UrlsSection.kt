@@ -1,5 +1,6 @@
 package com.codepunk.skeleton.ui.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -46,6 +47,7 @@ fun UrlsSection(
     )
 
     FlowRow(
+        modifier = Modifier.animateContentSize(),
         horizontalArrangement = Arrangement.spacedBy(smallPadding),
         maxLines = urlMaxLines,
         overflow = FlowRowOverflow.expandOrCollapseIndicator(

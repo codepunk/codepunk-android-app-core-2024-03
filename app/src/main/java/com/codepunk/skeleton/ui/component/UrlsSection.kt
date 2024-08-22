@@ -42,7 +42,6 @@ fun UrlsSection(
         maxLines = urlMaxLines,
         overflow = FlowRowOverflow.expandOrCollapseIndicator(
             expandIndicator = {
-                // TODO Don't show if not expandable/collapsible
                 TextButton(
                     onClick = { urlMaxLines = Int.MAX_VALUE }
                 ) {
@@ -50,13 +49,13 @@ fun UrlsSection(
                 }
             },
             collapseIndicator = {
-                // TODO Don't show if not expandable/collapsible
                 TextButton(
                     onClick = { urlMaxLines = urlsCollapsedLines }
                 ) {
                     Text(stringResource(id = R.string.show_less))
                 }
-            }
+            },
+            minRowsToShowCollapse = urlsCollapsedLines + 1
         )
     ) {
         val urlInfos = entity.urls.map { UrlInfo(it) }

@@ -32,9 +32,9 @@ fun DetailsSection(
     iconMapping: (String) -> Int = { R.drawable.ic_music_notes_24 },
     onClick: (String) -> Unit
 ) {
-    val urlsCollapsedLines = integerResource(id = R.integer.details_collapsed_lines)
-    var urlMaxLines by remember {
-        mutableIntStateOf(urlsCollapsedLines)
+    val detailsCollapsedLines = integerResource(id = R.integer.details_collapsed_lines)
+    var detailsMaxLines by remember {
+        mutableIntStateOf(detailsCollapsedLines)
     }
 
     Text(
@@ -44,24 +44,23 @@ fun DetailsSection(
 
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(smallPadding),
-        maxLines = urlMaxLines,
+        maxLines = detailsMaxLines,
         overflow = FlowRowOverflow.expandOrCollapseIndicator(
             expandIndicator = {
-                // TODO Don't show if not expandable/collapsible
                 TextButton(
-                    onClick = { urlMaxLines = Int.MAX_VALUE }
+                    onClick = { detailsMaxLines = Int.MAX_VALUE }
                 ) {
                     Text(stringResource(id = R.string.show_more))
                 }
             },
             collapseIndicator = {
-                // TODO Don't show if not expandable/collapsible
                 TextButton(
-                    onClick = { urlMaxLines = urlsCollapsedLines }
+                    onClick = { detailsMaxLines = detailsCollapsedLines }
                 ) {
                     Text(stringResource(id = R.string.show_less))
                 }
-            }
+            },
+            minRowsToShowCollapse = detailsCollapsedLines + 1
         )
     ) {
         details.forEach { detail ->

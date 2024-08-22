@@ -7,10 +7,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.codepunk.skeleton.util.url.Domain
 import com.codepunk.skeleton.util.url.UrlInfo
 
 @Composable
@@ -21,10 +21,14 @@ fun LinkChip(
     val uriHandler = LocalUriHandler.current
     val urlName = stringResource(id = urlInfo.domain.nameRef)
     val label = buildString {
-        append(urlInfo.getDomainString(LocalContext.current))
-        if (count > 1 && urlInfo.lastPathSegment.isNotEmpty()) {
+        val display = when (val domain = urlInfo.domain) {
+            Domain.OTHER -> urlInfo.display
+            else -> stringResource(id = domain.nameRef)
+        }
+        append(display)
+        if (urlInfo.domain != Domain.OTHER && count > 1 && urlInfo.qualifier.isNotEmpty()) {
             append(" (")
-            append(urlInfo.lastPathSegment)
+            append(urlInfo.qualifier)
             append(")")
         }
     }

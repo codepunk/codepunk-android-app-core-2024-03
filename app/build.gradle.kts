@@ -123,6 +123,7 @@ dependencies {
 
     // region Added by Codepunk
 
+    implementation(libs.androidx.lifecycle.process)
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
@@ -144,6 +145,7 @@ dependencies {
     implementation(libs.room.paging)
     implementation(libs.paging.compose)
     implementation(libs.kefir.bb)
+    implementation(libs.mozilla.components.support.ktx)
 
     // endregion Added by Codepunk
 

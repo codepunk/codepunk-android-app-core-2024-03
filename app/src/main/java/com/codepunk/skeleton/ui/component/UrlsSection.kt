@@ -16,20 +16,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import com.codepunk.skeleton.R
-import com.codepunk.skeleton.domain.model.Entity
 import com.codepunk.skeleton.ui.theme.smallPadding
 import com.codepunk.skeleton.util.url.UrlInfo
-import com.codepunk.skeleton.util.url.UrlInfo.Domain
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UrlsSection(
     modifier: Modifier = Modifier,
-    entity: Entity
+    urlInfos: List<UrlInfo>
 ) {
     val urlsCollapsedLines = integerResource(id = R.integer.urls_collapsed_lines)
     var urlMaxLines by remember {
         mutableIntStateOf(urlsCollapsedLines)
+    }
+    val urlInfoCounts = remember(urlInfos) {
+        val grouped = urlInfos.groupBy {
+            it.domain
+        }
+        urlInfos.associateWith { urlInfo ->
+            grouped.getOrDefault(urlInfo.domain, emptyList()).size
+        }.apply {
+            val x = "$this"
+        }
     }
 
     Text(
@@ -58,14 +66,8 @@ fun UrlsSection(
             minRowsToShowCollapse = urlsCollapsedLines + 1
         )
     ) {
-        val urlInfos = entity.urls.map { UrlInfo(it) }
-        val countMap = urlInfos
-            .map { it.domain }
-            .filter { it != Domain.OTHER }
-            .groupingBy { it }
-            .eachCount()
         urlInfos.forEach { urlInfo ->
-            val count = countMap.getOrElse(urlInfo.domain) { 1 }
+            val count = urlInfoCounts.getOrDefault(urlInfo, 1)
             LinkChip(
                 urlInfo = urlInfo,
                 count = count

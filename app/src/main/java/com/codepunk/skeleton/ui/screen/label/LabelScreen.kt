@@ -85,7 +85,7 @@ fun LabelScreen(
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()
-                    UrlsSection(entity = state.label)
+                    UrlsSection(urlInfos = state.urlInfos)
                     hasContent = hasContent || hasUrls
 
                     val hasImages = images.isNotEmpty()

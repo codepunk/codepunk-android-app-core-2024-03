@@ -112,18 +112,18 @@ fun ArtistScreen(
                     var hasContent = false
 
                     val hasProfile = profile.isNotEmpty()
-                    ProfileSection(profile = state.artist.profile)
+                    ProfileSection(profile = profile)
                     hasContent = hasContent || hasProfile
 
                     val hasUrls = urls.isNotEmpty()
-                    UrlsSection(entity = state.artist)
+                    UrlsSection(urlInfos = state.urlInfos)
                     hasContent = hasContent || hasUrls
 
                     val hasImages = images.isNotEmpty()
                     if (hasContent && hasImages) {
                         HorizontalDivider()
                     }
-                    ImagesSection(resource = state.artist)
+                    ImagesSection(resource = this@run)
                     // hasContent = hasContent || hasImages
 
                     // Releases

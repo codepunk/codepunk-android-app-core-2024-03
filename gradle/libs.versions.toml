@@ -35,6 +35,7 @@ coil = "2.6.0"
 material3 = "1.3.0-beta04"
 paging = "3.3.0"
 kefirbb = "1.5"
+mozillaComponents = "129.0.2"
 
 [libraries]
 ##### Added by Android Studio
@@ -56,6 +57,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 ##### Added by Codepunk
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kgp" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -78,6 +80,7 @@ paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "pa
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 kefir-bb = { group = "org.kefirsf", name = "kefirbb", version.ref = "kefirbb" }
+mozilla-components-support-ktx = { group = "org.mozilla.components", name = "lib-publicsuffixlist", version.ref = "mozillaComponents" }
 
 [plugins]
 ##### Added by Android Studio

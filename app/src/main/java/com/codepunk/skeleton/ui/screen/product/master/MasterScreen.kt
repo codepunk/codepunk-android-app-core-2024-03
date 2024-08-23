@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,21 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
-import com.codepunk.skeleton.R
-import com.codepunk.skeleton.domain.model.Track
-import com.codepunk.skeleton.domain.model.Video
-import com.codepunk.skeleton.ui.component.CreditsSection
-import com.codepunk.skeleton.ui.component.DetailsSection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.codepunk.skeleton.ui.component.ImagesSection
 import com.codepunk.skeleton.ui.component.ProductAppBar
-import com.codepunk.skeleton.ui.component.Track
-import com.codepunk.skeleton.ui.component.TrackListSection
-import com.codepunk.skeleton.ui.component.VideoSection
+import com.codepunk.skeleton.ui.component.TabSection
+import com.codepunk.skeleton.ui.screen.product.ProductTab
 import com.codepunk.skeleton.ui.theme.largePadding
 import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
-import com.codepunk.skeleton.ui.theme.tinyPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +43,7 @@ fun MasterScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val columnScrollState: ScrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Scaffold(
         modifier = modifier
@@ -91,6 +86,7 @@ fun MasterScreen(
                         hasContent = true
                     }
 
+                    /*
                     if (genres.isNotEmpty()) {
                         if (hasContent) {
                             HorizontalDivider()
@@ -139,9 +135,16 @@ fun MasterScreen(
                         }
                         VideoSection(product = this@run)
                     }
+
+                     */
+                    
+                    TabSection(
+                        modifier = Modifier.fillMaxWidth().height(1000.dp),
+                        tabs = ProductTab.entries,
+                        textOf = { context.getString(it.stringRes) }
+                    )
                 }
             }
         }
     }
 }
-

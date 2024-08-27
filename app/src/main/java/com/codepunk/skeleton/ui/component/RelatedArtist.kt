@@ -30,7 +30,7 @@ import com.codepunk.skeleton.domain.model.RelatedArtist
 import com.codepunk.skeleton.ui.preview.RelatedArtistPreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.smallPadding
-import com.codepunk.skeleton.ui.util.previewPainter
+import com.codepunk.skeleton.util.previewPainter
 
 @Composable
 fun RelatedArtist(

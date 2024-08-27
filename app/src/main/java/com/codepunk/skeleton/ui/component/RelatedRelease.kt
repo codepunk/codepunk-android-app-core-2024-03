@@ -34,7 +34,7 @@ import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.ui.preview.RelatedReleasePreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.smallPadding
-import com.codepunk.skeleton.ui.util.previewPainter
+import com.codepunk.skeleton.util.previewPainter
 
 @Composable
 fun RelatedRelease(

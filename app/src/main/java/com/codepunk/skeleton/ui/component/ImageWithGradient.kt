@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.codepunk.skeleton.domain.model.Image
-import com.codepunk.skeleton.ui.util.previewPainter
+import com.codepunk.skeleton.util.previewPainter
 
 @Composable
 fun ImageWithGradient(

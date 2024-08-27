@@ -1,4 +1,4 @@
-package com.codepunk.skeleton.ui.util
+package com.codepunk.skeleton.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter

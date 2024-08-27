@@ -3,8 +3,8 @@ package com.codepunk.skeleton
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.codepunk.skeleton.core.loginator.Handleinator
-import com.codepunk.skeleton.core.loginator.Loginator
+import com.codepunk.skeleton.util.loginator.Handleinator
+import com.codepunk.skeleton.util.loginator.Loginator
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.launch
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList

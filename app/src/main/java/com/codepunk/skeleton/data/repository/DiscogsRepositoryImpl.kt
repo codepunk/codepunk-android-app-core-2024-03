@@ -25,7 +25,7 @@ import com.codepunk.skeleton.domain.model.RelatedRelease
 import com.codepunk.skeleton.domain.model.Release
 import com.codepunk.skeleton.domain.model.ResourceType
 import com.codepunk.skeleton.domain.repository.DiscogsRepository
-import com.codepunk.skeleton.ui.util.BBCodeProcessor
+import com.codepunk.skeleton.util.BBCodeProcessinator
 import com.codepunk.skeleton.util.networkBoundResource
 import com.codepunk.skeleton.util.toThrowable
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +40,7 @@ class DiscogsRepositoryImpl(
     private val allDao: AllDao,
     private val discogsWebService: DiscogsWebservice,
     private val factory: ReleasesByResourceRemoteMediatorFactory,
-    private val bbCodeProcessor: BBCodeProcessor
+    private val bbCodeProcessinator: BBCodeProcessinator
 ) : DiscogsRepository {
 
     // region Implemented methods
@@ -54,7 +54,7 @@ class DiscogsRepositoryImpl(
                 discogsWebService.getArtist(artistId).fold(
                     ifLeft = { throw it.toThrowable() },
                     ifRight = { remoteArtist ->
-                        val profileHtml = bbCodeProcessor.process(
+                        val profileHtml = bbCodeProcessinator.process(
                             remoteArtist.profile
                         ) { resourceType, value ->
                             value.fold(
@@ -108,7 +108,7 @@ class DiscogsRepositoryImpl(
                 discogsWebService.getLabel(labelId).fold(
                     ifLeft = { throw it.toThrowable() },
                     ifRight = { remoteLabel ->
-                        val profileHtml = bbCodeProcessor.process(remoteLabel.profile) { resourceType, value ->
+                        val profileHtml = bbCodeProcessinator.process(remoteLabel.profile) { resourceType, value ->
                             value.fold(
                                 ifLeft = { id ->
                                     Pair(id, getTitle(resourceType, id)).bothIor()

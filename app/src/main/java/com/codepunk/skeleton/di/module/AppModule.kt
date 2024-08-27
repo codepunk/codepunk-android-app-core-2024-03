@@ -2,8 +2,8 @@ package com.codepunk.skeleton.di.module
 
 import android.content.Context
 import com.codepunk.skeleton.BuildConfig
-import com.codepunk.skeleton.core.loginator.Formatinator
-import com.codepunk.skeleton.core.loginator.Handleinator
+import com.codepunk.skeleton.util.loginator.Formatinator
+import com.codepunk.skeleton.util.loginator.Handleinator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.codepunk.skeleton.core.loginator
+package com.codepunk.skeleton.util.loginator
 
 import android.util.Log
 import java.util.logging.*

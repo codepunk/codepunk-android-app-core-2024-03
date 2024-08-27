@@ -28,4 +28,6 @@ interface DiscogsRepository {
 
     fun fetchRelease(releaseId: Long): Flow<Ior<Throwable, Release?>>
 
+    //fun search(query: String): Flow<PagingData<>>
+
 }

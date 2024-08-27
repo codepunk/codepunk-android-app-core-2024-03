@@ -23,14 +23,4 @@ data class LocalFormatDetail(
     @ColumnInfo(name = "detail_idx")
     val detailIdx: Int = 0,
     val detail: String = ""
-) {
-
-    // region Nested & inner classes
-
-    enum class Type {
-        DESCRIPTION
-    }
-
-    // endregion Nested & inner classes
-
-}
+)

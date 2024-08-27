@@ -1,22 +1,19 @@
-package com.codepunk.skeleton.ui.util
+package com.codepunk.skeleton.util
 
 import android.net.Uri
 import arrow.core.Either
 import arrow.core.Ior
 import arrow.core.left
-import arrow.core.leftIor
 import arrow.core.right
-import arrow.core.rightIor
 import com.codepunk.skeleton.domain.model.ResourceType
 import com.codepunk.skeleton.domain.model.ResourceType.ARTIST
 import com.codepunk.skeleton.domain.model.ResourceType.LABEL
-import com.codepunk.skeleton.util.replaceSuspend
 import org.kefirsf.bb.TextProcessor
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BBCodeProcessor @Inject constructor(
+class BBCodeProcessinator @Inject constructor(
     private val textProcessor: TextProcessor
 ) {
     private val bbCodeTagRegex = Regex(BBCODE_TAG_PATTERN)

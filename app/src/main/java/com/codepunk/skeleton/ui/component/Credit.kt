@@ -37,7 +37,7 @@ import com.codepunk.skeleton.domain.model.Credit
 import com.codepunk.skeleton.ui.preview.CreditPreviewParameterProvider
 import com.codepunk.skeleton.ui.theme.SkeletonTheme
 import com.codepunk.skeleton.ui.theme.smallPadding
-import com.codepunk.skeleton.ui.util.previewPainter
+import com.codepunk.skeleton.util.previewPainter
 
 @Composable
 fun Credit(

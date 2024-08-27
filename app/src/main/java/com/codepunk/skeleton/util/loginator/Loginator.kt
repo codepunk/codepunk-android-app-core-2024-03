@@ -1,4 +1,4 @@
-package com.codepunk.skeleton.core.loginator
+package com.codepunk.skeleton.util.loginator
 
 import java.util.logging.Handler
 import java.util.logging.Level

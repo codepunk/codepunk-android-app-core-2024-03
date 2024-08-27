@@ -3,13 +3,11 @@ package com.codepunk.skeleton.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.codepunk.skeleton.R
 import com.codepunk.skeleton.domain.model.Track
+import com.codepunk.skeleton.ui.theme.mediumPadding
 import com.codepunk.skeleton.ui.theme.smallPadding
 
 @Composable
@@ -17,12 +15,10 @@ fun TrackListSection(
     modifier: Modifier = Modifier,
     trackList: List<Track>
 ) {
-    Text(
-        text = stringResource(id = R.string.track_list),
-        style = MaterialTheme.typography.titleLarge
-    )
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = mediumPadding),
         verticalArrangement = Arrangement.spacedBy(smallPadding)
     ) {
         val flattenedTracks = trackList.flattenTracks()

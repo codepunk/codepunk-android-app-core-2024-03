@@ -8,13 +8,11 @@ import com.codepunk.skeleton.domain.model.Format
 
 fun RemoteFormat.toLocal(
     formatId: Long = 0L,
-    releaseId: Long = 0L,
     formatIdx: Int
 ): LocalFormatWithDetails =
     LocalFormatWithDetails(
         format = LocalFormat(
             // formatId = formatId,
-            releaseId = releaseId,
             formatIdx = formatIdx,
             name = name,
             quantity = quantity,

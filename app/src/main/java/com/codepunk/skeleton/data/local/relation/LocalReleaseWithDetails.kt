@@ -58,7 +58,12 @@ data class LocalReleaseWithDetails(
     @Relation(
         entity = LocalFormat::class,
         parentColumn = "release_id",
-        entityColumn = "release_id"
+        entityColumn = "format_id",
+        associateBy = Junction(
+            value = LocalReleaseFormatCrossRef::class,
+            parentColumn = "release_id",
+            entityColumn = "format_id"
+        )
     )
     val formats: List<LocalFormatWithDetails> = emptyList(),
     @Relation(

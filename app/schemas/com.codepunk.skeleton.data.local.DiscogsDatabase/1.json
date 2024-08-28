@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3821e36ffa408386888f545befb167d6",
+    "identityHash": "acff2438c7016e6e8855680d5b06acf5",
     "entities": [
       {
         "tableName": "artist",
@@ -152,17 +152,11 @@
       },
       {
         "tableName": "format",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`format_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `release_id` INTEGER NOT NULL, `format_idx` INTEGER NOT NULL, `name` TEXT NOT NULL, `quantity` INTEGER NOT NULL, `text` TEXT, FOREIGN KEY(`release_id`) REFERENCES `release`(`release_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`format_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `format_idx` INTEGER NOT NULL, `name` TEXT NOT NULL, `quantity` INTEGER NOT NULL, `text` TEXT)",
         "fields": [
           {
             "fieldPath": "formatId",
             "columnName": "format_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "releaseId",
-            "columnName": "release_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -197,30 +191,8 @@
             "format_id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_format_release_id",
-            "unique": false,
-            "columnNames": [
-              "release_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_format_release_id` ON `${TABLE_NAME}` (`release_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "release",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "release_id"
-            ],
-            "referencedColumns": [
-              "release_id"
-            ]
-          }
-        ]
+        "indices": [],
+        "foreignKeys": []
       },
       {
         "tableName": "format_detail",
@@ -1031,6 +1003,75 @@
         ]
       },
       {
+        "tableName": "release_format_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`release_id` INTEGER NOT NULL, `format_id` INTEGER NOT NULL, PRIMARY KEY(`release_id`, `format_id`), FOREIGN KEY(`release_id`) REFERENCES `release`(`release_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`format_id`) REFERENCES `format`(`format_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "releaseId",
+            "columnName": "release_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formatId",
+            "columnName": "format_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "release_id",
+            "format_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_release_format_cross_ref_release_id",
+            "unique": false,
+            "columnNames": [
+              "release_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_release_format_cross_ref_release_id` ON `${TABLE_NAME}` (`release_id`)"
+          },
+          {
+            "name": "index_release_format_cross_ref_format_id",
+            "unique": false,
+            "columnNames": [
+              "format_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_release_format_cross_ref_format_id` ON `${TABLE_NAME}` (`format_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "release",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "release_id"
+            ],
+            "referencedColumns": [
+              "release_id"
+            ]
+          },
+          {
+            "table": "format",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "format_id"
+            ],
+            "referencedColumns": [
+              "format_id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "resource",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`resource_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `resource_url` TEXT NOT NULL, `uri` TEXT NOT NULL, `dataQuality` TEXT NOT NULL)",
         "fields": [
@@ -1575,7 +1616,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3821e36ffa408386888f545befb167d6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'acff2438c7016e6e8855680d5b06acf5')"
     ]
   }
 }

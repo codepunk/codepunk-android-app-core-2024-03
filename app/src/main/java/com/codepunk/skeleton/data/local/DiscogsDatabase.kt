@@ -35,6 +35,7 @@ import com.codepunk.skeleton.data.local.entity.LocalResource
 import com.codepunk.skeleton.data.local.entity.LocalResourceDetail
 import com.codepunk.skeleton.data.local.entity.LocalTrack
 import com.codepunk.skeleton.data.local.entity.LocalVideo
+import com.codepunk.skeleton.data.local.relation.LocalReleaseFormatCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceCreditCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceImageCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceTrackCrossRef
@@ -60,6 +61,7 @@ import com.codepunk.skeleton.data.local.typeconverter.LocalDateTypeConverter
         LocalRelatedRelease::class,
         LocalRelatedReleasePagination::class,
         LocalRelease::class,
+        LocalReleaseFormatCrossRef::class,
         LocalResource::class,
         LocalResourceCreditCrossRef::class,
         LocalResourceDetail::class,

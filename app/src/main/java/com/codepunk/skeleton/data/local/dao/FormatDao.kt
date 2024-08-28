@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.codepunk.skeleton.data.local.entity.LocalFormat
 import com.codepunk.skeleton.data.local.entity.LocalFormatDetail
+import com.codepunk.skeleton.data.local.relation.LocalReleaseFormatCrossRef
 
 @Dao
 abstract class FormatDao {
@@ -13,6 +14,11 @@ abstract class FormatDao {
 
     @Insert
     abstract suspend fun insertFormats(formats: List<LocalFormat>): List<Long>
+
+    @Insert
+    abstract suspend fun insertReleaseFormatCrossRefs(
+        crossRefs: List<LocalReleaseFormatCrossRef>
+    ): List<Long>
 
     @Insert
     abstract suspend fun insertFormatDetails(details: List<LocalFormatDetail>): List<Long>

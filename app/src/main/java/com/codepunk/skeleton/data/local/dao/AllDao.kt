@@ -3,6 +3,7 @@ package com.codepunk.skeleton.data.local.dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.codepunk.skeleton.data.local.relation.LocalFormatWithDetails
+import com.codepunk.skeleton.data.local.relation.LocalReleaseFormatCrossRef
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndArtist
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndLabel
 import com.codepunk.skeleton.data.local.relation.LocalResourceAndMaster
@@ -142,7 +143,7 @@ class AllDao @Inject constructor(
             creditDao.insertResourceCredits(resourceId, credits)
             videoDao.insertResourceVideos(resourceId, videos)
             relatedLabelDao.insertRelatedLabels(resourceId, relatedLabels)
-            insertFormatsWithDetails(releaseId, formats)
+            insertReleaseFormatsWithDetails(releaseId, formats)
             identifierDao.insertIdentifiers(releaseId, identifiers)
         }
         return resourceId
@@ -155,14 +156,24 @@ class AllDao @Inject constructor(
     @Transaction
     @Query("")
     suspend fun insertFormatsWithDetails(
-        releaseId: Long,
         formatsWithDetails: List<LocalFormatWithDetails>
     ): List<Long> = formatDao.insertFormats(
-        formatsWithDetails.map { it.format.copy(releaseId = releaseId) }
+        formatsWithDetails.map { it.format }
     ).also { formatIds ->
         formatIds.zip(formatsWithDetails).forEach { (formatId, formatWithDetails) ->
             formatDao.insertFormatDetails(formatId, formatWithDetails.details)
         }
+    }
+
+    @Transaction
+    @Query("")
+    suspend fun insertReleaseFormatsWithDetails(
+        releaseId: Long,
+        formatsWithDetails: List<LocalFormatWithDetails>
+    ): List<Long> = insertFormatsWithDetails(formatsWithDetails).apply {
+        filter { it != -1L }
+            .map { LocalReleaseFormatCrossRef(releaseId, it) }
+            .run { formatDao.insertReleaseFormatCrossRefs(this) }
     }
 
     // ====================

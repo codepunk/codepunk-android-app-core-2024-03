@@ -67,7 +67,7 @@ fun RemoteRelease.toLocal(
                 it.toLocal(resourceId = resourceId, type = RelationType.COMPANY)
             },
             formats = formats.mapIndexed { formatIdx, format ->
-                format.toLocal(releaseId = id, formatIdx = formatIdx)
+                format.toLocal(formatIdx = formatIdx)
             },
             identifiers = identifiers.mapIndexed { identifierIdx, identifier ->
                 identifier.toLocal(releaseId = id, identifierIdx = identifierIdx)
@@ -156,5 +156,4 @@ fun LocalRelatedRelease.toDomain(): RelatedRelease = RelatedRelease(
     artist = artist,
     year = year,
     thumb = thumb
-
 )

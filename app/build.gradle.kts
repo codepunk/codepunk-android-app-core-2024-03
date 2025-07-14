@@ -28,10 +28,6 @@ android {
             useSupportLibrary = true
         }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-
         buildConfigField(
             type = "long",
             name = "OK_HTTP_CLIENT_CACHE_SIZE",
@@ -99,6 +95,10 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
 
     // region Added by Android Studio
@@ -137,12 +137,12 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
+    implementation(libs.room.paging)
     implementation(libs.kotlinx.datetime)
     implementation(libs.navigation.compose)
     implementation(libs.coil)
     implementation(libs.coil.compose)
     implementation(libs.paging)
-    implementation(libs.room.paging)
     implementation(libs.paging.compose)
     implementation(libs.kefir.bb)
     implementation(libs.mozilla.components.support.ktx)

@@ -125,7 +125,9 @@ class DiscogsRepositoryImpl(
             saveFetchResult = {
                 allDao.insertLabel(it.toLocal())
             }
-        )
+        ).apply {
+            this
+        }
 
     override fun fetchMaster(masterId: Long): Flow<Ior<Throwable, Master?>> =
         networkBoundResource(

@@ -1,31 +1,30 @@
-package com.codepunk.skeleton.data.remote.entity
+package com.codepunk.skeleton.data.local.entity
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import androidx.room.ColumnInfo
 
-@Serializable
-@SerialName("master")
-data class RemoteSearchResultMaster(
+data class LocalSearchResultMaster(
     override val id: Long = 0,
-    @SerialName("master_id")
+    @ColumnInfo(name = "master_id")
     override val masterId: Long? = null,
-    @SerialName("master_url")
+    @ColumnInfo(name = "master_url")
     override val masterUrl: String? = null,
     override val uri: String = "",
     override val title: String = "",
     override val thumb: String = "",
-    @SerialName("cover_image")
+    @ColumnInfo(name = "cover_image")
     override val coverImage: String = "",
-    @SerialName("resource_url")
+    @ColumnInfo(name = "resource_url")
     override val resourceUrl: String = "",
     val country: String? = null,
     val year: Int? = null,
+    /* TODO detail table
     val format: List<String>? = null,
     val label: List<String>? = null,
     val genre: List<String>? = null,
     val style: List<String>? = null,
     val barcode: List<String>? = null,
+     */
     @Suppress("SpellCheckingInspection")
-    @SerialName("catno")
+    @ColumnInfo(name = "catno")
     val catNo: String? = null
-) : RemoteSearchResult
+) : LocalSearchResult(ResultType.MASTER)

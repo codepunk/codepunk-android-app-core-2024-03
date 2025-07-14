@@ -1,7 +1,6 @@
 package com.codepunk.skeleton.data.remote.webservice
 
 import arrow.core.Either
-import arrow.core.Ior
 import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.codepunk.skeleton.data.remote.entity.RemoteArtist
 import com.codepunk.skeleton.data.remote.entity.RemoteLabel
